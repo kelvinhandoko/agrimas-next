@@ -1,0 +1,325 @@
+@startuml Agrimas
+
+skinparam TitleFontName Futura
+skinparam DefaultFontName Futura
+
+!pragma layout smetana
+
+title Agrimas ERD
+
+entity User {
+  +id: varchar <<PK>>
+  --
+  username: varchar
+  firstName: varchar
+  lastName: varchar
+  password: varchar
+  role: varchar
+  created_at: timestamp
+}
+
+entity User_Perusahaan {
+  +id: varchar <<PK>>
+  --
+  userId: varchar <<FK>>
+  idPerusahaan: varchar <<FK>>
+}
+
+entity Perusahaan {
+  +id: varchar <<PK>>
+  --
+  name: varchar
+  alamat: varchar
+  email: varchar
+}
+
+entity Sales {
+  +id: varchar <<PK>>
+  --
+  firstName: varchar
+  lastName: varchar
+  alamat: varchar
+  email: varchar
+  phone: varchar
+  created_at: timestamp
+  --
+  idPerusahaan: varchar <<FK>>
+}
+
+entity Product {
+  +id: varchar <<PK>>
+  --
+  nama: varchar
+  quantity: varchar
+  averagePrice: varchar
+  --
+  idSupplier: varchar <<FK>>
+  idPerusahaan: varchar <<FK>>
+}
+
+entity Supplier {
+  +id: varchar <<PK>>
+  --
+  nama: varchar
+  alamat: varchar
+  --
+  idPerusahaan: varchar <<FK>>
+}
+
+entity Invoice {
+  +id: varchar <<PK>>
+  --
+  ref: varchar
+  invoiceDate: datetime
+  totalInvoiceBefore: int
+  totalInvoiceAfter: int
+  suratJalan: varchar
+  dueDate: datetime
+  keterangan: varchar
+  createdAt: timestamp
+  updatedAt: timestamp
+  discount: int
+  ppn: int
+  --
+  salesId: varchar <<FK>>
+  idPerusahaan: varchar <<FK>>
+  customerId: varchar <<FK>>
+}
+
+entity InvoiceDetail {
+  +id: varchar <<PK>>
+  --
+  price: int
+  quantity: int
+  discount: int
+  ppn: int
+  totalBefore: int
+  totalAfter: int
+  --
+  productId: varchar <<FK>>
+  invoiceId: varchar <<FK>>
+}
+
+entity InvoicePayment {
+  +id: varchar <<PK>>
+  --
+  totalPayment: varchar
+  status: enum
+  paymentDate: date
+  --
+  invoiceId: varchar <<FK>>
+}
+
+entity InvoiceReturn {
+  +id: varchar <<PK>>
+  --
+  returnDate: datetime
+  keterangan: varchar
+}
+
+entity InvoiceReturnDetail {
+  +id: varchar <<PK>>
+  --
+  quantity: int
+  --
+  invoiceDetailId: varchar <<FK>>
+  invoiceReturnId: varchar <<FK>>
+}
+
+entity Customer {
+  +id: varchar <<PK>>
+  --
+  nama: varchar
+  alamat: varchar
+  --
+  idPerusahaan: varchar <<FK>>
+}
+
+entity Purchase {
+  +id: varchar <<PK>>
+  --
+  ref: varchar
+  PurchaseDate: datetime
+  totalPurchaseBefore: int
+  totalPurchaseAfter: int
+  suratJalan: varchar
+  dueDate: datetime
+  keterangan: varchar
+  createdAt: timestamp
+  updatedAt: timestamp
+  discount: int
+  ppn: int
+  --
+  supplierId: varchar <<FK>>
+  idPerusahaan: varchar <<FK>>
+}
+
+entity PurchaseDetail {
+  +id: varchar <<PK>>
+  --
+  price: int
+  quantity: int
+  discount: int
+  ppn: int
+  totalBefore: int
+  totalAfter: int
+  --
+  productId: varchar <<FK>>
+  purchaseId: varchar <<FK>>
+}
+
+entity PurchasePayment {
+  +id: varchar <<PK>>
+  --
+  totalPayment: varchar
+  status: enum
+  paymentDate: date
+  --
+  purchaseId: varchar <<FK>>
+}
+
+entity ReceiveItem {
+  +id: varchar <<PK>>
+  --
+  quantity: int
+  --
+  purchaseDetailId: varchar <<FK>>
+}
+
+entity PurchaseReturn {
+  +id: varchar <<PK>>
+  --
+  returnDate: datetime
+  keterangan: varchar
+}
+
+entity PurchaseReturnDetail {
+  +id: varchar <<PK>>
+  --
+  quantity: int
+  --
+  purchaseDetailId: varchar <<FK>>
+  purchaseReturnId: varchar <<FK>>
+}
+
+entity Journal {
+  +id: varchar <<PK>>
+  --
+  dateJournal: date
+  noJournal: varchar
+  description: text
+  type: JournalType
+  created_at: datetime
+  --
+  idPerusahaan: varchar <<FK>>
+}
+
+entity JournalDetail {
+  +id: varchar <<PK>>
+  --
+  debit: float
+  credit: float
+  journalId: varchar <<FK>>
+  accountId: varchar <<FK>>
+  subAccountId: varchar <<FK>> [null]
+  createdAt: datetime      
+  updatedAt: datetime    
+}
+
+entity GroupAccount {
+  +id: varchar <<PK>>
+  --
+  name: varchar
+  code: varchar
+  laporan: Laporan[]
+  accountClass: AccountClass
+  createdAt: datetime      
+  updatedAt: datetime      
+  --
+  idPerusahaan: varchar <<FK>>
+}
+
+entity Account {
+  +id: varchar <<PK>>
+  --
+  normalPosition: NormalPosition
+  code: varchar
+  name: varchar
+  groupAccountId: varchar <<FK>>
+  createdAt: datetime      
+  updatedAt: datetime  
+  --
+  idPerusahaan: varchar <<FK>>    
+}
+
+entity SubAccount {
+  +id: varchar <<PK>>
+  --
+  code: varchar
+  name: varchar
+  accountId: varchar <<FK>>
+  createdAt: datetime      
+  updatedAt: datetime
+}
+
+enum AccountClass {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+enum NormalPosition {
+  DEBIT
+  CREDIT
+}
+
+enum JournalType {
+  GENERAL
+  ADJUSTING
+  REVERSING
+  CLOSING
+}
+
+enum Laporan {
+  NERACA
+  LABA_RUGI
+  PERUBAHAN_MODAL
+}
+
+User }|--|| Perusahaan : "belongs to"
+User_Perusahaan }|--|| User : "belongs to"
+User_Perusahaan }|--|| Perusahaan : "belongs to"
+Sales }|--|| Perusahaan : "belongs to"
+Customer }|--|| Perusahaan : "belongs to"
+Supplier }|--|| Perusahaan : "belongs to"
+Invoice }|--|| Perusahaan : "belongs to"
+Invoice }|--|| Sales : "generated by"
+Invoice }|--|| Customer : "issued to"
+InvoiceDetail }|--|| Invoice : "part of"
+InvoiceDetail }|--|| Product : "related to"
+Product }|--|| Supplier : "supplied by"
+Product }|--|| Perusahaan : "owned by"
+Purchase }|--|| Supplier : "procured from"
+Purchase }|--|| Perusahaan : "issued by"
+PurchaseDetail }|--||Product : "related to"
+PurchasePayment }|--|| Purchase : "pays for"
+PurchaseDetail }|--|| Purchase : "part of"
+InvoicePayment }|--|| Invoice : "pays for"
+InvoiceReturnDetail }|--|| InvoiceReturn : "belongs to"
+InvoiceReturnDetail }|--|| InvoiceDetail : "returns"
+ReceiveItem }|--|| PurchaseDetail : "received for"
+PurchaseReturnDetail }|--|| PurchaseReturn : "belongs to"
+PurchaseReturnDetail }|--|| PurchaseDetail : "returns"
+PurchaseDetail }|--|| InvoiceDetail : "related to"
+
+JournalDetail }|--|| Journal : "part of"
+JournalDetail }|--|| Account : "for"
+JournalDetail }|--|| SubAccount : "for sub-account"
+Account }|--|| GroupAccount : "belongs to"
+
+GroupAccount }|--|| Perusahaan : "owned by"
+Account }|--|| Perusahaan : "owned by"
+
+@enduml
