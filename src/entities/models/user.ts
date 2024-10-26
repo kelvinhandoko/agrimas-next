@@ -1,0 +1,16 @@
+import { z } from "zod";
+import { Role } from "@prisma/client";
+import { basicQuery } from "@/entities/models/basic";
+
+export const userPayloadSchema = z.object({
+  id: z.string().optional(),
+  username: z.string({ required_error: "username wajib diisi" }),
+  password: z.string({ required_error: "password wajib diisi" }),
+  role: z.nativeEnum(Role),
+});
+
+export type UserPayload = z.infer<typeof userPayloadSchema>;
+
+export const UserGetAllQuerySchema = basicQuery;
+
+export type GetAllUserQuery = z.infer<typeof UserGetAllQuerySchema>;
