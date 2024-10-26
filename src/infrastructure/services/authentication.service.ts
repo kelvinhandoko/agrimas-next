@@ -7,7 +7,7 @@ import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "@/utils/passwordHandler";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 
-export const { auth, handlers, signOut, signIn } = NextAuth({
+export const { auth, handlers, signOut, signIn, unstable_update } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
@@ -15,7 +15,6 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
         username: { label: "Username" },
         password: { label: "Password", type: "password" },
       },
-
       async authorize(credentials) {
         if (!credentials) return null;
         const username = credentials?.username as string;
@@ -35,7 +34,7 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
           throw new AuthenticationError();
         }
 
-        return user;
+        return { ...user, companyId: null };
       },
     }),
   ],

@@ -6,6 +6,7 @@ declare module "next-auth" {
    * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface User {
+    companyId: string | null;
     role: Role;
     username: string;
   }
@@ -14,6 +15,7 @@ declare module "next-auth" {
     user: {
       role: Role;
       username: string;
+      companyId: string | null;
       /**
        * By default, TypeScript merges new interface properties and overwrites existing ones.
        * In this case, the default session user properties will be overwritten,
@@ -30,6 +32,7 @@ declare module "next-auth/jwt" {
     /** OpenID ID Token */
     role: Role;
     username: string;
+    companyId: string | null;
     id?: string;
   }
 }

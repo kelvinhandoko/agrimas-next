@@ -7,11 +7,13 @@
  * need to use are documented accordingly near the end.
  */
 
+import { GetCompanyByUsernameController } from "@/controller/company/get-company-by-username.controller";
 import { db } from "@/infrastructure/prisma/prisma";
+import { CompanyRepository } from "@/infrastructure/repositories/company.repository";
 import { auth } from "@/infrastructure/services/authentication.service";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 
 /**
  * 1. CONTEXT
@@ -30,7 +32,9 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   return {
     db,
-    session,
+    session: {
+      ...session,
+    },
     ...opts,
   };
 };
@@ -117,16 +121,51 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const adminProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const companyProcedure = protectedProcedure
+  .input(z.object({ companyId: z.string() }))
+  .use(async function isMemberOfCompany(opts) {
+    if (!opts.ctx.session.user.companyId) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+      });
     }
-    return next({
+    const companyRepo = new CompanyRepository(opts.ctx.db);
+    const getCompanyController = new GetCompanyByUsernameController(
+      companyRepo,
+    );
+
+    const findCompany = await getCompanyController.execute(
+      opts.ctx.session.user.companyId,
+    );
+
+    return opts.next({
       ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
+        ...opts.ctx,
+        companyId: findCompany.id,
       },
     });
   });

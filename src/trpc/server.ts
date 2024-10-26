@@ -7,6 +7,7 @@ import { cache } from "react";
 import { createCaller, type AppRouter } from "@/trpc/root";
 import { createTRPCContext } from "@/trpc/trpc";
 import { createQueryClient } from "./query-client";
+import { redirect } from "next/navigation";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -22,7 +23,13 @@ const createContext = cache(() => {
 });
 
 const getQueryClient = cache(createQueryClient);
-const caller = createCaller(createContext);
+const caller = createCaller(createContext, {
+  onError: ({ error }) => {
+    if (error.code === "UNAUTHORIZED") {
+      redirect("/api/auth/signin");
+    }
+  },
+});
 
 export const { trpc: api, HydrateClient } = createHydrationHelpers<AppRouter>(
   caller,

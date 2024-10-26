@@ -14,3 +14,9 @@ export type UserPayload = z.infer<typeof userPayloadSchema>;
 export const UserGetAllQuerySchema = basicQuery;
 
 export type GetAllUserQuery = z.infer<typeof UserGetAllQuerySchema>;
+
+export const chooseCompanyPayloadSchema = z.object({
+  companyId: z.string(),
+});
+
+export type ChooseCompanyPayload = z.infer<typeof chooseCompanyPayloadSchema>;

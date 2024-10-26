@@ -9,6 +9,11 @@ export class UserRepository {
     return data;
   }
 
+  async findUserById(id: string) {
+    const data = await this._db.user.findUnique({ where: { id } });
+    return data;
+  }
+
   async create(user: UserPayload) {
     return this._db.user.create({ data: user });
   }
