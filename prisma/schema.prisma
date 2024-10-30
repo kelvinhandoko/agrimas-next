@@ -22,11 +22,11 @@ model Account {
     provider                 String
     providerAccountId        String
     refresh_token            String? @db.Text
-    access_token             String? // @db.Text
+    access_token             String? @db.Text
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? // @db.Text
+    id_token                 String? @db.Text
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
@@ -43,12 +43,18 @@ model Session {
 }
 
 model Company {
-    id           String         @id @default(cuid())
-    name         String         @unique
-    address      String?
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    User_Company User_Company[]
+    id          String         @id @default(cuid())
+    name        String         @unique
+    address     String?
+    createdAt   DateTime       @default(now())
+    updatedAt   DateTime       @updatedAt
+    UserCompany User_Company[]
+
+    kelompokAkun     kelompokAkun[]
+    NamaAkun         NamaAkun[]
+    Laporan_NamaAkun Laporan_NamaAkun[]
+    SubAkun          SubAkun[]
+    Journal          Journal[]
 }
 
 model User {
@@ -72,6 +78,111 @@ model User_Company {
     company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
+
+model kelompokAkun {
+    id        String     @id @default(cuid())
+    name      String
+    kelasAkun KelasAkun
+    companyId String
+    company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    NamaAkun  NamaAkun[]
+}
+
+model NamaAkun {
+    id     String         @id @default(cuid())
+    posisi NormalPosition
+
+    code           String
+    name           String
+    kelompokAkunId String
+    kelompokAkun   kelompokAkun       @relation(fields: [kelompokAkunId], references: [id], onDelete: Cascade)
+    companyId      String
+    company        Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt      DateTime           @default(now())
+    updatedAt      DateTime           @updatedAt
+    laporan        Laporan_NamaAkun[]
+    SubAkun        SubAkun[]
+    journalDetail  JournalDetail[]
+}
+
+model SubAkun {
+    id            String          @id @default(cuid())
+    code          String
+    name          String
+    namaAkunId    String
+    namaAkun      NamaAkun        @relation(fields: [namaAkunId], references: [id], onDelete: Cascade)
+    companyId     String
+    company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    journalDetail JournalDetail[]
+}
+
+model Laporan_NamaAkun {
+    id         String   @id @default(cuid())
+    laporan    Laporan
+    namaAkun   NamaAkun @relation(fields: [namaAkunId], references: [id])
+    companyId  String
+    company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    namaAkunId String
+}
+
+model Journal {
+    id            String          @id @default(cuid())
+    date          DateTime
+    ref           String
+    description   String
+    type          JournalType
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    companyId     String
+    company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    JournalDetail JournalDetail[]
+}
+
+model JournalDetail {
+    id           String   @id @default(cuid())
+    debit        Float
+    credit       Float
+    journalId    String
+    namaAkunId   String
+    subAccountId String?
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    journal      Journal  @relation(fields: [journalId], references: [id], onDelete: Cascade)
+    namaAkun     NamaAkun @relation(fields: [namaAkunId], references: [id], onDelete: Cascade)
+    subAccount   SubAkun? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+}
+
+enum JournalType {
+    GENERAL
+    ADJUSTING
+    REVERSING
+    CLOSING
+}
+
+enum KelasAkun {
+    ASSET
+    LIABILITY
+    EQUITY
+    REVENUE
+    EXPENSE
+}
+
+enum NormalPosition {
+    DEBIT
+    CREDIT
+}
+
+enum Laporan {
+    NERACA
+    PERUBAHAN_MODAL
+    LABA_RUGI
 }
 
 enum Role {

@@ -1,17 +1,13 @@
 import UpdateButton from "@/components/testButton";
 import {
   auth,
-  signIn,
   signOut,
-  unstable_update,
 } from "@/infrastructure/services/authentication.service";
 import { api, HydrateClient } from "@/trpc/server";
 
 export default async function Home() {
   await api.user.create();
   const session = await auth();
-
-  console.log(session);
 
   return (
     <HydrateClient>
