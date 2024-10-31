@@ -15,33 +15,6 @@ datasource db {
 }
 
 // Necessary for Next auth
-model Account {
-    id                       String  @id @default(cuid())
-    userId                   String
-    type                     String
-    provider                 String
-    providerAccountId        String
-    refresh_token            String? @db.Text
-    access_token             String? @db.Text
-    expires_at               Int?
-    token_type               String?
-    scope                    String?
-    id_token                 String? @db.Text
-    session_state            String?
-    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    refresh_token_expires_in Int?
-
-    @@unique([provider, providerAccountId])
-}
-
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model Company {
     id          String         @id @default(cuid())
     name        String         @unique
@@ -50,11 +23,11 @@ model Company {
     updatedAt   DateTime       @updatedAt
     UserCompany User_Company[]
 
-    kelompokAkun     kelompokAkun[]
-    NamaAkun         NamaAkun[]
-    Laporan_NamaAkun Laporan_NamaAkun[]
-    SubAkun          SubAkun[]
-    Journal          Journal[]
+    groupAccount   GroupAccount[]
+    account        Account[]
+    Report_Account Report_Account[]
+    SubAcount      SubAccount[]
+    Journal        Journal[]
 }
 
 model User {
@@ -62,8 +35,6 @@ model User {
     username    String
     image       String?
     password    String
-    accounts    Account[]
-    sessions    Session[]
     userCompany User_Company[]
     role        Role           @default(USER)
     createdAt   DateTime       @default(now())
@@ -80,40 +51,40 @@ model User_Company {
     updatedAt DateTime @updatedAt
 }
 
-model kelompokAkun {
-    id        String     @id @default(cuid())
-    name      String
-    kelasAkun KelasAkun
-    companyId String
-    company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    NamaAkun  NamaAkun[]
+model GroupAccount {
+    id           String       @id @default(cuid())
+    name         String
+    accountClass AccountClass
+    companyId    String
+    company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+    account      Account[]
 }
 
-model NamaAkun {
+model Account {
     id     String         @id @default(cuid())
     posisi NormalPosition
 
     code           String
     name           String
-    kelompokAkunId String
-    kelompokAkun   kelompokAkun       @relation(fields: [kelompokAkunId], references: [id], onDelete: Cascade)
+    groupAccountId String
+    groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
     companyId      String
-    company        Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt      DateTime           @default(now())
-    updatedAt      DateTime           @updatedAt
-    laporan        Laporan_NamaAkun[]
-    SubAkun        SubAkun[]
+    company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @updatedAt
+    report         Report_Account[]
+    subAccount     SubAccount[]
     journalDetail  JournalDetail[]
 }
 
-model SubAkun {
+model SubAccount {
     id            String          @id @default(cuid())
     code          String
     name          String
-    namaAkunId    String
-    namaAkun      NamaAkun        @relation(fields: [namaAkunId], references: [id], onDelete: Cascade)
+    accountId     String
+    account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
     companyId     String
     company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
     createdAt     DateTime        @default(now())
@@ -121,15 +92,15 @@ model SubAkun {
     journalDetail JournalDetail[]
 }
 
-model Laporan_NamaAkun {
-    id         String   @id @default(cuid())
-    laporan    Laporan
-    namaAkun   NamaAkun @relation(fields: [namaAkunId], references: [id])
-    companyId  String
-    company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-    namaAkunId String
+model Report_Account {
+    id        String   @id @default(cuid())
+    laporan   Laporan
+    account   Account  @relation(fields: [accountId], references: [id])
+    companyId String
+    company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    accountId String
 }
 
 model Journal {
@@ -146,17 +117,17 @@ model Journal {
 }
 
 model JournalDetail {
-    id           String   @id @default(cuid())
+    id           String      @id @default(cuid())
     debit        Float
     credit       Float
     journalId    String
-    namaAkunId   String
+    accountId    String
     subAccountId String?
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    journal      Journal  @relation(fields: [journalId], references: [id], onDelete: Cascade)
-    namaAkun     NamaAkun @relation(fields: [namaAkunId], references: [id], onDelete: Cascade)
-    subAccount   SubAkun? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+    createdAt    DateTime    @default(now())
+    updatedAt    DateTime    @updatedAt
+    journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
+    account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
 }
 
 enum JournalType {
@@ -166,7 +137,7 @@ enum JournalType {
     CLOSING
 }
 
-enum KelasAkun {
+enum AccountClass {
     ASSET
     LIABILITY
     EQUITY
