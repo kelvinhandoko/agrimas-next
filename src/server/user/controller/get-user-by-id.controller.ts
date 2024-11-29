@@ -1,4 +1,4 @@
-import { type UserRepository } from "@/infrastructure/repositories/user.repository";
+import { type UserRepository } from "@/server/user/user.repository";
 
 export class GetUserByIdController {
   constructor(private _userRepository: UserRepository) {}

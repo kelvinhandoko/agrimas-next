@@ -1,5 +1,5 @@
-import { type CompanyPayload } from "@/entities/models/company";
-import { type CompanyRepository } from "@/infrastructure/repositories/company.repository";
+import { type CompanyPayload } from "@/server/company/company.model";
+import { type CompanyRepository } from "@/server/company/company.repository";
 import { TRPCError } from "@trpc/server";
 
 export class CreateCompanyController {

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Role } from "@prisma/client";
-import { basicQuery } from "@/entities/models/basic";
+import { basicQuery } from "@/server/common/models/basic";
 
 export const userPayloadSchema = z.object({
   id: z.string().optional(),

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { GetUserByIdController } from "@/controller/user/get-user-by-id.controller";
-import { db } from "@/infrastructure/prisma/prisma";
-import { UserRepository } from "@/infrastructure/repositories/user.repository";
+import { GetUserByIdController } from "@/server/user/controller/get-user-by-id.controller";
+import { db } from "@/server/db/prisma";
+import { UserRepository } from "@/server/user/user.repository";
 import { type NextAuthConfig } from "next-auth";
 
 export const authConfig = {

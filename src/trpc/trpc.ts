@@ -1,31 +1,30 @@
 /**
- * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
- * 1. You want to modify request context (see Part 1).
- * 2. You want to create a new middleware or type of procedure (see Part 3).
+ * tRPC Server Setup
  *
- * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
- * need to use are documented accordingly near the end.
+ * This file initializes and configures the tRPC server, including:
+ * - Context creation
+ * - Router and procedure definitions
+ * - Middleware for additional functionality
+ *
+ * Use this file as a reference for creating API endpoints or extending server capabilities.
  */
 
-import { GetCompanyByUsernameController } from "@/controller/company/get-company-by-username.controller";
-import { db } from "@/infrastructure/prisma/prisma";
-import { CompanyRepository } from "@/infrastructure/repositories/company.repository";
-import { auth } from "@/infrastructure/services/authentication.service";
+import { GetCompanyByUsernameController } from "@/server/company/controller/get-company-by-username.controller";
+import { db } from "@/server/db/prisma";
+import { CompanyRepository } from "@/server/company/company.repository";
+import { auth } from "@/server/services/authentication.service";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { z, ZodError } from "zod";
 
 /**
- * 1. CONTEXT
+ * Creates the tRPC context, providing access to:
+ * - Prisma database instance
+ * - User session details
+ * - Request headers
  *
- * This section defines the "contexts" that are available in the backend API.
- *
- * These allow you to access things when processing a request, like the database, the session, etc.
- *
- * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
- * wrap this and provides the required context.
- *
- * @see https://trpc.io/docs/server/context
+ * @param {Object} opts - Options containing request headers
+ * @returns {Promise<Object>} The context object
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await auth();
@@ -40,11 +39,10 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 };
 
 /**
- * 2. INITIALIZATION
- *
- * This is where the tRPC API is initialized, connecting the context and transformer. We also parse
- * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
- * errors on the backend.
+ * Initializes the tRPC API, including:
+ * - Context integration
+ * - Custom transformer (superjson)
+ * - Error formatting for Zod validation errors
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -61,37 +59,29 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 /**
- * Create a server-side caller.
+ * Creates a server-side caller for invoking tRPC procedures directly.
  *
  * @see https://trpc.io/docs/server/server-side-calls
  */
 export const createCallerFactory = t.createCallerFactory;
 
 /**
- * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
- *
- * These are the pieces you use to build your tRPC API. You should import these a lot in the
- * "/src/server/api/routers" directory.
- */
-
-/**
- * This is how you create new routers and sub-routers in your tRPC API.
+ * Defines a new tRPC router for grouping API endpoints.
  *
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
 
 /**
- * Middleware for timing procedure execution and adding an artificial delay in development.
+ * Middleware for adding artificial latency and logging execution times in development.
  *
- * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
- * network latency that would occur in production but not in local development.
+ * @param {Object} params - Procedure call details
+ * @returns {Promise<Object>} The result of the procedure execution
  */
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();
 
   if (t._config.isDev) {
-    // artificial delay in dev
     const waitMs = Math.floor(Math.random() * 400) + 100;
     await new Promise((resolve) => setTimeout(resolve, waitMs));
   }
@@ -105,53 +95,50 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 /**
- * Public (unauthenticated) procedure
+ * Public procedure: Accessible without authentication.
  *
- * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
- * guarantee that a user querying is authorized, but you can still access user session data if they
- * are logged in.
+ * Automatically uses timing middleware for debugging in development.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
 
 /**
- * Protected (authenticated) procedure
+ * Protected procedure: Accessible only to authenticated users.
  *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
- *
- * @see https://trpc.io/docs/procedures
+ * Ensures `ctx.session.user` is non-null.
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
     },
   });
 });
 
-export const adminProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session?.user) {
+/**
+ * Owner procedure: Accessible only to users with the "OWNER" role.
+ */
+export const ownerProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.session?.user.role !== "OWNER") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
     },
   });
 });
 
-export const companyProcedure = protectedProcedure
-  .input(z.object({ companyId: z.string() }))
-  .use(async function isMemberOfCompany(opts) {
+/**
+ * Company procedure: Verifies that the user belongs to a company.
+ */
+export const companyProcedure = protectedProcedure.use(
+  async function isMemberOfCompany(opts) {
     if (!opts.ctx.session.user.companyId) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-      });
+      throw new TRPCError({ code: "FORBIDDEN" });
     }
     const companyRepo = new CompanyRepository(opts.ctx.db);
     const getCompanyController = new GetCompanyByUsernameController(
@@ -165,7 +152,46 @@ export const companyProcedure = protectedProcedure
     return opts.next({
       ctx: {
         ...opts.ctx,
-        companyId: findCompany.id,
+        session: {
+          ...opts.ctx.session,
+          user: {
+            ...opts.ctx.session.user,
+            companyId: findCompany.id,
+          },
+        },
       },
     });
+  },
+);
+
+/**
+ * Admin Company procedure: Accessible only to non-USER roles within a company.
+ */
+export const adminCompanyProcedure = companyProcedure.use(({ ctx, next }) => {
+  if (ctx.session?.user?.role === "USER") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
   });
+});
+
+/**
+ * Owner Company procedure: Accessible only to users with the "ADMIN" role in a company.
+ */
+export const ownerCompanyProcedure = adminCompanyProcedure.use(
+  ({ ctx, next }) => {
+    if (ctx.session?.user?.role !== "ADMIN") {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
+
+    return next({
+      ctx: {
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);

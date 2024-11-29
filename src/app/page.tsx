@@ -1,8 +1,5 @@
 import UpdateButton from "@/components/testButton";
-import {
-  auth,
-  signOut,
-} from "@/infrastructure/services/authentication.service";
+import { auth, signOut } from "@/server/services/authentication.service";
 import { api, HydrateClient } from "@/trpc/server";
 
 export default async function Home() {

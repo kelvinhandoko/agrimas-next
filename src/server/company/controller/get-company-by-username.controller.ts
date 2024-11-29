@@ -1,4 +1,4 @@
-import { type CompanyRepository } from "@/infrastructure/repositories/company.repository";
+import { type CompanyRepository } from "@/server/company/company.repository";
 import { TRPCError } from "@trpc/server";
 
 export class GetCompanyByUsernameController {

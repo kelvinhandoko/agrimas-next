@@ -54,18 +54,18 @@ model User_Company {
 model GroupAccount {
     id           String       @id @default(cuid())
     name         String
+    code         String
     accountClass AccountClass
     companyId    String
     company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
     createdAt    DateTime     @default(now())
     updatedAt    DateTime     @updatedAt
     account      Account[]
-}
+}   
 
 model Account {
-    id     String         @id @default(cuid())
-    posisi NormalPosition
-
+    id             String           @id @default(cuid())
+    posisi         NormalPosition
     code           String
     name           String
     groupAccountId String
@@ -157,6 +157,7 @@ enum Laporan {
 }
 
 enum Role {
+    OWNER
     ADMIN
     USER
 }

@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/provider/TrpcProvider";
-import { auth } from "@/infrastructure/services/authentication.service";
+import { auth } from "@/server/services/authentication.service";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
