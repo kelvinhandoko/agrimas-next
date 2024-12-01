@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -61,7 +62,7 @@ model GroupAccount {
     createdAt    DateTime     @default(now())
     updatedAt    DateTime     @updatedAt
     account      Account[]
-}   
+}
 
 model Account {
     id             String           @id @default(cuid())

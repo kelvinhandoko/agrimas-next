@@ -1,4 +1,5 @@
-import { Laporan, NormalPosition } from "@prisma/client";
+import { basicQuery } from "@/server/common/models/basic";
+import { Laporan, NormalPosition, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
 export const accountPayloadSchema = z.object({
@@ -18,3 +19,9 @@ export const accountPayloadSchema = z.object({
 });
 
 export type AccountPayload = z.infer<typeof accountPayloadSchema>;
+
+export const getAllAccountQuerySchema = basicQuery;
+
+export type GetAllAccountQuery<T> = z.infer<typeof getAllAccountQuerySchema> & {
+  include?: Prisma.Subset<T, Prisma.AccountInclude>;
+};

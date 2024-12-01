@@ -3,7 +3,8 @@ import { auth, signOut } from "@/server/services/authentication.service";
 import { api, HydrateClient } from "@/trpc/server";
 
 export default async function Home() {
-  await api.user.create();
+  const data = await api.account.getAll({});
+
   const session = await auth();
 
   return (

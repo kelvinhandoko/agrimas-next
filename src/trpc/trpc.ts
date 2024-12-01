@@ -9,22 +9,19 @@
  * Use this file as a reference for creating API endpoints or extending server capabilities.
  */
 
+import { CompanyRepository } from "@/server/company/company.repository";
 import { GetCompanyByUsernameController } from "@/server/company/controller/get-company-by-username.controller";
 import { db } from "@/server/db/prisma";
-import { CompanyRepository } from "@/server/company/company.repository";
 import { auth } from "@/server/services/authentication.service";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { z, ZodError } from "zod";
+import { ZodError } from "zod";
 
 /**
  * Creates the tRPC context, providing access to:
  * - Prisma database instance
  * - User session details
  * - Request headers
- *
- * @param {Object} opts - Options containing request headers
- * @returns {Promise<Object>} The context object
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await auth();
