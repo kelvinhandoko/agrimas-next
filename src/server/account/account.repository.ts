@@ -1,6 +1,7 @@
 import {
   type GetAllAccountQuery,
   type AccountPayload,
+  type GetDetailAccountQuery,
 } from "@/server/account/account.model";
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 import { type Prisma } from "@prisma/client";
@@ -35,6 +36,12 @@ export class AccountRepository extends BaseRepository {
     return await this._db.account.update({
       where: { id: payload.id },
       data: payload,
+    });
+  }
+
+  async delete(id: string) {
+    return await this._db.account.delete({
+      where: { id },
     });
   }
 
@@ -99,5 +106,15 @@ export class AccountRepository extends BaseRepository {
       },
       nextCursor,
     };
+  }
+
+  async getDetail<S extends Prisma.AccountInclude>(
+    query: GetDetailAccountQuery<S>,
+  ) {
+    const { id, include } = query;
+    return await this._db.account.findUnique({
+      where: { id },
+      include: include ?? (undefined as unknown as S),
+    });
   }
 }

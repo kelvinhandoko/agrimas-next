@@ -2,6 +2,10 @@ import { basicQuery } from "@/server/common/models/basic";
 import { Laporan, NormalPosition, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
+type AccountInclude<T> = {
+  include?: Prisma.Subset<T, Prisma.AccountInclude>;
+};
+
 export const accountPayloadSchema = z.object({
   name: z
     .string({ required_error: "nama akun tidak boleh kosong" })
@@ -22,6 +26,14 @@ export type AccountPayload = z.infer<typeof accountPayloadSchema>;
 
 export const getAllAccountQuerySchema = basicQuery;
 
-export type GetAllAccountQuery<T> = z.infer<typeof getAllAccountQuerySchema> & {
-  include?: Prisma.Subset<T, Prisma.AccountInclude>;
-};
+export type GetAllAccountQuery<T> = z.infer<typeof getAllAccountQuerySchema> &
+  AccountInclude<T>;
+
+export const getDetailAccountQuerySchema = z.object({
+  id: z.string(),
+});
+
+export type GetDetailAccountQuery<T> = z.infer<
+  typeof getDetailAccountQuerySchema
+> &
+  AccountInclude<T>;

@@ -16,7 +16,7 @@ export class CreateAccountController {
           async (report) =>
             await reportRepo.create({
               companyId: data.companyId,
-              laporan: report,
+              report: report,
               accountId: data.id,
             }),
         ),
