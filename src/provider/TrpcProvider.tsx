@@ -6,10 +6,10 @@ import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { useState } from "react";
 import SuperJSON from "superjson";
 
-import { type AppRouter } from "@/trpc/root";
-import { createQueryClient } from "../trpc/query-client";
 import { api } from "@/trpc/react";
+import { type AppRouter } from "@/trpc/root";
 import { SessionProvider } from "next-auth/react";
+import { createQueryClient } from "../trpc/query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {

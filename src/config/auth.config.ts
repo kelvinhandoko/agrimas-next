@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { GetUserByIdController } from "@/server/user/controller/get-user-by-id.controller";
 import { db } from "@/server/db/prisma";
+import { GetUserByIdController } from "@/server/user/controller/get-user-by-id.controller";
 import { UserRepository } from "@/server/user/user.repository";
 import { type NextAuthConfig } from "next-auth";
 

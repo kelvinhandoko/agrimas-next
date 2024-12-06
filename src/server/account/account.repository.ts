@@ -1,6 +1,6 @@
 import {
-  type GetAllAccountQuery,
   type AccountPayload,
+  type GetAllAccountQuery,
   type GetDetailAccountQuery,
 } from "@/server/account/account.model";
 import { BaseRepository } from "@/server/common/repository/BaseRepository";

@@ -55,7 +55,7 @@ model User_Company {
 model GroupAccount {
     id           String       @id @default(cuid())
     name         String
-    code         String
+    code         String       @unique
     accountClass AccountClass
     companyId    String
     company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -67,7 +67,7 @@ model GroupAccount {
 model Account {
     id             String           @id @default(cuid())
     posisi         NormalPosition
-    code           String
+    code           String           @unique
     name           String
     groupAccountId String
     groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
