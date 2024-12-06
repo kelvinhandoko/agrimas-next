@@ -110,7 +110,7 @@ model Journal {
     id            String          @id @default(cuid())
     date          DateTime
     ref           String
-    description   String
+    description   String?
     type          JournalType
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
@@ -121,8 +121,8 @@ model Journal {
 
 model JournalDetail {
     id           String      @id @default(cuid())
-    debit        Float
-    credit       Float
+    debit        Int
+    credit       Int
     journalId    String
     accountId    String
     subAccountId String?
