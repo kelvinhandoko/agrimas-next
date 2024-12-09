@@ -48,3 +48,6 @@ yarn-error.log*
 # seed
 .snaplet
 seed.*
+
+# generate index
+generate-index.ts

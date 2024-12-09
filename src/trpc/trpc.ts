@@ -10,7 +10,8 @@
  */
 
 import { CompanyRepository } from "@/server/company/company.repository";
-import { GetCompanyByUsernameUseCase } from "@/server/company/UseCase/get-company-by-username.UseCase";
+import { GetCompanyByUsernameUseCase } from "@/server/company/use-cases";
+
 import { db } from "@/server/db/prisma";
 import { auth } from "@/server/services/authentication.service";
 import { initTRPC, TRPCError } from "@trpc/server";

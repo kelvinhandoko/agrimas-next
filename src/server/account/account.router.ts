@@ -5,7 +5,7 @@ import {
 import {
   CreateAccountUseCase,
   GetAllAccountUseCase,
-} from "@/server/account/UseCase";
+} from "@/server/account/use-cases";
 import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
 
 export const accountRouter = createTRPCRouter({
