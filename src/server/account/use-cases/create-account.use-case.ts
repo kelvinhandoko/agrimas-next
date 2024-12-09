@@ -4,7 +4,7 @@ import { db } from "@/server/db/prisma";
 import { ReportRepository } from "@/server/report/report.repository";
 import { TransactionService } from "@/server/services/transaction.service";
 
-export class CreateAccountController {
+export class CreateAccountUseCase {
   async execute(payload: AccountPayload) {
     const transactionService = new TransactionService(db);
     return await transactionService.startTransaction(async (tx) => {

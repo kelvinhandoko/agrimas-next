@@ -5,7 +5,7 @@ import { ReportRepository } from "@/server/report/report.repository";
 import { TransactionService } from "@/server/services/transaction.service";
 import { TRPCError } from "@trpc/server";
 
-export class UpdateAccountController {
+export class UpdateAccountUseCase {
   async execute(payload: AccountPayload) {
     const transactionService = new TransactionService(db);
     return await transactionService.startTransaction(async (tx) => {

@@ -1,7 +1,7 @@
 import { type CompanyRepository } from "@/server/company/company.repository";
 import { TRPCError } from "@trpc/server";
 
-export class GetCompanyByUsernameController {
+export class GetCompanyByUsernameUseCase {
   constructor(private _companyRepository: CompanyRepository) {}
 
   async execute(username: string) {

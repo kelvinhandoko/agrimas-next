@@ -7,4 +7,9 @@ export class JournalDetailRepository extends BaseRepository {
       data: payload,
     });
   }
+  async createMany(payload: Array<JournalDetailPayload>) {
+    return await this._db.journalDetail.createMany({
+      data: payload,
+    });
+  }
 }

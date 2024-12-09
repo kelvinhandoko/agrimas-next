@@ -20,4 +20,10 @@ export class JournalRepository extends BaseRepository {
       },
     });
   }
+  async update(payload: Omit<JournalPayload, "details">) {
+    return await this._db.journal.update({
+      data: payload,
+      where: { id: payload.id },
+    });
+  }
 }

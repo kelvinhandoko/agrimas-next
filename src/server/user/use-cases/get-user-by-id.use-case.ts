@@ -1,6 +1,6 @@
 import { type UserRepository } from "@/server/user/user.repository";
 
-export class GetUserByIdController {
+export class GetUserByIdUseCase {
   constructor(private _userRepository: UserRepository) {}
 
   async execute(id: string) {

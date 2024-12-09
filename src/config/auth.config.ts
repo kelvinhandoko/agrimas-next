@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { db } from "@/server/db/prisma";
-import { GetUserByIdController } from "@/server/user/controller/get-user-by-id.controller";
+import { GetUserByIdUseCase } from "@/server/user/UseCase/get-user-by-id.UseCase";
 import { UserRepository } from "@/server/user/user.repository";
 import { type NextAuthConfig } from "next-auth";
 
@@ -8,9 +8,9 @@ export const authConfig = {
   callbacks: {
     authorized: async ({ auth }) => {
       const userRepo = new UserRepository(db);
-      const getUserController = new GetUserByIdController(userRepo);
+      const getUserUseCase = new GetUserByIdUseCase(userRepo);
       if (!auth?.user.id) return false;
-      const user = await getUserController.execute(auth.user.id);
+      const user = await getUserUseCase.execute(auth.user.id);
       return !!user;
     },
 
