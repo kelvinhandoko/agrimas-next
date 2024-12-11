@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { db } from "@/server/db/prisma";
-import { GetUserByIdUseCase } from "@/server/user/UseCase/get-user-by-id.UseCase";
+import { GetUserByIdUseCase } from "@/server/user/use-cases";
+
 import { UserRepository } from "@/server/user/user.repository";
 import { type NextAuthConfig } from "next-auth";
 
@@ -37,8 +38,10 @@ export const authConfig = {
         };
       }
       if (trigger === "update") {
-        token.companyId = session.companyId; // Update token with companyId
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        token.companyId = session.companyId;
       }
+
       return token;
     },
   },

@@ -1,6 +1,5 @@
 import { type Role } from "@prisma/client";
 import { type DefaultSession } from "next-auth";
-import "next-auth/jwt";
 
 declare module "next-auth" {
   /**
@@ -26,6 +25,8 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 }
+
+import "next-auth/jwt";
 
 declare module "next-auth/jwt" {
   /** Returned by the `jwt` callback and `auth`, when using JWT sessions */

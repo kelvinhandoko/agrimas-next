@@ -3,6 +3,7 @@ import {
   type GetAllGroupAccountQuery,
   type GroupAccountPayload,
 } from "@/server/groupAccount/group-account.model";
+import { AccountClassOrder } from "@/utils/accountClassHelper";
 import { type AccountClass, type Prisma } from "@prisma/client";
 
 export class GroupAccountRepository extends BaseRepository {
@@ -12,13 +13,15 @@ export class GroupAccountRepository extends BaseRepository {
     });
 
     const currentTotal = findData.length;
-    return String(currentTotal + 1);
+    return `${AccountClassOrder[accountClass]}.${currentTotal + 1}`;
   }
 
   async create(payload: GroupAccountPayload) {
     const code =
       payload.code ?? (await this._generateCode(payload.accountClass));
-    return await this._db.groupAccount.create({ data: { ...payload, code } });
+    return await this._db.groupAccount.create({
+      data: { ...payload, code, companyId: payload.companyId! },
+    });
   }
 
   async update(payload: GroupAccountPayload) {

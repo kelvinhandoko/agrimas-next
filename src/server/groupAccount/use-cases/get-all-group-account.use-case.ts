@@ -1,10 +1,13 @@
-import { type GetAllAccountQuery } from "@/server/account/account.model";
-import { AccountRepository } from "@/server/account/account.repository";
 import { db } from "@/server/db/prisma";
+import { type GetAllGroupAccountQuery } from "@/server/groupAccount/group-account.model";
+import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
+import { type Prisma } from "@prisma/client";
 
 export class GetAllGroupAccountUseCase {
-  async execute<S>(query: GetAllAccountQuery<S>) {
-    const accountRepo = new AccountRepository(db);
-    return await accountRepo.getAll(query);
+  async execute<S extends Prisma.GroupAccountInclude>(
+    query: GetAllGroupAccountQuery<S>,
+  ) {
+    const groupAccountRepo = new GroupAccountRepository(db);
+    return await groupAccountRepo.getAll(query);
   }
 }

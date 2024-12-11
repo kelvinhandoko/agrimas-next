@@ -1,15 +1,12 @@
 import UpdateButton from "@/components/testButton";
 import { auth, signOut } from "@/server/services/authentication.service";
-import { api, HydrateClient } from "@/trpc/server";
+import { HydrateClient } from "@/trpc/server";
 
 export default async function Home() {
-  const data = await api.account.getAll({});
-
   const session = await auth();
-
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+      <main className="flex min-h-screen flex-col items-center justify-center">
         <form
           action={async () => {
             "use server";
@@ -19,7 +16,7 @@ export default async function Home() {
           <button type="submit">Sign Out</button>
         </form>
         <UpdateButton newCompany={"1"} />
-        <p>{session?.user.username}</p>
+        <p>{session?.user.companyId}</p>
       </main>
     </HydrateClient>
   );

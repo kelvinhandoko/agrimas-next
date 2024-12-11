@@ -12,7 +12,7 @@ export const groupAccountPayloadSchema = z.object({
     invalid_type_error: "kelas akun tidak valid",
   }),
   code: z.string().optional(),
-  companyId: z.string({ required_error: "perusahaan tidak boleh kosong" }),
+  companyId: z.string().optional(),
   id: z.string().optional(),
 });
 

@@ -10,7 +10,7 @@
  */
 
 import { CompanyRepository } from "@/server/company/company.repository";
-import { GetCompanyByUsernameUseCase } from "@/server/company/use-cases";
+import { GetCompanyByIdUseCase } from "@/server/company/use-cases";
 
 import { db } from "@/server/db/prisma";
 import { auth } from "@/server/services/authentication.service";
@@ -139,7 +139,7 @@ export const companyProcedure = protectedProcedure.use(
       throw new TRPCError({ code: "FORBIDDEN" });
     }
     const companyRepo = new CompanyRepository(opts.ctx.db);
-    const getCompanyUseCase = new GetCompanyByUsernameUseCase(companyRepo);
+    const getCompanyUseCase = new GetCompanyByIdUseCase(companyRepo);
 
     const findCompany = await getCompanyUseCase.execute(
       opts.ctx.session.user.companyId,
