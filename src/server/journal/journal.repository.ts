@@ -1,7 +1,8 @@
-import { BaseRepository } from "@/server/common/repository/BaseRepository";
-import { type JournalPayload } from "@/server/journal/journal.model";
+import { type JournalPayload } from "@/model/journal.model";
 import { convertType } from "@/utils/journalTypeHelper";
 import { type JournalType } from "@prisma/client";
+
+import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class JournalRepository extends BaseRepository {
   private async _generateRef(type: JournalType) {

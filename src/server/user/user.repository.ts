@@ -1,4 +1,4 @@
-import { type UserPayload } from "@/server/user/user.model";
+import { type UserPayload } from "@/model/user.model";
 import { type Prisma, type PrismaClient } from "@prisma/client";
 
 export class UserRepository {

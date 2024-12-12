@@ -2,10 +2,11 @@ import {
   type AccountPayload,
   type GetAllAccountQuery,
   type GetDetailAccountQuery,
-} from "@/server/account/account.model";
-import { BaseRepository } from "@/server/common/repository/BaseRepository";
+} from "@/model/account.model";
 import { type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+
+import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class AccountRepository extends BaseRepository {
   private async _generateCode(groupAccountId: string) {

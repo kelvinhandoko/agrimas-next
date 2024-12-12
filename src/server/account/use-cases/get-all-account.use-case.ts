@@ -1,7 +1,8 @@
-import { type GetAllAccountQuery } from "@/server/account/account.model";
+import { type GetAllAccountQuery } from "@/model/account.model";
+import { type Prisma } from "@prisma/client";
+
 import { AccountRepository } from "@/server/account/account.repository";
 import { db } from "@/server/db/prisma";
-import { type Prisma } from "@prisma/client";
 
 export class GetAllAccountUseCase {
   async execute<S extends Prisma.AccountInclude>(query: GetAllAccountQuery<S>) {

@@ -1,10 +1,11 @@
-import { BaseRepository } from "@/server/common/repository/BaseRepository";
 import {
   type GetAllGroupAccountQuery,
   type GroupAccountPayload,
-} from "@/server/groupAccount/group-account.model";
+} from "@/model/group-account.model";
 import { AccountClassOrder } from "@/utils/accountClassHelper";
 import { type AccountClass, type Prisma } from "@prisma/client";
+
+import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class GroupAccountRepository extends BaseRepository {
   private async _generateCode(accountClass: AccountClass) {

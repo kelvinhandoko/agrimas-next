@@ -1,7 +1,8 @@
-import { db } from "@/server/db/prisma";
-import { type GetAllGroupAccountQuery } from "@/server/groupAccount/group-account.model";
-import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
+import { type GetAllGroupAccountQuery } from "@/model/group-account.model";
 import { type Prisma } from "@prisma/client";
+
+import { db } from "@/server/db/prisma";
+import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
 
 export class GetAllGroupAccountUseCase {
   async execute<S extends Prisma.GroupAccountInclude>(

@@ -1,5 +1,6 @@
+import { type JournalDetailPayload } from "@/model/journal-detail.model";
+
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
-import { type JournalDetailPayload } from "@/server/journalDetail/journal-detail.model";
 
 export class JournalDetailRepository extends BaseRepository {
   async create(payload: JournalDetailPayload) {

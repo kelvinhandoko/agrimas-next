@@ -1,13 +1,19 @@
 import { authConfig } from "@/config/auth.config";
-import { AuthenticationError } from "@/server/common/errors/auth";
-import { db } from "@/server/db/prisma";
-
-import { UserRepository } from "@/server/user/user.repository";
 import { verifyPassword } from "@/utils/passwordHandler";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-export const { auth, handlers, signOut, signIn, unstable_update } = NextAuth({
+import { AuthenticationError } from "@/server/common/errors/auth";
+import { db } from "@/server/db/prisma";
+import { UserRepository } from "@/server/user/user.repository";
+
+export const {
+  auth,
+  handlers,
+  signOut,
+  signIn,
+  unstable_update: update,
+} = NextAuth({
   ...authConfig,
   providers: [
     Credentials({

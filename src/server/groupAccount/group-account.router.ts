@@ -1,11 +1,12 @@
 import {
   getAllGroupAccountQuerySchema,
   groupAccountPayloadSchema,
-} from "@/server/groupAccount/group-account.model";
-import { CreateGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
-import { GetAllGroupAccountUseCase } from "@/server/groupAccount/use-cases/get-all-group-account.use-case";
+} from "@/model/group-account.model";
 import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
 import { type inferRouterOutputs } from "@trpc/server";
+
+import { CreateGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
+import { GetAllGroupAccountUseCase } from "@/server/groupAccount/use-cases/get-all-group-account.use-case";
 
 export const groupAccountRouter = createTRPCRouter({
   create: companyProcedure

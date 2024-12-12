@@ -1,5 +1,6 @@
+import { type SubAccountPayload } from "@/model/sub-account.model";
+
 import { db } from "@/server/db/prisma";
-import { type SubAccountPayload } from "@/server/subAccount/sub-account.model";
 import { SubAccountRepository } from "@/server/subAccount/sub-account.repository";
 
 export class CreateSubAccountUseCase {

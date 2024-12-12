@@ -1,4 +1,5 @@
-import { type GetDetailAccountQuery } from "@/server/account/account.model";
+import { type GetDetailAccountQuery } from "@/model/account.model";
+
 import { db } from "@/server/db/prisma";
 import { SubAccountRepository } from "@/server/subAccount/sub-account.repository";
 

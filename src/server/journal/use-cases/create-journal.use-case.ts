@@ -1,8 +1,9 @@
+import { type JournalPayload } from "@/model/journal.model";
+import { TRPCError } from "@trpc/server";
+
 import { type AccountRepository } from "@/server/account";
-import { type JournalPayload } from "@/server/journal/journal.model";
 import { type JournalRepository } from "@/server/journal/journal.repository";
 import { type JournalDetailRepository } from "@/server/journalDetail";
-import { TRPCError } from "@trpc/server";
 
 export class CreateJournalUseCase {
   constructor(

@@ -1,6 +1,7 @@
-import { type CompanyPayload } from "@/server/company/company.model";
-import { type CompanyRepository } from "@/server/company/company.repository";
+import { type CompanyPayload } from "@/model/company.model";
 import { TRPCError } from "@trpc/server";
+
+import { type CompanyRepository } from "@/server/company/company.repository";
 
 export class CreateCompanyUseCase {
   constructor(private _companyRepository: CompanyRepository) {}

@@ -1,12 +1,13 @@
 import {
   accountPayloadSchema,
   getAllAccountQuerySchema,
-} from "@/server/account/account.model";
+} from "@/model/account.model";
+import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
+
 import {
   CreateAccountUseCase,
   GetAllAccountUseCase,
 } from "@/server/account/use-cases";
-import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
 
 export const accountRouter = createTRPCRouter({
   create: companyProcedure

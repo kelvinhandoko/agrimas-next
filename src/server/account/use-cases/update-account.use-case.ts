@@ -1,9 +1,10 @@
-import { type AccountPayload } from "@/server/account/account.model";
+import { type AccountPayload } from "@/model/account.model";
+import { TRPCError } from "@trpc/server";
+
 import { AccountRepository } from "@/server/account/account.repository";
 import { db } from "@/server/db/prisma";
 import { ReportRepository } from "@/server/report/report.repository";
 import { TransactionService } from "@/server/services/transaction.service";
-import { TRPCError } from "@trpc/server";
 
 export class UpdateAccountUseCase {
   async execute(payload: AccountPayload) {

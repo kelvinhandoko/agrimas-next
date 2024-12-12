@@ -1,11 +1,12 @@
-import { BaseRepository } from "@/server/common/repository/BaseRepository";
 import {
   type GetAllSubAccountQuery,
   type GetDetailSubAccountQuery,
   type SubAccountPayload,
-} from "@/server/subAccount/sub-account.model";
+} from "@/model/sub-account.model";
 import { type Prisma } from "@prisma/client";
 import { nanoid } from "nanoid";
+
+import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class SubAccountRepository extends BaseRepository {
   private _generateCode() {

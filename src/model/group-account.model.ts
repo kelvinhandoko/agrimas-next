@@ -1,6 +1,7 @@
-import { basicQuery } from "@/server/common/models/basic";
 import { AccountClass, type Prisma } from "@prisma/client";
 import { z } from "zod";
+
+import { basicQuery } from "@/server/common/models/basic";
 
 type GroupAccountInclude<T> = {
   include?: Prisma.Subset<T, Prisma.GroupAccountInclude>;

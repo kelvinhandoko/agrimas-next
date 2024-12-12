@@ -1,4 +1,4 @@
-import { type CompanyPayload } from "@/server/company/company.model";
+import { type CompanyPayload } from "@/model/company.model";
 import { type Prisma, type PrismaClient } from "@prisma/client";
 
 export class CompanyRepository {

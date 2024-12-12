@@ -1,5 +1,6 @@
+import { type GroupAccountPayload } from "@/model/group-account.model";
+
 import { db } from "@/server/db/prisma";
-import { type GroupAccountPayload } from "@/server/groupAccount/group-account.model";
 import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
 
 export class UpdateGroupAccountUseCase {

@@ -1,4 +1,4 @@
-import { journalDetailPayloadSchema } from "@/server/journalDetail/journal-detail.model";
+import { journalDetailPayloadSchema } from "@/model/journal-detail.model";
 import { JournalType } from "@prisma/client";
 import { z } from "zod";
 

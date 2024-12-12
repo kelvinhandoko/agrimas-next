@@ -1,4 +1,4 @@
-import { type ReportPayload } from "@/server/report/report.model";
+import { type ReportPayload } from "@/model/report.model";
 import { type Prisma, type PrismaClient } from "@prisma/client";
 
 export class ReportRepository {

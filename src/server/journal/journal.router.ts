@@ -1,11 +1,12 @@
+import { journalPayloadSchema } from "@/model/journal.model";
+import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
+import { type inferRouterOutputs } from "@trpc/server";
+
 import { AccountRepository } from "@/server/account";
-import { journalPayloadSchema } from "@/server/journal/journal.model";
 import { JournalRepository } from "@/server/journal/journal.repository";
 import { CreateJournalUseCase } from "@/server/journal/use-cases/create-journal.use-case";
 import { JournalDetailRepository } from "@/server/journalDetail";
 import { TransactionService } from "@/server/services";
-import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
-import { type inferRouterOutputs } from "@trpc/server";
 
 export const journalRouter = createTRPCRouter({
   create: companyProcedure
