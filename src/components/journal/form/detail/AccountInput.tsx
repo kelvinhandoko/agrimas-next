@@ -1,21 +1,19 @@
 "use client";
 
 import { LIMIT } from "@/constant";
-import { type AccountPayload } from "@/model";
+import { type JournalPayload } from "@/model";
 import { api } from "@/trpc/react";
-import { convertAccountClass } from "@/utils/accountClassHelper";
-import { type AccountClass } from "@prisma/client";
 import { groupBy } from "lodash";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
-import { type UseFormReturn } from "react-hook-form";
+import { type Control, type FieldArrayWithId } from "react-hook-form";
 import { useInView } from "react-intersection-observer";
 
 import { cn } from "@/lib/utils";
 
 import { useDebounce } from "@/hooks/use-debounce";
 
-import GroupAccountForm from "@/components/groupAccount/Form/GroupAccountForm";
+import AccountForm from "@/components/account/form/AccountForm";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -44,29 +42,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-interface GroupAccountInputProps {
-  form: UseFormReturn<AccountPayload>;
+interface AccountInputProps {
+  index: number;
+  control: Control<JournalPayload>;
 }
 
-const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
+const AccountInput: FC<AccountInputProps> = ({ control, index }) => {
   // hooks
-  /**
-   * State untuk menyimpan query search kelompok akun.
-   * Digunakan untuk memfilter atau mencari melalui daftar kelompok akun.
-   */
-  const [search, setSearch] = useState("");
-
-  /**
-   * State untuk melacak apakah pencarian sedang aktif.
-   * Menunjukkan jika pengguna sedang melakukan pencarian.
-   */
   const [isActive, setIsActive] = useState(false);
-
-  /**
-   * State untuk mengatur visibilitas modal form.
-   * Menentukan apakah modal form sedang terbuka atau tertutup.
-   */
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const debounceSearch = useDebounce(search, 200);
 
@@ -74,12 +59,12 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
 
   //apis
   const {
-    data: groupAccountData,
+    data: accountData,
     hasNextPage,
     fetchNextPage,
     isLoading,
     isFetchingNextPage,
-  } = api.groupAccount.getAll.useInfiniteQuery(
+  } = api.account.getAll.useInfiniteQuery(
     {
       infiniteScroll: true,
       limit: LIMIT,
@@ -87,30 +72,30 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor },
   );
-  const groupAccounts =
-    groupAccountData?.pages.flatMap((page) => page.data) ?? [];
-  const groupedGroupAccounts = groupBy(
-    groupAccounts,
-    ({ accountClass }) => accountClass,
+  const accounts = accountData?.pages.flatMap((page) => page.data) ?? [];
+
+  const groupedAccount = groupBy(
+    accounts,
+    ({ groupAccount }) => groupAccount.name,
   );
+
   useEffect(() => {
     if (inView && hasNextPage) {
       void fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView]);
-
   return (
     <>
       <FormField
-        control={form.control}
-        name={"groupAccountId"}
+        control={control}
+        name={`details.${index}.accountId`}
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>kelompok akun</FormLabel>
             <Popover open={isActive} onOpenChange={setIsActive}>
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
+                    autoFocus
                     variant="outline"
                     role="combobox"
                     className={cn(
@@ -119,10 +104,9 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
                     )}
                   >
                     {field.value
-                      ? groupAccounts.find(
-                          (groupAccount) => groupAccount.id === field.value,
-                        )?.name
-                      : "pilih kelompok akun"}
+                      ? accounts.find((account) => account.id === field.value)
+                          ?.name
+                      : "pilih nama akun"}
                     <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </FormControl>
@@ -132,7 +116,7 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
                   <CommandInput
                     value={search}
                     onValueChange={setSearch}
-                    placeholder="cari kelompok akun..."
+                    placeholder="cari nama akun..."
                   />
                   <CommandList>
                     <CommandEmpty className="p-4">
@@ -141,35 +125,30 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
                         className="w-full"
                         variant="outline"
                       >
-                        tambah kategori : {search}
+                        tambah nama akun : {search}
                       </Button>
                     </CommandEmpty>
-                    {Object.entries(groupedGroupAccounts).map(
-                      ([accountClass, data]) => (
-                        <CommandGroup
-                          key={accountClass}
-                          heading={convertAccountClass(
-                            accountClass as AccountClass,
-                          )}
-                        >
-                          {data.map((groupAccount) => (
+                    {Object.entries(groupedAccount).map(
+                      ([groupAccount, data]) => (
+                        <CommandGroup key={groupAccount} heading={groupAccount}>
+                          {data.map((account) => (
                             <CommandItem
-                              value={groupAccount.name}
-                              key={groupAccount.id}
+                              value={account.name}
+                              key={account.id}
                               onSelect={() => {
-                                field.onChange(groupAccount.id);
+                                field.onChange(account.id);
                                 setIsActive(false);
                               }}
                             >
                               <CheckIcon
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  groupAccount.id === field.value
+                                  account.id === field.value
                                     ? "opacity-100"
                                     : "opacity-0",
                                 )}
                               />
-                              {groupAccount.name}
+                              {account.name}
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -187,9 +166,9 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>form kelompok akun</DialogTitle>
+            <DialogTitle>form akun</DialogTitle>
           </DialogHeader>
-          <GroupAccountForm
+          <AccountForm
             onClose={() => setIsFormOpen(false)}
             data={{ name: search }}
           />
@@ -199,4 +178,4 @@ const GroupAccountInput: FC<GroupAccountInputProps> = ({ form }) => {
   );
 };
 
-export default GroupAccountInput;
+export default AccountInput;

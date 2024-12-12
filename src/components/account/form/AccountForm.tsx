@@ -1,14 +1,13 @@
 "use client";
 
+import { type AccountPayload } from "@/model";
 import { api } from "@/trpc/react";
 import { Laporan, NormalPosition } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
 import { camelCase } from "lodash";
-import { type FC } from "react";
+import { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-import { type AccountPayload } from "@/server/account";
 
 import GroupAccountInput from "@/components/account/form/GroupAccountInput";
 import { Button } from "@/components/ui/button";
@@ -26,9 +25,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface AccountFormProps {
   onClose: () => void;
+  data?: Partial<AccountPayload>;
 }
 
-const AccountForm: FC<AccountFormProps> = ({ onClose }) => {
+const AccountForm: FC<AccountFormProps> = ({ onClose, data }) => {
+  // hooks
+  const utils = api.useUtils();
+
   //apis
   const { mutateAsync: createAccount } = api.account.create.useMutation();
 
@@ -50,8 +53,9 @@ const AccountForm: FC<AccountFormProps> = ({ onClose }) => {
       },
       {
         loading: "prosessing",
-        success: () => {
+        success: async () => {
           onClose();
+          await utils.account.getAll.invalidate();
           return "berhasil membuat akun baru";
         },
         error: (e) => {
@@ -62,9 +66,23 @@ const AccountForm: FC<AccountFormProps> = ({ onClose }) => {
       },
     );
   };
+
+  useEffect(() => {
+    if (data) {
+      form.reset(data);
+    }
+  }, [data]);
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          await form.handleSubmit(onSubmit)(e);
+        }}
+        className="space-y-8"
+      >
         <GroupAccountInput form={form} />
         <FormField
           control={form.control}

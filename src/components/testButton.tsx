@@ -1,8 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-
-import { update } from "@/server/services";
 
 import AccountForm from "@/components/account/form/AccountForm";
 import { Button } from "@/components/ui/button";
@@ -13,26 +12,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export default function UpdateButton({ newCompany }: { newCompany: string }) {
+export default function UpdateButton() {
   const [open, setOpen] = useState(false);
+  const { update } = useSession();
   return (
     <>
       <Button
         onClick={async () => {
-          await update({ user: { companyId: newCompany } });
+          await update({ companyId: "1" });
         }}
       >
-        Client Side Update
+        update company (klik ini dulu)
       </Button>
-      <Button onClick={() => setOpen(true)}>open</Button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>form kelompok akun</DialogTitle>
-          </DialogHeader>
-          <AccountForm onClose={() => setOpen(false)} />
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

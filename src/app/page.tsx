@@ -2,6 +2,8 @@ import { HydrateClient } from "@/trpc/server";
 
 import { signOut } from "@/server/services";
 
+import UpdateButton from "@/components/testButton";
+
 export default async function Home() {
   return (
     <HydrateClient>
@@ -14,6 +16,7 @@ export default async function Home() {
         >
           <button type="submit">Sign Out</button>
         </form>
+        <UpdateButton />
       </main>
     </HydrateClient>
   );

@@ -21,10 +21,11 @@ export const accountRouter = createTRPCRouter({
     }),
   getAll: companyProcedure
     .input(getAllAccountQuerySchema)
-    .mutation(async ({ input, ctx }) => {
+    .query(async ({ input, ctx }) => {
       const getAllAccountUseCase = new GetAllAccountUseCase();
       return getAllAccountUseCase.execute({
         ...input,
+        include: { groupAccount: true },
         companyId: ctx.session.user.companyId,
       });
     }),

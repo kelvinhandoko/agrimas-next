@@ -1,5 +1,21 @@
 "use client";
+
+import { LIMIT } from "@/constant";
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+
+import { cn } from "@/lib/utils";
+
 import { columnAlign } from "@/components/common/table/tableHelper";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -9,18 +25,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { LIMIT } from "@/constant";
-import { cn } from "@/lib/utils";
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-  type ColumnDef,
-} from "@tanstack/react-table";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -78,97 +82,99 @@ const DataTable = <TData, TValue>({
     },
   });
   return (
-    <div className={className}>
-      <Table>
-        <TableHeader className="table-header-group">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {withNumber && <TableHead className="w-10">no</TableHead>}
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className={cn(columnAlign(header.column.columnDef.meta))}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
+    <Card className={className}>
+      <CardContent>
+        <Table>
+          <TableHeader className="table-header-group">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {withNumber && <TableHead className="w-10">no</TableHead>}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={cn(columnAlign(header.column.columnDef.meta))}
                   >
-                    <Skeleton className="h-full w-full" />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </>
-          ) : (
-            <>
-              {table.getRowModel().rows.length ? (
-                <>
-                  {table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      onClick={row.getToggleExpandedHandler()}
-                      className={cn(
-                        row.getCanExpand()
-                          ? "cursor-pointer"
-                          : "cursor-default",
-                        row.getIsExpanded() ? "border-b-0" : "border-b",
-                        "odd:bg-secondary",
-                      )}
-                      data-state={row.getIsSelected() && "selected"}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
                     >
-                      {withNumber && (
-                        <TableCell className="text-balance text-center">
-                          {row.index + 1 + limit * (page - 1)}
-                        </TableCell>
-                      )}
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          className={cn(
-                            "text-balance",
-                            columnAlign(cell.column.columnDef.meta),
-                          )}
-                          key={cell.id}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </>
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={withNumber ? columns.length + 1 : columns.length}
-                    className="h-24 text-center"
-                  >
-                    belum ada data.
-                  </TableCell>
-                </TableRow>
-              )}
-            </>
-          )}
-        </TableBody>
-        {/* {footer ? <>{footer}</> : null} */}
-      </Table>
-    </div>
+                      <Skeleton className="h-full w-full" />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            ) : (
+              <>
+                {table.getRowModel().rows.length ? (
+                  <>
+                    {table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        onClick={row.getToggleExpandedHandler()}
+                        className={cn(
+                          row.getCanExpand()
+                            ? "cursor-pointer"
+                            : "cursor-default",
+                          row.getIsExpanded() ? "border-b-0" : "border-b",
+                          "odd:bg-secondary",
+                        )}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {withNumber && (
+                          <TableCell className="text-balance text-center">
+                            {row.index + 1 + limit * (page - 1)}
+                          </TableCell>
+                        )}
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            className={cn(
+                              "text-balance",
+                              columnAlign(cell.column.columnDef.meta),
+                            )}
+                            key={cell.id}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </>
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={withNumber ? columns.length + 1 : columns.length}
+                      className="h-24 text-center"
+                    >
+                      belum ada data.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
+            )}
+          </TableBody>
+          {/* {footer ? <>{footer}</> : null} */}
+        </Table>
+      </CardContent>
+    </Card>
   );
 };
 export default DataTable;

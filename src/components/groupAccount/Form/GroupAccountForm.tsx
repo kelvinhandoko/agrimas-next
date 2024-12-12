@@ -1,4 +1,15 @@
 "use client";
+
+import { type GroupAccountPayload, groupAccountPayloadSchema } from "@/model";
+import { api } from "@/trpc/react";
+import { convertAccountClass } from "@/utils/accountClassHelper";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AccountClass } from "@prisma/client";
+import { TRPCClientError } from "@trpc/client";
+import { type FC, useEffect } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,23 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  groupAccountPayloadSchema,
-  type GroupAccountPayload,
-} from "@/server/groupAccount";
-import { api } from "@/trpc/react";
-import { convertAccountClass } from "@/utils/accountClassHelper";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AccountClass } from "@prisma/client";
-import { TRPCClientError } from "@trpc/client";
-import { type FC } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "sonner";
+
 interface GroupAccountFormProps {
   onClose: () => void;
+  data?: Partial<GroupAccountPayload>;
 }
 
-const GroupAccountForm: FC<GroupAccountFormProps> = ({ onClose }) => {
+const GroupAccountForm: FC<GroupAccountFormProps> = ({ onClose, data }) => {
   // apis
   const { mutateAsync: createGroupAccount } =
     api.groupAccount.create.useMutation();
@@ -66,9 +67,22 @@ const GroupAccountForm: FC<GroupAccountFormProps> = ({ onClose }) => {
     );
   };
 
+  useEffect(() => {
+    if (data) {
+      form.reset(data);
+    }
+  }, [data]);
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          await form.handleSubmit(onSubmit)(e);
+        }}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="accountClass"
