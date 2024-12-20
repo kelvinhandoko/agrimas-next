@@ -14,7 +14,7 @@ import {
 
 export default function UpdateButton() {
   const [open, setOpen] = useState(false);
-  const { update } = useSession();
+  const { update, data } = useSession();
   return (
     <>
       <Button
@@ -23,6 +23,7 @@ export default function UpdateButton() {
         }}
       >
         update company (klik ini dulu)
+        {data?.user.companyId}
       </Button>
     </>
   );
