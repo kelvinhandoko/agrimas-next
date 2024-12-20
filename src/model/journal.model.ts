@@ -1,8 +1,8 @@
 import { journalDetailPayloadSchema } from "@/model/journal-detail.model";
-import { JournalType, Prisma } from "@prisma/client";
+import { JournalType, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
-import { basicQuery } from "@/server/common/models/basic";
+import { basicQuery, dateRangeSchema } from "@/server/common/models/basic";
 
 type JournalInclude<T> = {
   include?: Prisma.Subset<T, Prisma.JournalInclude>;
@@ -23,7 +23,11 @@ export type JournalPayload = z.infer<typeof journalPayloadSchema> & {
   companyId: string;
 };
 
-export const getAllJournalQuerySchema = basicQuery;
+export const getAllJournalQuerySchema = basicQuery.extend({
+  ...dateRangeSchema.shape,
+});
 
-export type GetAllJournalQuery<T> = z.infer<typeof getAllJournalQuerySchema> &
+export type GetAllJournalQuery<T extends Prisma.JournalInclude> = z.infer<
+  typeof getAllJournalQuerySchema
+> &
   JournalInclude<T>;

@@ -1,6 +1,11 @@
-import { GetAllJournalQuery, type JournalPayload } from "@/model/journal.model";
+import { TIMEZONE } from "@/constant";
+import {
+  type GetAllJournalQuery,
+  type JournalPayload,
+} from "@/model/journal.model";
 import { convertType } from "@/utils/journalTypeHelper";
-import { type JournalType, Prisma } from "@prisma/client";
+import { type JournalType, type Prisma } from "@prisma/client";
+import { DateTime } from "luxon";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
@@ -38,6 +43,8 @@ export class JournalRepository extends BaseRepository {
       search,
       companyId,
       include,
+      from,
+      to,
     } = query;
     const whereClause: Prisma.JournalWhereInput = {};
 
@@ -57,6 +64,7 @@ export class JournalRepository extends BaseRepository {
       take = limit + 1;
       skipClause = undefined;
     }
+
     if (search) {
       const splitSearch = search.split(" ");
       const formatedSearch = splitSearch.join(" & ");
@@ -65,6 +73,19 @@ export class JournalRepository extends BaseRepository {
           ref: { contains: search },
         },
       ];
+    }
+
+    if (from && to) {
+      const startDay = DateTime.fromISO(from, { zone: TIMEZONE })
+        .startOf("day")
+        .toJSDate();
+      const endDay = DateTime.fromISO(to, { zone: TIMEZONE })
+        .endOf("day")
+        .toJSDate();
+      whereClause.date = {
+        gte: startDay,
+        lte: endDay,
+      };
     }
 
     const totalPromise = this._db.journal.count({ where: whereClause });

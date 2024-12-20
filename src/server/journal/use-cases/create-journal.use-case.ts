@@ -5,13 +5,13 @@ import { type AccountRepository } from "@/server/account";
 import { type JournalRepository } from "@/server/journal/journal.repository";
 import { type JournalDetailRepository } from "@/server/journalDetail";
 
-export class CreateJournalUseCase {
-  constructor(
-    private readonly _journalRepo: JournalRepository,
-    private readonly _journalDetailRepo: JournalDetailRepository,
-    private readonly _accountRepo: AccountRepository,
-  ) {}
-  async execute(payload: JournalPayload) {
+export const createJournalUseCase =
+  (
+    journalRepo: JournalRepository,
+    journalDetailRepo: JournalDetailRepository,
+    accountRepo: AccountRepository,
+  ) =>
+  async (payload: JournalPayload) => {
     const { details, ...otherPayload } = payload;
     const creditTotal = details.reduce((acc, curr) => acc + curr.credit, 0);
     const debitTotal = details.reduce((acc, curr) => acc + curr.debit, 0);
@@ -22,10 +22,10 @@ export class CreateJournalUseCase {
         message: "debit dan kredit tidak balance",
       });
     }
-    const createdJournal = await this._journalRepo.create(otherPayload);
+    const createdJournal = await journalRepo.create(otherPayload);
     await Promise.all(
       details.map(async (detail) => {
-        const findAccount = await this._accountRepo.getDetail({
+        const findAccount = await accountRepo.getDetail({
           id: detail.accountId,
         });
         if (!findAccount) {
@@ -40,6 +40,5 @@ export class CreateJournalUseCase {
       ...detail,
       journalId: createdJournal.id,
     }));
-    await this._journalDetailRepo.createMany(detailsWithJournalId);
-  }
-}
+    await journalDetailRepo.createMany(detailsWithJournalId);
+  };

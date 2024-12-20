@@ -13,3 +13,5 @@ export const NUMERIC_PROPS: NumericFormatProps = {
   thousandSeparator: ".",
   decimalSeparator: ",",
 };
+
+export const TIMEZONE = "Asia/Jakarta";

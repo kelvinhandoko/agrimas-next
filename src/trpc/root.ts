@@ -3,6 +3,7 @@ import { createCallerFactory, createTRPCRouter } from "@/trpc/trpc";
 import { accountRouter } from "@/server/account";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
 import { journalRouter } from "@/server/journal";
+import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
 
 /**
  * This is the primary router for your server.
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   account: accountRouter,
   groupAccount: groupAccountRouter,
   journal: journalRouter,
+  journalDetail: journalDetailRouter,
 });
 
 // export type definition of API
