@@ -6,7 +6,7 @@ import { db } from "@/server/db/prisma";
 import { JournalRepository } from "@/server/journal/journal.repository";
 import { createJournalUseCase } from "@/server/journal/use-cases";
 import { JournalDetailRepository } from "@/server/journalDetail";
-import { TransactionService } from "@/server/services";
+import { TransactionService, auth } from "@/server/services";
 
 export const createJournalController = companyProcedure
   .input(journalPayloadSchema)
