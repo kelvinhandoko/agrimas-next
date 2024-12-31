@@ -38,3 +38,10 @@ export type GetDetailAccountQuery<T> = z.infer<
   typeof getDetailAccountQuerySchema
 > &
   AccountInclude<T>;
+
+export const updateBalancePayloadSchema = z.object({
+  id: z.string(),
+  balance: z.number().nonnegative(),
+});
+
+export type UpdateBalancePayload = z.infer<typeof updateBalancePayloadSchema>;

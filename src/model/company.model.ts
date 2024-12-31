@@ -5,4 +5,6 @@ export const companyPayloadSchema = z.object({
   address: z.string().optional(),
 });
 
-export type CompanyPayload = z.infer<typeof companyPayloadSchema>;
+export type CompanyPayload = z.infer<typeof companyPayloadSchema> & {
+  userId: string;
+};

@@ -13,15 +13,7 @@ export const createJournalUseCase =
   ) =>
   async (payload: JournalPayload) => {
     const { details, ...otherPayload } = payload;
-    const creditTotal = details.reduce((acc, curr) => acc + curr.credit, 0);
-    const debitTotal = details.reduce((acc, curr) => acc + curr.debit, 0);
-    const checkBalance = creditTotal === debitTotal;
-    if (!checkBalance) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "debit dan kredit tidak balance",
-      });
-    }
+
     const createdJournal = await journalRepo.create(otherPayload);
     await Promise.all(
       details.map(async (detail) => {
@@ -34,6 +26,21 @@ export const createJournalUseCase =
             message: "nama akun tidak ditemukan",
           });
         }
+        const updatedBalance =
+          findAccount.currentBalance +
+          (findAccount.posisi === "DEBIT"
+            ? detail.debit - detail.credit
+            : -detail.debit + detail.credit);
+        if (updatedBalance < 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `saldo ${findAccount.name} tidak cukup`,
+          });
+        }
+        await accountRepo.updateBalance({
+          id: findAccount.id,
+          balance: updatedBalance,
+        });
       }),
     );
     const detailsWithJournalId = details.map((detail) => ({
