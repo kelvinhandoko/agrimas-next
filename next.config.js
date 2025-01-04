@@ -7,6 +7,9 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   serverExternalPackages: ["@node-rs/argon2"],
+  images: {
+    domains: ["images.unsplash.com"], // Tambahkan domain di sini
+  },
 };
 
 export default config;

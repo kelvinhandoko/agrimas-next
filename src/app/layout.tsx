@@ -1,12 +1,17 @@
-import "@/styles/globals.css";
-
+import { paths } from "@/paths/paths";
+import { TRPCReactProvider } from "@/provider/TrpcProvider";
+import { Theme } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
+import { redirect } from "next/navigation";
+
+import "@/styles/globals.css";
+
+import { auth } from "@/server/services";
 
 import { Toaster } from "@/components/ui/sonner";
-import { TRPCReactProvider } from "@/provider/TrpcProvider";
-import { auth } from "@/server/services/authentication.service";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,16 +22,14 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await auth();
-
-  if (!session) {
-    redirect("/api/auth/signin");
-  }
-
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <SessionProvider>
+            <Theme>{children}</Theme>
+          </SessionProvider>
+        </TRPCReactProvider>
         <Toaster richColors />
       </body>
     </html>
