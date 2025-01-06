@@ -1,6 +1,6 @@
 "use client";
 
-import { authPayloadSchema } from "@/model/auth.model";
+import { type AuthPayload, authPayloadSchema } from "@/model/auth.model";
 import { paths } from "@/paths/paths";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,7 +16,9 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
+
+import PasswordInput from "@/components/common/input/PasswordInput";
 
 import { handleCredentialsSignIn } from "./authAction";
 
@@ -25,17 +27,17 @@ const SignInPage = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<AuthPayload>({
     resolver: zodResolver(authPayloadSchema),
   });
 
   const [credentialErr, setCredentialErr] = useState<string | null>(null);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit: SubmitHandler<AuthPayload> = async (data) => {
     const { username, password } = data;
     try {
       const result = await handleCredentialsSignIn({ username, password });
-      setCredentialErr(result?.message as string);
+      setCredentialErr(result?.message ?? "");
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -78,31 +80,21 @@ const SignInPage = () => {
               />
               {errors.username && (
                 <span className="mt-2 text-red-500">
-                  {errors.username.message as string}
+                  {errors.username.message!}
                 </span>
               )}{" "}
             </div>
 
             <div className="mb-2.5 grid">
-              <div className="flex items-baseline justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-[15px] font-medium leading-[35px] text-gray-600"
-                >
-                  Password
-                </label>
-              </div>
-              <input
-                id="password"
+              <PasswordInput
                 {...register("password")}
                 className="bg-blackA2 shadow-blackA6 selection:bg-blackA6 text-gray box-border inline-flex h-[35px] w-full appearance-none items-center justify-center rounded px-2.5 text-[15px] leading-none shadow-[0_0_0_1px] outline-none selection:text-white hover:shadow-[0_0_0_1px_black] focus:border-[#624DE3] focus:shadow-[0_0_0_2px_#624DE3]"
-                type="password"
               />
               {errors.password && (
                 <span className="mt-2 text-red-500">
-                  {errors.password.message as string}
+                  {errors.password.message!}
                 </span>
-              )}{" "}
+              )}
             </div>
 
             <Flex align={"end"} justify={"end"} className="mb-3 w-full">
