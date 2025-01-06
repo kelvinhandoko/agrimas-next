@@ -1,4 +1,5 @@
 import { authConfig } from "@/config/auth.config";
+import { paths } from "@/paths/paths";
 import { verifyPassword } from "@/utils/passwordHandler";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -44,4 +45,7 @@ export const {
       },
     }),
   ],
+  pages: {
+    signIn: paths.auth.signIn,
+  },
 });
