@@ -4,17 +4,21 @@ import {
 } from "@/model/account.model";
 import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
 
+import { AccountRepository } from "@/server/account/account.repository";
 import {
-  CreateAccountUseCase,
   GetAllAccountUseCase,
+  createAccountUseCase,
 } from "@/server/account/use-cases";
+import { ReportRepository } from "@/server/report/report.repository";
 
 export const accountRouter = createTRPCRouter({
   create: companyProcedure
     .input(accountPayloadSchema.omit({ companyId: true }))
     .mutation(async ({ input, ctx }) => {
-      const createAccountUseCase = new CreateAccountUseCase();
-      return createAccountUseCase.execute({
+      const accountRepo = new AccountRepository(ctx.db);
+      const reportRepo = new ReportRepository(ctx.db);
+      const createAccount = createAccountUseCase(accountRepo, reportRepo);
+      return createAccount({
         ...input,
         companyId: ctx.session.user.companyId,
       });
