@@ -2,6 +2,7 @@ import {
   type AccountPayload,
   type GetAllAccountQuery,
   type GetDetailAccountQuery,
+  type UpdateBalancePayload,
 } from "@/model/account.model";
 import { type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -16,6 +17,7 @@ export class AccountRepository extends BaseRepository {
         _count: { select: { account: true } },
       },
     });
+
     if (!findData) {
       throw new TRPCError({
         code: "NOT_FOUND",
@@ -37,6 +39,15 @@ export class AccountRepository extends BaseRepository {
     return await this._db.account.update({
       where: { id: payload.id },
       data: payload,
+    });
+  }
+
+  async updateBalance(payload: UpdateBalancePayload) {
+    await this._db.account.update({
+      where: { id: payload.id },
+      data: {
+        currentBalance: payload.balance,
+      },
     });
   }
 

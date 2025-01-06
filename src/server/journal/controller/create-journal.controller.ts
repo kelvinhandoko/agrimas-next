@@ -1,5 +1,6 @@
 import { journalPayloadSchema } from "@/model";
 import { companyProcedure } from "@/trpc/trpc";
+import { TRPCError } from "@trpc/server";
 
 import { AccountRepository } from "@/server/account";
 import { db } from "@/server/db/prisma";
@@ -16,6 +17,23 @@ export const createJournalController = companyProcedure
       const journalRepo = new JournalRepository(tx);
       const journalDetailRepo = new JournalDetailRepository(tx);
       const accountRepo = new AccountRepository(tx);
+
+      const creditTotal = input.details.reduce(
+        (acc, curr) => acc + curr.credit,
+        0,
+      );
+      const debitTotal = input.details.reduce(
+        (acc, curr) => acc + curr.debit,
+        0,
+      );
+      const checkBalance = creditTotal === debitTotal;
+      if (!checkBalance) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "debit dan kredit tidak balance",
+        });
+      }
+
       const createJournal = createJournalUseCase(
         journalRepo,
         journalDetailRepo,
