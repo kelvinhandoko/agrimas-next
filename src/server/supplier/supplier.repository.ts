@@ -16,7 +16,7 @@ export class SupplierRepository extends BaseRepository {
     });
   }
 
-  async update(payload: SupplierPayload) {
+  async update(payload: Required<SupplierPayload>) {
     return await this._db.supplier.update({
       where: { id: payload.id },
       data: payload,

@@ -1,3 +1,4 @@
+import { supplierRouter } from "@/server";
 import { createCallerFactory, createTRPCRouter } from "@/trpc/trpc";
 
 import { accountRouter } from "@/server/account";
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   journal: journalRouter,
   journalDetail: journalDetailRouter,
   company: companyRouter,
+  supplier: supplierRouter,
 });
 
 // export type definition of API
