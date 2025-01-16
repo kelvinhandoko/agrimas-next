@@ -8,15 +8,14 @@
  *
  * Use this file as a reference for creating API endpoints or extending server capabilities.
  */
+import { TRPCError, initTRPC } from "@trpc/server";
+import superjson from "superjson";
+import { ZodError } from "zod";
 
 import { CompanyRepository } from "@/server/company/company.repository";
 import { GetCompanyByIdUseCase } from "@/server/company/use-cases";
-
 import { db } from "@/server/db/prisma";
 import { auth } from "@/server/services/authentication.service";
-import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
-import { ZodError } from "zod";
 
 /**
  * Creates the tRPC context, providing access to:
