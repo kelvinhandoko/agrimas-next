@@ -14,6 +14,13 @@ export class CompanyRepository {
     return data;
   }
 
+  async getUserCompanies(userId: string) {
+    const data = await this._db.user_Company.findMany({
+      where: { userId },
+      include: { company: true },
+    });
+    return data;
+  }
   async create(payload: CompanyPayload) {
     return this._db.company.create({ data: payload });
   }

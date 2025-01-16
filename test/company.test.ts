@@ -4,7 +4,7 @@ import { createCaller } from "@/trpc/root";
 import { headers } from "next/headers";
 import { describe, expect, it } from "vitest";
 
-describe("tRPC router tests", async () => {
+describe("test company procedure", async () => {
   const header = await headers();
   const caller = createCaller({
     db: db,
@@ -18,7 +18,7 @@ describe("tRPC router tests", async () => {
     },
     headers: header,
   });
-  it("should return a greeting message", async () => {
+  it("", async () => {
     const result = await caller.supplier.create({
       alamat: "jalan raya",
       nama: "nama",
