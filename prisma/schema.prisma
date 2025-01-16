@@ -3,7 +3,7 @@
 
 generator client {
     provider        = "prisma-client-js"
-    previewFeatures = ["omitApi", "relationJoins"]
+    previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -29,6 +29,7 @@ model Company {
     Report_Account Report_Account[]
     SubAcount      SubAccount[]
     Journal        Journal[]
+    suppliers      Supplier[]
 }
 
 model User {
@@ -138,6 +139,16 @@ model JournalDetail {
     journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
     account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
     subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+}
+
+model Supplier {
+    id        String  @id @default(cuid())
+    nama      String
+    alamat    String?
+    companyId String
+    company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+    @@unique([nama, companyId])
 }
 
 enum JournalType {

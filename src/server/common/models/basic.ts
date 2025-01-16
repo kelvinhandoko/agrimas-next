@@ -1,6 +1,10 @@
 import { LIMIT } from "@/constant";
 import { z } from "zod";
 
+export type WithCompany = {
+  companyId: string;
+};
+
 export const orderEnum = z.enum(["asc", "desc"]).default("asc").optional();
 
 export const dateRangeSchema = z.object({
