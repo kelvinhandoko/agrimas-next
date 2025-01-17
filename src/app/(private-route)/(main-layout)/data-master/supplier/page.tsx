@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import React from "react";
 
 import SupplierPage from "@/components/dataMaster/dataMasterList/supplier/SupplierPage";

@@ -2,7 +2,6 @@
 
 import { type CompanyPayload, companyPayloadSchema } from "@/model";
 import { paths } from "@/paths/paths";
-import { auth } from "@/server";
 import { api } from "@/trpc/react";
 import { avatarFormatter } from "@/utils/formatter/AvatarFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +9,6 @@ import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { TRPCClientError } from "@trpc/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 

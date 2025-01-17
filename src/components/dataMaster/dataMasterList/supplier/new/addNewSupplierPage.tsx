@@ -1,12 +1,15 @@
 "use client";
 
-import { SupplierPayload, supplierPayloadSchema } from "@/model/supplier.model";
+import {
+  type SupplierPayload,
+  supplierPayloadSchema,
+} from "@/model/supplier.model";
 import { paths } from "@/paths/paths";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";

@@ -1,10 +1,8 @@
-import { PlusIcon, Trash2, Trash2Icon } from "lucide-react";
+import { Trash2, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,

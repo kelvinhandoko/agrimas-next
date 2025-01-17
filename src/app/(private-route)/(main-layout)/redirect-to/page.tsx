@@ -1,5 +1,5 @@
 import { paths } from "@/paths/paths";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/server/services";

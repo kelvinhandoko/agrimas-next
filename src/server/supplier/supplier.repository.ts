@@ -5,7 +5,6 @@ import {
   type SupplierPayload,
 } from "@/model/supplier.model";
 import { type Prisma } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 

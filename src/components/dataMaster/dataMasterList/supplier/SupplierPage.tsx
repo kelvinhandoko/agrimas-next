@@ -1,12 +1,9 @@
 import { paths } from "@/paths/paths";
 import { Box } from "@radix-ui/themes";
-import Link from "next/link";
 
 import BackButton from "@/components/BackButton";
-import { Button } from "@/components/ui/button";
 
-import { type Supplier, columns } from "./TableSupplier/Column";
-import { DataTable } from "./TableSupplier/data-table";
+import { type Supplier } from "./TableSupplier/Column";
 import { DataTableDemo } from "./TableSupplier/table2";
 
 async function getData(): Promise<Supplier[]> {

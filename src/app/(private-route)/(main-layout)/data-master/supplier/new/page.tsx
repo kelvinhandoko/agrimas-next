@@ -1,9 +1,6 @@
-import { paths } from "@/paths/paths";
-import { Box } from "@radix-ui/themes";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import React from "react";
 
-import BackButton from "@/components/BackButton";
 import AddNewSupplierPage from "@/components/dataMaster/dataMasterList/supplier/new/addNewSupplierPage";
 
 export const metadata: Metadata = {

@@ -1,14 +1,14 @@
 "use client";
 
-import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
+import { api } from "@/trpc/react";
+import { type AppRouter } from "@/trpc/root";
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
+import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 import SuperJSON from "superjson";
 
-import { api } from "@/trpc/react";
-import { type AppRouter } from "@/trpc/root";
-import { SessionProvider } from "next-auth/react";
 import { createQueryClient } from "../trpc/query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;

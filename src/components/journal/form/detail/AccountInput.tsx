@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 import { groupBy } from "lodash";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
-import { type Control, type FieldArrayWithId } from "react-hook-form";
+import { type Control } from "react-hook-form";
 import { useInView } from "react-intersection-observer";
 
 import { cn } from "@/lib/utils";
@@ -33,7 +33,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {

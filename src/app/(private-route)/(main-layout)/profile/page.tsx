@@ -1,6 +1,4 @@
-import { paths } from "@/paths/paths";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { type Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {

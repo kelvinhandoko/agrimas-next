@@ -1,11 +1,7 @@
 "use client";
 
 import { DATE_FORMAT, NUMERIC_PROPS } from "@/constant";
-import {
-  type AccountPayload,
-  type JournalPayload,
-  journalPayloadSchema,
-} from "@/model";
+import { type JournalPayload, journalPayloadSchema } from "@/model";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
