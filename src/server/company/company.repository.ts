@@ -22,6 +22,14 @@ export class CompanyRepository {
     return data;
   }
   async create(payload: CompanyPayload) {
-    return this._db.company.create({ data: payload });
+    const data = await this._db.company.create({
+      data: { name: payload.name, address: payload.address },
+    });
+
+    await this._db.user_Company.create({
+      data: { companyId: data.id, userId: payload.userId },
+    });
+
+    return data;
   }
 }

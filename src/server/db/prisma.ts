@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
-
 import { env } from "@/env";
+import { PrismaClient } from "@prisma/client";
 
 const createPrismaClient = () =>
   new PrismaClient({
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     errorFormat: "pretty",
+    transactionOptions: { maxWait: 5000, timeout: 100000 },
   });
 
 const globalForPrisma = globalThis as unknown as {

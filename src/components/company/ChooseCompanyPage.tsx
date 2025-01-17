@@ -1,14 +1,16 @@
 "use client";
 
-import { CompanyPayload, companyPayloadSchema } from "@/model";
+import { type CompanyPayload, companyPayloadSchema } from "@/model";
 import { paths } from "@/paths/paths";
 import { auth } from "@/server";
 import { api } from "@/trpc/react";
+import { avatarFormatter } from "@/utils/formatter/AvatarFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { TRPCClientError } from "@trpc/client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -36,7 +38,10 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 const ChooseCompanyPage = () => {
+  const utils = api.useUtils();
   const { mutateAsync: createCompany } = api.company.create.useMutation();
+
+  const { data: userCompanies } = api.company.getUserCompanies.useQuery();
 
   const form = useForm<CompanyPayload>({
     resolver: zodResolver(companyPayloadSchema),
@@ -44,7 +49,6 @@ const ChooseCompanyPage = () => {
   });
 
   const onSubmit: SubmitHandler<CompanyPayload> = (data) => {
-    console.log(data);
     toast.promise(
       async () => {
         return createCompany(data);
@@ -52,6 +56,7 @@ const ChooseCompanyPage = () => {
       {
         loading: "prosessing",
         success: async () => {
+          await utils.company.getUserCompanies.invalidate();
           return "berhasil membuat perusahaan baru";
         },
         error: (e) => {
@@ -134,19 +139,19 @@ const ChooseCompanyPage = () => {
         </Flex>
         <Separator className="my-4" />
         <Grid columns={{ initial: "1", sm: "2" }} gap={"4"}>
-          {Array.from({ length: 5 }).map((value, i) => (
+          {userCompanies?.map(({ company }, i) => (
             <Link href={paths.dataMaster.root} key={i}>
               <Card className="flex items-center justify-center overflow-hidden p-0">
                 <CardHeader className="pt-3">
                   <Avatar className="h-24 w-24">
                     <AvatarFallback className="text-3xl font-bold text-gray-500">
-                      PA
+                      {avatarFormatter(company.name)}
                     </AvatarFallback>
                   </Avatar>
                 </CardHeader>
                 <CardFooter className="flex w-full items-center justify-center bg-[#624DE3] py-2 text-white/80">
                   <Text size={"4"} weight={"medium"}>
-                    PT. ABC {i + 1}
+                    {company.name}
                   </Text>
                 </CardFooter>
               </Card>

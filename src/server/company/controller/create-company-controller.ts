@@ -2,7 +2,8 @@ import { defaultGroupAccountData } from "@/data/defaultAccountantData";
 import { companyPayloadSchema } from "@/model";
 import { ownerProcedure } from "@/trpc/trpc";
 
-import { AccountRepository, createAccountUseCase } from "@/server/account";
+import { AccountRepository } from "@/server/account";
+import { createAccountBatchUseCase } from "@/server/account/use-cases/create-account-batch.use-case";
 import { CompanyRepository } from "@/server/company/company.repository";
 import { CreateCompanyUseCase } from "@/server/company/use-cases";
 import { GroupAccountRepository } from "@/server/groupAccount";
@@ -28,7 +29,7 @@ export const createCompanyController = ownerProcedure
       });
 
       const createGroupAccount = createGroupAccountUseCase(groupAccountRepo);
-      const createAccount = createAccountUseCase(accountRepo, reportRepo);
+      const createAccount = createAccountBatchUseCase(accountRepo, reportRepo);
 
       // Use Promise.all to handle group account creation
       await Promise.all(
@@ -39,14 +40,14 @@ export const createCompanyController = ownerProcedure
             ...groupAccountRelated,
             companyId: companyData.id,
           });
-
-          for (const account of accounts) {
-            await createAccount({
-              ...account,
+          const accountsWithGroupAccount = accounts.map((acc) => {
+            return {
+              ...acc,
               groupAccountId: groupAccountData.id,
               companyId: companyData.id,
-            });
-          }
+            };
+          });
+          await createAccount(accountsWithGroupAccount);
         }),
       );
 

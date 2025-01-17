@@ -4,6 +4,7 @@ import {
 } from "@/model/group-account.model";
 import { AccountClassOrder } from "@/utils/accountClassHelper";
 import { type AccountClass, type Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
@@ -18,11 +19,18 @@ export class GroupAccountRepository extends BaseRepository {
   }
 
   async create(payload: GroupAccountPayload) {
-    const code =
-      payload.code ?? (await this._generateCode(payload.accountClass));
-    return await this._db.groupAccount.create({
-      data: { ...payload, code, companyId: payload.companyId! },
-    });
+    try {
+      const code =
+        payload.code ?? (await this._generateCode(payload.accountClass));
+      return await this._db.groupAccount.create({
+        data: { ...payload, code, companyId: payload.companyId! },
+      });
+    } catch (e) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "server error",
+      });
+    }
   }
 
   async update(payload: GroupAccountPayload) {

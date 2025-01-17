@@ -1,4 +1,5 @@
 import { type AccountPayload, type GroupAccountPayload } from "@/model";
+import { nanoid } from "nanoid";
 
 interface GroupAccountPayloadWithAccount extends GroupAccountPayload {
   accounts: AccountPayload[];
@@ -12,6 +13,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     code: "1.1",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "kas besar",
@@ -19,6 +21,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "kas kecil",
@@ -26,6 +29,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "persediaan barang jadi",
@@ -33,6 +37,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "asuransi dibayar dimuka",
@@ -40,6 +45,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "sewa dibayar dimuka",
@@ -47,6 +53,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "piutang usaha",
@@ -61,6 +68,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     code: "1.2",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "alat berat dan kenderaan",
@@ -68,6 +76,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "hak merek",
@@ -75,6 +84,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "ak.penyusutan kenderaan",
@@ -89,6 +99,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     code: "2.1",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "hutang usaha",
@@ -96,6 +107,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "PPh 21",
@@ -103,6 +115,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "PPh 23",
@@ -110,6 +123,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["NERACA"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "PPN",
@@ -124,6 +138,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     code: "2.2",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "hutang pinjaman",
@@ -138,6 +153,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     name: "modal",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "modal disetor lainnya",
@@ -152,6 +168,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     name: "pendapatan usaha",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "penjualan",
@@ -159,6 +176,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "pendapatan bonus",
@@ -173,6 +191,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     name: "pendapatan lainnya",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "pendapatan bunga bank",
@@ -180,6 +199,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "pendapatan lain-lain",
@@ -194,6 +214,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     code: "5.1",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya gaji dan tunjangan",
@@ -201,6 +222,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya asuransi",
@@ -208,6 +230,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya listrik + air + telepon",
@@ -215,6 +238,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya iklan dan promosi",
@@ -222,6 +246,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya makan & minum",
@@ -229,6 +254,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya peralatan kantor",
@@ -236,6 +262,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya penyusutan kenderaan",
@@ -250,6 +277,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
     name: "beban lainnya",
     accounts: [
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya amortisasi merek",
@@ -257,6 +285,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya serba serbi",
@@ -264,6 +293,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         report: ["LABA_RUGI"],
       },
       {
+        id: nanoid(),
         companyId: "",
         groupAccountId: "",
         name: "biaya administrasi bank",

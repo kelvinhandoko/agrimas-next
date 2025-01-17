@@ -1,5 +1,5 @@
 import { auth } from "@/server";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import React from "react";
 
 import ChooseCompanyPage from "@/components/company/ChooseCompanyPage";

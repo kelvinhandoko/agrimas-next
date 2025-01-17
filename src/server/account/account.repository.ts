@@ -25,13 +25,34 @@ export class AccountRepository extends BaseRepository {
       });
     }
     const currentTotal = findData._count.account;
-    return `${findData.code}.${currentTotal + 1}`;
+    return {
+      code: `${findData.code}.${currentTotal + 1}`,
+      currentTotal,
+      groupAccountCode: findData.code,
+    };
   }
 
   async create(payload: Omit<AccountPayload, "report">) {
-    const code = await this._generateCode(payload.groupAccountId);
+    const { code } = await this._generateCode(payload.groupAccountId);
     return await this._db.account.create({
       data: { ...payload, code },
+    });
+  }
+
+  async createBatch(payload: Array<AccountPayload>) {
+    const { currentTotal, groupAccountCode } = await this._generateCode(
+      payload[0]!.groupAccountId,
+    );
+    let updatedTotal = currentTotal + 1;
+    const createDataWithCode = payload.map(({ report, ...item }) => {
+      const code = `${groupAccountCode}.${updatedTotal}`;
+      updatedTotal++;
+      return { ...item, code };
+    });
+
+    // Create accounts with unique codes for each item
+    return await this._db.account.createMany({
+      data: createDataWithCode,
     });
   }
 
