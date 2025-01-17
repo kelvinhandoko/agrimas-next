@@ -7,7 +7,7 @@ type SupplierInclude<T> = {
   include?: Prisma.Subset<T, Prisma.SupplierInclude>;
 };
 export const supplierPayloadSchema = z.object({
-  nama: z.string({ required_error: "nama supplier wajib diisi" }),
+  nama: z.string().min(1, { message: "Nama supplier wajib diisi" }),
   alamat: z.string().nullable(),
   id: z.string().optional(),
 });

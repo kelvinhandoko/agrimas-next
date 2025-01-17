@@ -23,6 +23,7 @@ export const paths = {
       root: "/data-master/supplier",
       new: "/data-master/supplier/new",
       edit: (id: string) => `/data-master/supplier/${id}/edit`,
+      detail: (id: string) => `/data-master/supplier/${id}/detail`,
     },
     customer: {
       root: "/data-master/customer",
