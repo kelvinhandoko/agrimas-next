@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { type AppRouter, createCaller } from "@/trpc/root";
 import { createTRPCContext } from "@/trpc/trpc";
+import { type InputJsonValue } from "@prisma/client/runtime/library";
 import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { cache } from "react";
 import "server-only";
 
@@ -25,10 +26,16 @@ export const createContext = cache(async () => {
 
 const getQueryClient = cache(createQueryClient);
 const caller = createCaller(createContext, {
-  onError: ({ error }) => {
-    if (error.code === "UNAUTHORIZED") {
-      redirect("/api/auth/signin");
-    }
+  onError: async ({ error, path, input, ctx }) => {
+    const ipAddress = ctx?.headers.get("x-forwarded-for") ?? "";
+    await api.errorLog.create({
+      input: JSON.stringify(input) as InputJsonValue,
+      message: error.message,
+      path: path ?? "",
+      ipAddress,
+      stackTrace: JSON.stringify(error.stack),
+      statusCode: error.code as string,
+    });
   },
 });
 

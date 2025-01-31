@@ -9,4 +9,6 @@ export * from "./db";
 export * from "./report";
 export * from "./account";
 export * from "./services";
+export * from "./customer";
 export * from "./company";
+export * from "./errorLog";

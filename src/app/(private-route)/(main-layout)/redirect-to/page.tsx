@@ -1,5 +1,5 @@
 import { paths } from "@/paths/paths";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/server/services";
@@ -12,10 +12,5 @@ export const metadata: Metadata = {
 
 export default async function page() {
   const session = await auth();
-  if (session?.user.role === "ADMIN") {
-    redirect(paths.company.chooseCompany);
-  } else {
-    redirect(paths.Root);
-  }
-  return <div></div>;
+  redirect(paths.company.chooseCompany);
 }

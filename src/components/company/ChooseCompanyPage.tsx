@@ -9,7 +9,6 @@ import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { TRPCClientError } from "@trpc/client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
