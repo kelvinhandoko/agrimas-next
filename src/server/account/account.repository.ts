@@ -78,9 +78,7 @@ export class AccountRepository extends BaseRepository {
     });
   }
 
-  async getAll<S extends Prisma.AccountInclude | undefined>(
-    query: GetAllAccountQuery<S>,
-  ) {
+  async getAll<S extends Prisma.AccountInclude>(query: GetAllAccountQuery<S>) {
     const {
       infiniteScroll,
       limit,
@@ -128,7 +126,7 @@ export class AccountRepository extends BaseRepository {
       take: take,
       cursor: cursorClause,
       skip: skipClause,
-      include: include ?? (undefined as S),
+      include: include ?? (undefined as unknown as S),
     });
 
     const [total, data] = await Promise.all([totalPromise, dataPromise]);
