@@ -1,40 +1,38 @@
-"use client";
+import { paths } from "@/paths/paths";
+import { type SupplierRouterOutputs } from "@/server";
+import { Flex } from "@radix-ui/themes";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { Eye, PencilIcon } from "lucide-react";
+import Link from "next/link";
 
-import { type ColumnDef } from "@tanstack/react-table";
+import DeleteSupplierModal from "./deleteSupplierModal";
 
-import { Button } from "@/components/ui/button";
+const columnHelper =
+  createColumnHelper<SupplierRouterOutputs["getAll"]["data"][0]>();
 
-export type Supplier = {
-  id: string;
-  no: number;
-  name: string;
-  address: string;
-};
-
-export const columns: ColumnDef<Supplier>[] = [
-  {
-    accessorKey: "no",
-    header: "No",
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "address",
-    header: "Address",
-  },
+export const journalColumn = [
+  columnHelper.accessor("nama", {
+    header: () => <div>Nama</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("nama")}</div>,
+  }),
+  columnHelper.accessor("alamat", {
+    header: () => <div>Alamat</div>,
+    cell: (info) => info.getValue(),
+  }),
   {
     id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const { id } = row.original; // Access the 'id' of the current row data
-      return (
-        <div className="flex gap-2">
-          <Button>Edit</Button>
-          <Button>Delete</Button>
-        </div>
-      );
-    },
+    enableHiding: false,
+    header: () => <div className="text-center">Aksi</div>,
+    cell: ({ row }) => (
+      <Flex justify="center" gapX="3">
+        <Link href="#">
+          <Eye className="text-primary" />
+        </Link>
+        <Link href={paths.dataMaster.supplier.edit(row.original.id)}>
+          <PencilIcon className="text-warning" />
+        </Link>
+        <DeleteSupplierModal />
+      </Flex>
+    ),
   },
-];
+] as ColumnDef<SupplierRouterOutputs["getAll"]["data"][0]>[];

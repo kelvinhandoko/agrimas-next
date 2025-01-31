@@ -9,13 +9,17 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
 import { columnAlign } from "@/components/common/table/tableHelper";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -34,6 +38,9 @@ interface DataTableProps<TData, TValue> {
   withNumber?: boolean;
   canSelectRow?: boolean;
   isLoading?: boolean;
+  path?: string;
+  colFilterName?: string;
+  buttonAddName?: string;
 }
 
 const DataTable = <TData, TValue>({
@@ -44,6 +51,9 @@ const DataTable = <TData, TValue>({
   withNumber = false,
   canSelectRow = false,
   isLoading = false,
+  path,
+  colFilterName,
+  buttonAddName,
 }: DataTableProps<TData, TValue>) => {
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
@@ -84,6 +94,28 @@ const DataTable = <TData, TValue>({
   return (
     <Card className={className}>
       <CardContent>
+        <div className="flex items-center justify-between py-4">
+          <Input
+            placeholder="Search..."
+            value={
+              (table
+                .getColumn(colFilterName ?? "")
+                ?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table
+                .getColumn(colFilterName ?? "")
+                ?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <Link href={path ? path : ""}>
+            <Button>
+              <PlusIcon />
+              {buttonAddName}
+            </Button>
+          </Link>
+        </div>
         <Table>
           <TableHeader className="table-header-group">
             {table.getHeaderGroups().map((headerGroup) => (

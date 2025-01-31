@@ -8,9 +8,11 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
+import { Text } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -27,31 +29,39 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const AddNewSupplierPage = () => {
-  const router = useRouter();
+const EditSupplierPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<SupplierPayload>({
-    resolver: zodResolver(supplierPayloadSchema),
-    defaultValues: { nama: "", alamat: "" },
+
+  const { data: detailSupplier } = api.supplier.getDetail.useQuery({
+    id: id,
   });
 
-  const { mutateAsync: createSupplier } = api.supplier.create.useMutation();
+  const form = useForm<SupplierPayload>({
+    resolver: zodResolver(supplierPayloadSchema),
+    defaultValues: {
+      nama: detailSupplier?.nama ?? "",
+      alamat: detailSupplier?.alamat ?? "",
+    },
+  });
+
+  const { mutateAsync: updateSupplier } = api.supplier.update.useMutation();
 
   const onSubmit: SubmitHandler<SupplierPayload> = async (data) => {
     setIsLoading(true);
     try {
       toast.promise(
         async () => {
-          return createSupplier(data);
+          console.log(data);
+
+          return updateSupplier(data);
         },
         {
           loading: "Memproses...",
           success: async () => {
             await utils.supplier.getAll.invalidate();
             setIsLoading(false);
-            form.reset();
-            return "Berhasil tambah supplier";
+            return "Berhasil update supplier";
           },
           error: (error) => {
             setIsLoading(false);
@@ -68,6 +78,17 @@ const AddNewSupplierPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (detailSupplier) {
+      form.reset({
+        nama: detailSupplier.nama ?? "",
+        alamat: detailSupplier.alamat ?? "",
+      });
+    }
+  }, [detailSupplier, form]);
+  if (!detailSupplier) {
+    return <Box>loading...</Box>;
+  }
   return (
     <Box>
       <Box className="mb-8">
@@ -118,7 +139,7 @@ const AddNewSupplierPage = () => {
               </Link>
               <Button type="submit" disabled={isLoading}>
                 <Spinner loading={isLoading} />
-                Tambah
+                Update
               </Button>
             </Flex>
           </form>
@@ -128,4 +149,4 @@ const AddNewSupplierPage = () => {
   );
 };
 
-export default AddNewSupplierPage;
+export default EditSupplierPage;
