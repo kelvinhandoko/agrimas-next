@@ -10,11 +10,6 @@ const config = {
   images: {
     domains: ["images.unsplash.com"], // Tambahkan domain di sini
   },
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
-  },
 };
 
 export default config;

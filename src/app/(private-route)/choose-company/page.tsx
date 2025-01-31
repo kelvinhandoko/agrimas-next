@@ -1,6 +1,5 @@
-import { type Metadata } from "next";
-
-import ChooseCompanyPage from "@/components/company/ChooseCompanyPage";
+import { Metadata } from "next";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Agrimas - Choose Company",
@@ -10,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default async function page() {
-  return <ChooseCompanyPage />;
+  return <div>choose company</div>;
 }

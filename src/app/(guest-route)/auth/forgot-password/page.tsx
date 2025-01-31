@@ -1,4 +1,4 @@
-import { type Metadata } from "next";
+import { Metadata } from "next";
 import React from "react";
 
 import ForgotPassword from "@/components/auth/ForgotPassword";

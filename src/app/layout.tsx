@@ -1,12 +1,15 @@
+import { paths } from "@/paths/paths";
 import { TRPCReactProvider } from "@/provider/TrpcProvider";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
-import NextTopLoader from "nextjs-toploader";
+import { redirect } from "next/navigation";
 
 import "@/styles/globals.css";
+
+import { auth } from "@/server/services";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -24,13 +27,10 @@ export default async function RootLayout({
       <body>
         <TRPCReactProvider>
           <SessionProvider>
-            <Theme>
-              <NextTopLoader color="#624DE3" showSpinner={false} height={6} />
-              {children}
-            </Theme>
+            <Theme>{children}</Theme>
           </SessionProvider>
         </TRPCReactProvider>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors />
       </body>
     </html>
   );

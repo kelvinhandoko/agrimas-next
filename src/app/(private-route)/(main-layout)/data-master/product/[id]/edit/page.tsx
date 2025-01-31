@@ -1,6 +1,5 @@
-import { type Metadata } from "next";
-
-type Params = Promise<{ id: string }>;
+import { Metadata } from "next";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Agrimasi - Edit Product Page",
@@ -8,9 +7,8 @@ export const metadata: Metadata = {
     "Select a company to proceed based on your role. Streamline navigation and access specific company data with ease.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-const page = async ({ params }: { params: Params }) => {
-  const id = (await params).id;
-  return <div>Edit Product page {id}</div>;
+const page = ({ params }: { params: { id: string } }) => {
+  return <div>Edit Product page {params.id}</div>;
 };
 
 export default page;

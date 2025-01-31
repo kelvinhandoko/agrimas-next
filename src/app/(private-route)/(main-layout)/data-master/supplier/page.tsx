@@ -1,7 +1,5 @@
-import { type Metadata } from "next";
+import { Metadata } from "next";
 import React from "react";
-
-import SupplierPage from "@/components/dataMaster/dataMasterList/supplier/SupplierPage";
 
 export const metadata: Metadata = {
   title: "Agrimasi - Supplier Page",
@@ -10,7 +8,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <SupplierPage />;
+  return <div>Supplier page</div>;
 };
 
 export default page;

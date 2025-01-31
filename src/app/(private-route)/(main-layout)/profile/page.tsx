@@ -1,7 +1,7 @@
-import { type Metadata } from "next";
+import { paths } from "@/paths/paths";
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import React from "react";
-
-import ProfilePage from "@/components/profile/ProfilePage";
 
 export const metadata: Metadata = {
   title: "Agrimas - Profile Page",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <ProfilePage />;
+  return <div>profile page</div>;
 };
 
 export default page;
