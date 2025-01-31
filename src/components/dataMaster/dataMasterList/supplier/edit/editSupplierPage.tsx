@@ -8,10 +8,7 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
-import { Text } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -42,6 +39,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
     defaultValues: {
       nama: detailSupplier?.nama ?? "",
       alamat: detailSupplier?.alamat ?? "",
+      id,
     },
   });
 
@@ -52,8 +50,6 @@ const EditSupplierPage = ({ id }: { id: string }) => {
     try {
       toast.promise(
         async () => {
-          console.log(data);
-
           return updateSupplier(data);
         },
         {
@@ -83,6 +79,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
       form.reset({
         nama: detailSupplier.nama ?? "",
         alamat: detailSupplier.alamat ?? "",
+        id: detailSupplier.id,
       });
     }
   }, [detailSupplier, form]);

@@ -1,15 +1,11 @@
-import { paths } from "@/paths/paths";
 import { TRPCReactProvider } from "@/provider/TrpcProvider";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 import "@/styles/globals.css";
-
-import { auth } from "@/server/services";
 
 import { Toaster } from "@/components/ui/sonner";
 
