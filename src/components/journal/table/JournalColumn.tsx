@@ -1,8 +1,8 @@
 import { DATE_FORMAT } from "@/constant";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { DateTime } from "luxon";
 
-import { JournalRouterOutputs } from "@/server/journal";
+import { type JournalRouterOutputs } from "@/server/journal";
 
 const columnHelper =
   createColumnHelper<JournalRouterOutputs["getAll"]["data"][0]>();

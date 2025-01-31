@@ -1,7 +1,7 @@
 import { type Prisma } from "@prisma/client";
 import { z } from "zod";
 
-import { basicQuery, dateRangeSchema } from "@/server/common/models/basic";
+import { dateRangeSchema } from "@/server/common/models/basic";
 
 type JournalDetailInclude<T> = {
   include?: Prisma.Subset<T, Prisma.JournalDetailInclude>;

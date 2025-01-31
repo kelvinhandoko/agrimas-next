@@ -3,7 +3,7 @@
 
 generator client {
     provider        = "prisma-client-js"
-    previewFeatures = ["omitApi", "relationJoins"]
+    previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -29,6 +29,7 @@ model Company {
     Report_Account Report_Account[]
     SubAcount      SubAccount[]
     Journal        Journal[]
+    suppliers      Supplier[]
 }
 
 model User {
@@ -55,20 +56,23 @@ model User_Company {
 model GroupAccount {
     id           String       @id @default(cuid())
     name         String
-    code         String       @unique
+    code         String
     accountClass AccountClass
     companyId    String
     company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
     createdAt    DateTime     @default(now())
     updatedAt    DateTime     @updatedAt
     account      Account[]
+
+    @@unique([code, companyId])
 }
 
 model Account {
     id             String           @id @default(cuid())
     posisi         NormalPosition
-    code           String           @unique
+    code           String
     name           String
+    currentBalance Int              @default(0)
     groupAccountId String
     groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
     companyId      String
@@ -78,6 +82,8 @@ model Account {
     report         Report_Account[]
     subAccount     SubAccount[]
     journalDetail  JournalDetail[]
+
+    @@unique([code, companyId])
 }
 
 model SubAccount {
@@ -91,6 +97,8 @@ model SubAccount {
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
     journalDetail JournalDetail[]
+
+    @@unique([code, companyId])
 }
 
 model Report_Account {
@@ -131,6 +139,16 @@ model JournalDetail {
     journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
     account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
     subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+}
+
+model Supplier {
+    id        String  @id @default(cuid())
+    nama      String
+    alamat    String?
+    companyId String
+    company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+    @@unique([nama, companyId])
 }
 
 enum JournalType {

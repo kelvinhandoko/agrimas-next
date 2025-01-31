@@ -10,8 +10,8 @@ export class ReportRepository {
     });
   }
 
-  async createMany(payload: ReportPayload) {
-    return this._db.report_Account.create({
+  async createMany(payload: Array<ReportPayload>) {
+    return this._db.report_Account.createMany({
       data: payload,
     });
   }

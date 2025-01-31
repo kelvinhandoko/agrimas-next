@@ -1,0 +1,129 @@
+"use client";
+
+import { SupplierPayload, supplierPayloadSchema } from "@/model/supplier.model";
+import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import BackButton from "../BackButton";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+
+const ProfilePage = () => {
+  const { data } = useSession();
+  console.log(data);
+  const utils = api.useUtils();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const form = useForm<SupplierPayload>({
+    resolver: zodResolver(supplierPayloadSchema),
+    defaultValues: { nama: "", alamat: "" },
+  });
+
+  const { mutateAsync: createSupplier } = api.supplier.create.useMutation();
+
+  const onSubmit: SubmitHandler<SupplierPayload> = async (data) => {
+    setIsLoading(true);
+    try {
+      toast.promise(
+        async () => {
+          return createSupplier(data);
+        },
+        {
+          loading: "Memproses...",
+          success: async () => {
+            await utils.supplier.getAll.invalidate();
+            setIsLoading(false);
+            form.reset();
+            return "Berhasil update profile";
+          },
+          error: (error) => {
+            setIsLoading(false);
+            if (error instanceof Error) {
+              return error.message;
+            }
+            return "Terjadi kesalahan";
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Login error:", error);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Box>
+      <Box className="mb-8">
+        <BackButton path={paths.dataMaster.root} />
+      </Box>
+
+      <Box className="flex w-1/2 gap-3">
+        <Card className="flex w-1/2 items-center">
+          <Avatar className="h-[100px] w-[100px]">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </Card>
+        <Card className="w-full">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="nama"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="nama supplier" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="nama"
+                render={({ field }) => (
+                  <FormItem className="mt-4">
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Input placeholder="nama supplier" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Flex justify={"end"} className="mt-3 gap-x-3">
+                <Button type="submit" disabled={isLoading}>
+                  <Spinner loading={isLoading} />
+                  Update
+                </Button>
+              </Flex>
+            </form>
+          </Form>
+        </Card>
+      </Box>
+    </Box>
+  );
+};
+
+export default ProfilePage;

@@ -2,6 +2,7 @@ import {
   type AccountPayload,
   type GetAllAccountQuery,
   type GetDetailAccountQuery,
+  type UpdateBalancePayload,
 } from "@/model/account.model";
 import { type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -16,6 +17,7 @@ export class AccountRepository extends BaseRepository {
         _count: { select: { account: true } },
       },
     });
+
     if (!findData) {
       throw new TRPCError({
         code: "NOT_FOUND",
@@ -23,13 +25,34 @@ export class AccountRepository extends BaseRepository {
       });
     }
     const currentTotal = findData._count.account;
-    return `${findData.code}.${currentTotal + 1}`;
+    return {
+      code: `${findData.code}.${currentTotal + 1}`,
+      currentTotal,
+      groupAccountCode: findData.code,
+    };
   }
 
   async create(payload: Omit<AccountPayload, "report">) {
-    const code = await this._generateCode(payload.groupAccountId);
+    const { code } = await this._generateCode(payload.groupAccountId);
     return await this._db.account.create({
       data: { ...payload, code },
+    });
+  }
+
+  async createBatch(payload: Array<AccountPayload>) {
+    const { currentTotal, groupAccountCode } = await this._generateCode(
+      payload[0]!.groupAccountId,
+    );
+    let updatedTotal = currentTotal + 1;
+    const createDataWithCode = payload.map(({ report, ...item }) => {
+      const code = `${groupAccountCode}.${updatedTotal}`;
+      updatedTotal++;
+      return { ...item, code };
+    });
+
+    // Create accounts with unique codes for each item
+    return await this._db.account.createMany({
+      data: createDataWithCode,
     });
   }
 
@@ -40,15 +63,22 @@ export class AccountRepository extends BaseRepository {
     });
   }
 
+  async updateBalance(payload: UpdateBalancePayload) {
+    await this._db.account.update({
+      where: { id: payload.id },
+      data: {
+        currentBalance: payload.balance,
+      },
+    });
+  }
+
   async delete(id: string) {
     return await this._db.account.delete({
       where: { id },
     });
   }
 
-  async getAll<S extends Prisma.AccountInclude | undefined>(
-    query: GetAllAccountQuery<S>,
-  ) {
+  async getAll<S extends Prisma.AccountInclude>(query: GetAllAccountQuery<S>) {
     const {
       infiniteScroll,
       limit,
@@ -96,7 +126,7 @@ export class AccountRepository extends BaseRepository {
       take: take,
       cursor: cursorClause,
       skip: skipClause,
-      include: include ?? (undefined as S),
+      include: include ?? (undefined as unknown as S),
     });
 
     const [total, data] = await Promise.all([totalPromise, dataPromise]);

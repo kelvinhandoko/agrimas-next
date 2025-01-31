@@ -1,6 +1,8 @@
+import { supplierRouter } from "@/server";
 import { createCallerFactory, createTRPCRouter } from "@/trpc/trpc";
 
 import { accountRouter } from "@/server/account";
+import { companyRouter } from "@/server/company/company.router";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
 import { journalRouter } from "@/server/journal";
 import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
@@ -15,6 +17,8 @@ export const appRouter = createTRPCRouter({
   groupAccount: groupAccountRouter,
   journal: journalRouter,
   journalDetail: journalDetailRouter,
+  company: companyRouter,
+  supplier: supplierRouter,
 });
 
 // export type definition of API

@@ -5,15 +5,17 @@ import {
 import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
 import { type inferRouterOutputs } from "@trpc/server";
 
-import { CreateGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
+import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
+import { createGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
 import { GetAllGroupAccountUseCase } from "@/server/groupAccount/use-cases/get-all-group-account.use-case";
 
 export const groupAccountRouter = createTRPCRouter({
   create: companyProcedure
     .input(groupAccountPayloadSchema)
     .mutation(async ({ ctx, input }) => {
-      const createGroupAccountUseCase = new CreateGroupAccountUseCase();
-      return await createGroupAccountUseCase.execute({
+      const groupAccountRepo = new GroupAccountRepository(ctx.db);
+      const createGroupAccount = createGroupAccountUseCase(groupAccountRepo);
+      return await createGroupAccount({
         ...input,
         companyId: ctx.session.user.companyId,
       });
