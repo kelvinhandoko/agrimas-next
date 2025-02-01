@@ -8,6 +8,7 @@ import BackButton from "@/components/BackButton";
 import DataTable from "@/components/common/table/DataTable";
 
 import { journalColumn } from "./TableSupplier/Column";
+import { DataTableDemo } from "./TableSupplier/table2";
 
 const SupplierPage = () => {
   const { data, isLoading } = api.supplier.getAll.useQuery({});
@@ -18,7 +19,7 @@ const SupplierPage = () => {
       </Box>
       <DataTable
         columns={journalColumn}
-        data={data?.data ?? []}
+        data={data?.data || []}
         colFilterName="nama"
         path={paths.dataMaster.supplier.new}
         buttonAddName="Tambah Supplier"
@@ -27,5 +28,3 @@ const SupplierPage = () => {
     </Box>
   );
 };
-
-export default SupplierPage;
