@@ -5,12 +5,12 @@ import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Eye, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
-import DeleteSupplierModal from "./deleteSupplierModal";
+import DeleteCustomerModal from "./deleteCustomerModal";
 
 const columnHelper =
   createColumnHelper<SupplierRouterOutputs["getAll"]["data"][0]>();
 
-export const supplierlColumn = [
+export const customerlColumn = [
   columnHelper.accessor("nama", {
     header: () => <div>Nama</div>,
     cell: ({ row }) => <div className="lowercase">{row.getValue("nama")}</div>,
@@ -29,12 +29,12 @@ export const supplierlColumn = [
           <Eye className="text-[#624DE3]" />
         </Link>
         <Link
-          href={paths.dataMaster.supplier.edit(row.original.id)}
+          href={paths.dataMaster.customer.edit(row.original.id)}
           className="text-yellow-400"
         >
           <PencilIcon className="text-yellow-400" />
         </Link>
-        <DeleteSupplierModal id={row.original.id} name={row.original.nama} />
+        <DeleteCustomerModal id={row.original.id} name={row.original.nama} />
       </Flex>
     ),
   },

@@ -30,7 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const EditSupplierPage = ({ id }: { id: string }) => {
+const EditCustomerPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,7 +64,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
           success: async () => {
             await utils.supplier.getAll.invalidate();
             setIsLoading(false);
-            return "Berhasil update supplier";
+            return "Berhasil update customer";
           },
           error: (error) => {
             setIsLoading(false);
@@ -112,7 +112,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Nama</FormLabel>
                   <FormControl>
-                    <Input placeholder="nama supplier" {...field} />
+                    <Input placeholder="nama customer" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -126,7 +126,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
                   <FormLabel>Alamat</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="alamat supplier"
+                      placeholder="alamat customer"
                       rows={4}
                       {...field}
                       value={field.value ?? ""}
@@ -138,7 +138,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
             />
 
             <Flex justify={"end"} className="mt-3 gap-x-3">
-              <Link href={paths.dataMaster.supplier.root}>
+              <Link href={paths.dataMaster.customer.root}>
                 <Button variant={"destructiveOnline"}>Batal</Button>
               </Link>
               <Button type="submit" disabled={isLoading}>
@@ -153,4 +153,4 @@ const EditSupplierPage = ({ id }: { id: string }) => {
   );
 };
 
-export default EditSupplierPage;
+export default EditCustomerPage;

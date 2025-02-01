@@ -8,9 +8,9 @@ import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
-import { supplierlColumn } from "./TableSupplier/Column";
+import { customerlColumn } from "./Column";
 
-const SupplierPage = () => {
+const CustomerPage = () => {
   const { data, isLoading } = api.supplier.getAll.useQuery({});
   if (isLoading) {
     return <LoadingIndicator />;
@@ -21,14 +21,14 @@ const SupplierPage = () => {
         <BackButton path={paths.dataMaster.root} />
       </Box>
       <DataTable
-        columns={supplierlColumn}
+        columns={customerlColumn}
         data={data?.data || []}
         colFilterName="nama"
-        path={paths.dataMaster.supplier.new}
-        buttonAddName="Tambah Supplier"
+        path={paths.dataMaster.customer.new}
+        buttonAddName="Tambah Customer"
       />
     </Box>
   );
 };
 
-export default SupplierPage;
+export default CustomerPage;

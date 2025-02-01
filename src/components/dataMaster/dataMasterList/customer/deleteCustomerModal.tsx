@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export default function DeleteSupplierModal({
+export default function DeleteCustomerModal({
   id,
   name,
 }: {
