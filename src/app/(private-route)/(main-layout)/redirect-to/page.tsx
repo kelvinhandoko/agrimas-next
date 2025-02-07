@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function page() {
   const session = await auth();
-  if (session?.user.role === "ADMIN") {
+  if (session?.user.role === "OWNER") {
     redirect(paths.company.chooseCompany);
   } else {
     redirect(paths.Root);

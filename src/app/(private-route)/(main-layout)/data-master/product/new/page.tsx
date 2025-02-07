@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import React from "react";
 
+import AddNewProductPage from "@/components/dataMaster/dataMasterList/product/new/addNewProduct";
+
 export const metadata: Metadata = {
   title: "Agrimasi - Add Product Page",
   description:
@@ -8,7 +10,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <div>Add Product page</div>;
+  return <AddNewProductPage />;
 };
 
 export default page;

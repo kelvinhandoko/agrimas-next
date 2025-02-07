@@ -6,6 +6,8 @@ import { Eye, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
 import DeleteSupplierModal from "./deleteSupplierModal";
+import DetailCustomerModal from "./detailSupplierModal";
+import DetailSupplierModal from "./detailSupplierModal";
 
 const columnHelper =
   createColumnHelper<SupplierRouterOutputs["getAll"]["data"][0]>();
@@ -25,9 +27,11 @@ export const supplierlColumn = [
     header: () => <div className="text-center">Aksi</div>,
     cell: ({ row }) => (
       <Flex justify="center" gapX="3">
-        <Link href="#" className="text-[#624DE3]">
-          <Eye className="text-[#624DE3]" />
-        </Link>
+        <DetailSupplierModal
+          id={row.original.id}
+          name={row.original.nama}
+          alamat={row.original.alamat || ""}
+        />
         <Link
           href={paths.dataMaster.supplier.edit(row.original.id)}
           className="text-yellow-400"

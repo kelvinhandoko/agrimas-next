@@ -71,7 +71,7 @@ const AddNewCustomerPage = () => {
   return (
     <Box>
       <Box className="mb-8">
-        <BackButton path={paths.dataMaster.supplier.root} />
+        <BackButton path={paths.dataMaster.customer.root} />
       </Box>
       <Grid
         columns={{ initial: "1", md: "2" }}
