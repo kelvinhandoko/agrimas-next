@@ -30,6 +30,8 @@ model Company {
     SubAcount      SubAccount[]
     Journal        Journal[]
     suppliers      Supplier[]
+    customers      Customer[]
+    ErrorLog       ErrorLog[]
 }
 
 model User {
@@ -41,6 +43,7 @@ model User {
     role        Role           @default(USER)
     createdAt   DateTime       @default(now())
     updatedAt   DateTime       @updatedAt
+    ErrorLog    ErrorLog[]
 }
 
 model User_Company {
@@ -149,6 +152,31 @@ model Supplier {
     company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
     @@unique([nama, companyId])
+}
+
+model Customer {
+    id        String  @id @default(cuid())
+    nama      String
+    alamat    String?
+    companyId String
+    company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+    @@unique([nama, companyId])
+}
+
+model ErrorLog {
+    id         String   @id @default(cuid())
+    path       String
+    message    String
+    stackTrace Json?
+    statusCode String?
+    userId     String?
+    input      Json?
+    ipAddress  String?
+    createdAt  DateTime @default(now()) // Timestamp
+    company    Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+    user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+    companyId  String?
 }
 
 enum JournalType {

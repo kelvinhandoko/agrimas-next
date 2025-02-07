@@ -63,7 +63,7 @@ const AddNewCustomerPage = () => {
         },
       );
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("error:", error);
       setIsLoading(false);
     }
   };

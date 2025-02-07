@@ -8,10 +8,8 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
-import { Text } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -54,8 +52,6 @@ const EditSupplierPage = ({ id }: { id: string }) => {
     try {
       toast.promise(
         async () => {
-          console.log(data);
-
           return updateSupplier(data);
         },
         {
@@ -68,7 +64,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
           },
           error: (error) => {
             setIsLoading(false);
-            if (error instanceof Error) {
+            if (error instanceof TRPCClientError) {
               return error.message;
             }
             return "Terjadi kesalahan";

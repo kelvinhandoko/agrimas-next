@@ -41,6 +41,7 @@ interface DataTableProps<TData, TValue> {
   path?: string;
   colFilterName?: string;
   buttonAddName?: string;
+  titleTable?: string;
 }
 
 const DataTable = <TData, TValue>({
@@ -54,6 +55,7 @@ const DataTable = <TData, TValue>({
   path,
   colFilterName,
   buttonAddName,
+  titleTable,
 }: DataTableProps<TData, TValue>) => {
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
@@ -93,6 +95,9 @@ const DataTable = <TData, TValue>({
   });
   return (
     <Card className={className}>
+      <h2 className="mt-3 text-2xl font-bold tracking-tight">
+        {titleTable || "Data User"}
+      </h2>
       <CardContent>
         <div className="flex items-center justify-between py-4">
           <Input

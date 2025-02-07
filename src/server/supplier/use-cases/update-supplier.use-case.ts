@@ -16,6 +16,16 @@ export const updateSupplierUseCase =
         message: "supplier ini tidak ditemukan",
       });
     }
+    const isSupplierCreated = await supplierRepo.getUniqueData({
+      companyId: payload.companyId,
+      nama: payload.nama,
+    });
+    if (isSupplierCreated) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "supplier ini sudah dibuat sebelumnya.",
+      });
+    }
     return await supplierRepo.update({
       alamat,
       companyId,

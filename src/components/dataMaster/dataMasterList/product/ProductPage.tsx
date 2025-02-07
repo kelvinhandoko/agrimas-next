@@ -26,6 +26,7 @@ const ProductPage = () => {
         colFilterName="nama"
         path={paths.dataMaster.product.new}
         buttonAddName="Tambah Product"
+        titleTable="Data Product"
       />
     </Box>
   );

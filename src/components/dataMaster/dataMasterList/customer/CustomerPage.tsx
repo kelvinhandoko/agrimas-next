@@ -26,6 +26,7 @@ const CustomerPage = () => {
         colFilterName="nama"
         path={paths.dataMaster.customer.new}
         buttonAddName="Tambah Customer"
+        titleTable="Data Customer"
       />
     </Box>
   );

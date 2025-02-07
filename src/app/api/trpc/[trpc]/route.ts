@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { env } from "@/env";
 import { appRouter } from "@/trpc/root";
+import { api } from "@/trpc/server";
 import { createTRPCContext } from "@/trpc/trpc";
+import { type InputJsonValue } from "@prisma/client/runtime/library";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 
@@ -20,14 +24,21 @@ const handler = (req: NextRequest) =>
     req,
     router: appRouter,
     createContext: () => createContext(req),
-    onError:
-      env.NODE_ENV === "development"
-        ? ({ path, error }) => {
-            console.error(
-              `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
-            );
-          }
-        : undefined,
+    onError: async ({ error, path, input, ctx }) => {
+      env.NODE_ENV === "development" &&
+        console.error(
+          `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+        );
+      const ipAddress = ctx?.headers.get("x-forwarded-for") ?? "";
+      await api.errorLog.create({
+        input: input as InputJsonValue,
+        message: error.message,
+        path: path ?? "",
+        ipAddress,
+        stackTrace: error.stack,
+        statusCode: error.code as string,
+      });
+    },
   });
 
 export { handler as GET, handler as POST };

@@ -26,6 +26,7 @@ const SupplierPage = () => {
         colFilterName="nama"
         path={paths.dataMaster.supplier.new}
         buttonAddName="Tambah Supplier"
+        titleTable="Data Supplier"
       />
     </Box>
   );

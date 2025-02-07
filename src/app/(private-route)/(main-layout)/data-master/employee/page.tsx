@@ -1,6 +1,8 @@
 import { type Metadata } from "next";
 import React from "react";
 
+import EmployeePage from "@/components/dataMaster/dataMasterList/employee/EmployeePage";
+
 export const metadata: Metadata = {
   title: "Agrimas - Employee Page",
   description:
@@ -8,7 +10,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <div>employee page</div>;
+  return <EmployeePage />;
 };
 
 export default page;

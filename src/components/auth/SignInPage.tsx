@@ -1,6 +1,6 @@
 "use client";
 
-import { authPayloadSchema } from "@/model/auth.model";
+import { type AuthPayload, authPayloadSchema } from "@/model/auth.model";
 import { paths } from "@/paths/paths";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,17 +25,17 @@ const SignInPage = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<AuthPayload>({
     resolver: zodResolver(authPayloadSchema),
   });
 
   const [credentialErr, setCredentialErr] = useState<string | null>(null);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: AuthPayload) => {
     const { username, password } = data;
     try {
       const result = await handleCredentialsSignIn({ username, password });
-      setCredentialErr(result?.message as string);
+      setCredentialErr(result?.message ?? "");
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -78,7 +78,7 @@ const SignInPage = () => {
               />
               {errors.username && (
                 <span className="mt-2 text-red-500">
-                  {errors.username.message as string}
+                  {errors.username.message!}
                 </span>
               )}{" "}
             </div>
@@ -100,7 +100,7 @@ const SignInPage = () => {
               />
               {errors.password && (
                 <span className="mt-2 text-red-500">
-                  {errors.password.message as string}
+                  {errors.password.message!}
                 </span>
               )}{" "}
             </div>
