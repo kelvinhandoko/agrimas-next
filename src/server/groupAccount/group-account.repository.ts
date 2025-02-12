@@ -91,6 +91,7 @@ export class GroupAccountRepository extends BaseRepository {
     });
 
     const [total, data] = await Promise.all([totalPromise, dataPromise]);
+
     let nextCursor: typeof cursor | undefined = undefined;
     if (!takeAll && data.length > limit) {
       const nextItem = data.pop();

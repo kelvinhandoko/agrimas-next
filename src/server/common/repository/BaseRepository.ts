@@ -1,7 +1,5 @@
-import { type Prisma, type PrismaClient } from "@prisma/client";
+import { type DbTransactionClient, type db } from "@/server/db";
 
 export class BaseRepository {
-  constructor(
-    protected readonly _db: Prisma.TransactionClient | PrismaClient,
-  ) {}
+  constructor(protected readonly _db: DbTransactionClient | typeof db) {}
 }
