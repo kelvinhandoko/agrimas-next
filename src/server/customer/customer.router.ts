@@ -8,11 +8,11 @@ import {
   updateCustomerController,
 } from "@/server/customer/controller";
 
-export const supplierRouter = createTRPCRouter({
+export const customerRouter = createTRPCRouter({
   create: createCustomerController,
   update: updateCustomerController,
   getAll: getAllCustomerController,
   getDetail: getDetailCustomerController,
 });
 
-export type SupplierRouterOutputs = inferRouterOutputs<typeof supplierRouter>;
+export type CustomerRouterOutputs = inferRouterOutputs<typeof customerRouter>;
