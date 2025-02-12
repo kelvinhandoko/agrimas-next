@@ -12,7 +12,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export default function DeleteSupplierModal() {
+export default function DeleteSupplierModal({
+  id,
+  name,
+}: {
+  id: string;
+  name: string;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -26,7 +32,7 @@ export default function DeleteSupplierModal() {
             Hapus Data
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Apakah anda yakin ingin menghapus data ini?
+            Apakah anda yakin ingin menghapus data {name}?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

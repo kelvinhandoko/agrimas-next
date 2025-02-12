@@ -31,7 +31,8 @@ export const paths = {
     },
     employee: {
       root: "/data-master/employee",
-      new: "/data-master/employee/new",
+      newUser: "/data-master/employee/user/new",
+      newSales: "/data-master/employee/sales/new",
       edit: (id: string) => `/data-master/employee/${id}/edit`,
     },
   },

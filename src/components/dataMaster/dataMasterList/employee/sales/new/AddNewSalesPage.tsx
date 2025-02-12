@@ -1,21 +1,16 @@
 "use client";
 
-import {
-  type SupplierPayload,
-  supplierPayloadSchema,
-} from "@/model/supplier.model";
+import { SupplierPayload } from "@/model/supplier.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
-import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
-import LoadingIndicator from "@/components/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,73 +21,54 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-const EditSupplierPage = ({ id }: { id: string }) => {
+const AddNewSalesPage = () => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-
-  const { data: detailSupplier } = api.supplier.getDetail.useQuery({
-    id: id,
-  });
-
-  const form = useForm<SupplierPayload>({
-    resolver: zodResolver(supplierPayloadSchema),
+  const form = useForm<any>({
+    // resolver: zodResolver(supplierPayloadSchema),
     defaultValues: {
-      nama: detailSupplier?.nama ?? "",
-      alamat: detailSupplier?.alamat ?? "",
-      id,
+      nama: "",
+      no_hp: "",
+      alamat: "",
     },
   });
 
-  const { mutateAsync: updateSupplier } = api.supplier.update.useMutation();
-
-  const onSubmit: SubmitHandler<SupplierPayload> = async (data) => {
-    setIsLoading(true);
+  const onSubmit: SubmitHandler<any> = async (data) => {
     try {
-      toast.promise(
-        async () => {
-          return updateSupplier(data);
+      toast.promise(async () => {}, {
+        loading: "Memproses...",
+        success: async () => {
+          // await utils.supplier.getAll.invalidate();
+          setIsLoading(false);
+          form.reset();
+          return "Berhasil tambah user";
         },
-        {
-          loading: "Memproses...",
-          position: "top-right",
-          success: async () => {
-            await utils.supplier.getAll.invalidate();
-            setIsLoading(false);
-            return "Berhasil update supplier";
-          },
-          error: (error) => {
-            setIsLoading(false);
-            if (error instanceof TRPCClientError) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
+        error: (error) => {
+          setIsLoading(false);
+          if (error instanceof Error) {
+            return error.message;
+          }
+          return "Terjadi kesalahan";
         },
-      );
+      });
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("error:", error);
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (detailSupplier) {
-      form.reset({
-        nama: detailSupplier.nama ?? "",
-        alamat: detailSupplier.alamat ?? "",
-        id: detailSupplier.id,
-      });
-    }
-  }, [detailSupplier, form]);
-  if (!detailSupplier) {
-    return <LoadingIndicator />;
-  }
   return (
     <Box>
       <Box className="mb-8">
-        <BackButton path={paths.dataMaster.supplier.root} />
+        <BackButton path={paths.dataMaster.employee.root} />
       </Box>
       <Grid
         columns={{ initial: "1", md: "2" }}
@@ -105,10 +81,23 @@ const EditSupplierPage = ({ id }: { id: string }) => {
               control={form.control}
               name="nama"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mb-3">
                   <FormLabel>Nama</FormLabel>
                   <FormControl>
-                    <Input placeholder="nama supplier" {...field} />
+                    <Input placeholder="nama user" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="no_hp"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormLabel>No Hp</FormLabel>
+                  <FormControl>
+                    <Input placeholder="no hp user" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -122,7 +111,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
                   <FormLabel>Alamat</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="alamat supplier"
+                      placeholder="alamat user"
                       rows={4}
                       {...field}
                       value={field.value ?? ""}
@@ -134,12 +123,12 @@ const EditSupplierPage = ({ id }: { id: string }) => {
             />
 
             <Flex justify={"end"} className="mt-3 gap-x-3">
-              <Link href={paths.dataMaster.supplier.root}>
+              <Link href={paths.dataMaster.employee.root}>
                 <Button variant={"destructiveOnline"}>Batal</Button>
               </Link>
               <Button type="submit" disabled={isLoading}>
                 <Spinner loading={isLoading} />
-                Update
+                Tambah
               </Button>
             </Flex>
           </form>
@@ -149,4 +138,4 @@ const EditSupplierPage = ({ id }: { id: string }) => {
   );
 };
 
-export default EditSupplierPage;
+export default AddNewSalesPage;

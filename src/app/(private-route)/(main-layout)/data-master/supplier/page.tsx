@@ -1,4 +1,3 @@
-import { HydrateClient, api } from "@/trpc/server";
 import { type Metadata } from "next";
 import React from "react";
 
@@ -10,13 +9,8 @@ export const metadata: Metadata = {
     "Select a company to proceed based on your role. Streamline navigation and access specific company data with ease.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-const page = async () => {
-  await api.supplier.getAll.prefetch({});
-  return (
-    <HydrateClient>
-      <SupplierPage />
-    </HydrateClient>
-  );
+const page = () => {
+  return <SupplierPage />;
 };
 
 export default page;

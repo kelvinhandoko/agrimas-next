@@ -5,12 +5,13 @@ import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Eye, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
-import DeleteSupplierModal from "./deleteSupplierModal";
+import DeleteCustomerModal from "./deleteCustomerModal";
+import DetailCustomerModal from "./detailCustomerModal";
 
 const columnHelper =
   createColumnHelper<SupplierRouterOutputs["getAll"]["data"][0]>();
 
-export const journalColumn = [
+export const customerlColumn = [
   columnHelper.accessor("nama", {
     header: () => <div>Nama</div>,
     cell: ({ row }) => <div className="lowercase">{row.getValue("nama")}</div>,
@@ -25,13 +26,18 @@ export const journalColumn = [
     header: () => <div className="text-center">Aksi</div>,
     cell: ({ row }) => (
       <Flex justify="center" gapX="3">
-        <Link href="#">
-          <Eye className="text-primary" />
+        <DetailCustomerModal
+          id={row.original.id}
+          name={row.original.nama}
+          alamat={row?.original?.alamat ?? ""}
+        />
+        <Link
+          href={paths.dataMaster.customer.edit(row.original.id)}
+          className="text-yellow-400"
+        >
+          <PencilIcon className="text-yellow-400" />
         </Link>
-        <Link href={paths.dataMaster.supplier.edit(row.original.id)}>
-          <PencilIcon className="text-warning" />
-        </Link>
-        <DeleteSupplierModal />
+        <DeleteCustomerModal id={row.original.id} name={row.original.nama} />
       </Flex>
     ),
   },

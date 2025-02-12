@@ -4,6 +4,7 @@ import "@radix-ui/themes/styles.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
+import NextTopLoader from "nextjs-toploader";
 
 import "@/styles/globals.css";
 
@@ -23,7 +24,10 @@ export default async function RootLayout({
       <body>
         <TRPCReactProvider>
           <SessionProvider>
-            <Theme>{children}</Theme>
+            <Theme>
+              <NextTopLoader color="#624DE3" showSpinner={false} height={6} />
+              {children}
+            </Theme>
           </SessionProvider>
         </TRPCReactProvider>
         <Toaster richColors />
