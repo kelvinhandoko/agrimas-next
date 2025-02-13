@@ -1,7 +1,11 @@
-import { Role } from "@prisma/client";
+import { type Prisma, Role } from "@prisma/client";
 import { z } from "zod";
 
-import { basicQuery } from "@/server/common/models/basic";
+import { type WithCompany, basicQuery } from "@/server/common/models/basic";
+
+type UserInclude<T> = {
+  include?: Prisma.Subset<T, Prisma.SupplierInclude>;
+};
 
 export const userPayloadSchema = z.object({
   id: z.string().optional(),
@@ -12,9 +16,13 @@ export const userPayloadSchema = z.object({
 
 export type UserPayload = z.infer<typeof userPayloadSchema>;
 
+export type EmployeePayload = UserPayload & WithCompany;
+
 export const UserGetAllQuerySchema = basicQuery;
 
-export type GetAllUserQuery = z.infer<typeof UserGetAllQuerySchema>;
+export type GetAllUserQuery<T> = z.infer<typeof UserGetAllQuerySchema> &
+  WithCompany &
+  UserInclude<T>;
 
 export const chooseCompanyPayloadSchema = z.object({
   companyId: z.string(),

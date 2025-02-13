@@ -1,6 +1,6 @@
 import { auth } from "@/server";
 import { HydrateClient } from "@/trpc/server";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import DataMasterList from "@/components/dataMaster/dataMasterList/DataMasterList";
 

@@ -15,4 +15,8 @@ const globalForPrisma = globalThis as unknown as {
 
 export const db = globalForPrisma.prisma ?? createPrismaClient();
 
+export type DbTransactionClient = Parameters<
+  Parameters<(typeof db)["$transaction"]>[0]
+>[0];
+
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
