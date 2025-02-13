@@ -1,5 +1,5 @@
 import { paths } from "@/paths/paths";
-import { type SupplierRouterOutputs } from "@/server";
+import { type CustomerRouterOutputs } from "@/server";
 import { Flex } from "@radix-ui/themes";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Eye, PencilIcon } from "lucide-react";
@@ -9,7 +9,7 @@ import DeleteCustomerModal from "./deleteCustomerModal";
 import DetailCustomerModal from "./detailCustomerModal";
 
 const columnHelper =
-  createColumnHelper<SupplierRouterOutputs["getAll"]["data"][0]>();
+  createColumnHelper<CustomerRouterOutputs["getAll"]["data"][0]>();
 
 export const customerlColumn = [
   columnHelper.accessor("nama", {
@@ -41,4 +41,4 @@ export const customerlColumn = [
       </Flex>
     ),
   },
-] as ColumnDef<SupplierRouterOutputs["getAll"]["data"][0]>[];
+] as ColumnDef<CustomerRouterOutputs["getAll"]["data"][0]>[];

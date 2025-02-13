@@ -1,4 +1,4 @@
-import { errorLogRouter, supplierRouter } from "@/server";
+import { customerRouter, errorLogRouter, supplierRouter } from "@/server";
 import { createCallerFactory, createTRPCRouter } from "@/trpc/trpc";
 
 import { accountRouter } from "@/server/account";
@@ -19,6 +19,7 @@ export const appRouter = createTRPCRouter({
   journalDetail: journalDetailRouter,
   company: companyRouter,
   supplier: supplierRouter,
+  customer: customerRouter,
   errorLog: errorLogRouter,
 });
 

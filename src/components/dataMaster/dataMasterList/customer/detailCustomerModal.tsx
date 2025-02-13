@@ -55,15 +55,16 @@ export default function DetailCustomerModal({
             </span>
             <span className="mt-4 block">
               <Text>Alamat</Text>
-              <Text className="block text-base text-black">{alamat}</Text>
+              <Text className="block text-base text-black">
+                {alamat ? alamat : "-"}
+              </Text>
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button variant={"destructiveOnline"} onClick={() => setOpen(false)}>
-            Batal
+          <Button variant={"outline"} onClick={() => setOpen(false)}>
+            Tutup
           </Button>
-          <Button variant={"destructive"}>Hapus</Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

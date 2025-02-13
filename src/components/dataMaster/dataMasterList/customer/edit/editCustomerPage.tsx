@@ -1,17 +1,14 @@
 "use client";
 
 import {
-  type SupplierPayload,
-  supplierPayloadSchema,
-} from "@/model/supplier.model";
+  type CustomerPayload,
+  customerPayloadSchema,
+} from "@/model/customer.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
-import { Text } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -34,35 +31,38 @@ const EditCustomerPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data: detailSupplier } = api.supplier.getDetail.useQuery({
+  const { data: detailCustomer } = api.customer.getDetail.useQuery({
     id: id,
   });
 
-  const form = useForm<SupplierPayload>({
-    resolver: zodResolver(supplierPayloadSchema),
+  console.log("detail cust", detailCustomer);
+
+  const form = useForm<CustomerPayload>({
+    resolver: zodResolver(customerPayloadSchema),
     defaultValues: {
-      nama: detailSupplier?.nama ?? "",
-      alamat: detailSupplier?.alamat ?? "",
+      nama: detailCustomer?.nama ?? "",
+      alamat: detailCustomer?.alamat ?? "",
       id,
     },
   });
 
-  const { mutateAsync: updateSupplier } = api.supplier.update.useMutation();
+  const { mutateAsync: updateCustomer } = api.customer.update.useMutation();
 
-  const onSubmit: SubmitHandler<SupplierPayload> = async (data) => {
+  const onSubmit: SubmitHandler<CustomerPayload> = async (data) => {
     setIsLoading(true);
     try {
       toast.promise(
         async () => {
           console.log(data);
 
-          return updateSupplier(data);
+          return updateCustomer(data);
         },
         {
           loading: "Memproses...",
           position: "top-right",
           success: async () => {
-            await utils.supplier.getAll.invalidate();
+            await utils.customer.getAll.invalidate();
+            await utils.customer.getDetail.invalidate({ id });
             setIsLoading(false);
             return "Berhasil update customer";
           },
@@ -82,28 +82,28 @@ const EditCustomerPage = ({ id }: { id: string }) => {
   };
 
   useEffect(() => {
-    if (detailSupplier) {
+    if (detailCustomer) {
       form.reset({
-        nama: detailSupplier.nama ?? "",
-        alamat: detailSupplier.alamat ?? "",
-        id: detailSupplier.id,
+        nama: detailCustomer.nama ?? "",
+        alamat: detailCustomer.alamat ?? "",
+        id: detailCustomer.id,
       });
     }
-  }, [detailSupplier, form]);
-  if (!detailSupplier) {
+  }, [detailCustomer]);
+  if (!detailCustomer) {
     return <LoadingIndicator />;
   }
   return (
     <Box>
       <Box className="mb-8">
-        <BackButton path={paths.dataMaster.supplier.root} />
+        <BackButton path={paths.dataMaster.customer.root} />
       </Box>
       <Grid
         columns={{ initial: "1", md: "2" }}
         maxHeight={"100vh"}
         height={"100vh"}
       >
-        <Form {...form}>
+        <Form {...form} key={detailCustomer?.id}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
