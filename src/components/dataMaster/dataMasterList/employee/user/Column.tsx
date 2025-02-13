@@ -6,8 +6,9 @@ import Link from "next/link";
 
 import { type CustomerRouterOutputs } from "@/server/customer";
 
-import DeleteCustomerModal from "./deleteCustomerModal";
-import DetailCustomerModal from "./detailCustomerModal";
+import DeleteModal from "@/components/DeleteModal";
+
+import DetailCustomerModal from "../../customer/detailCustomerModal";
 
 const columnHelper =
   createColumnHelper<CustomerRouterOutputs["getAll"]["data"][0]>();
@@ -38,7 +39,7 @@ export const customerlColumn = [
         >
           <PencilIcon className="text-yellow-400" />
         </Link>
-        <DeleteCustomerModal id={row.original.id} name={row.original.nama} />
+        <DeleteModal id={row.original.id} name={row.original.nama} />
       </Flex>
     ),
   },
