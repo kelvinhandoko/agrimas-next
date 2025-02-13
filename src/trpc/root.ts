@@ -21,8 +21,8 @@ export const appRouter = createTRPCRouter({
   journalDetail: journalDetailRouter,
   company: companyRouter,
   supplier: supplierRouter,
-  errorLog: errorLogRouter,
   customer: customerRouter,
+  errorLog: errorLogRouter,
   user: userRouter,
 });
 

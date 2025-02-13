@@ -11,7 +11,7 @@ import DataTable from "@/components/common/table/DataTable";
 import { customerlColumn } from "./Column";
 
 const CustomerPage = () => {
-  const { data, isLoading } = api.supplier.getAll.useQuery({});
+  const { data, isLoading } = api.customer.getAll.useQuery({});
   if (isLoading) {
     return <LoadingIndicator />;
   }

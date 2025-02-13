@@ -6,7 +6,6 @@ import { Eye, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
 import DeleteSupplierModal from "./deleteSupplierModal";
-import DetailCustomerModal from "./detailSupplierModal";
 import DetailSupplierModal from "./detailSupplierModal";
 
 const columnHelper =

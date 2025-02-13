@@ -1,9 +1,10 @@
 "use client";
 
-import { SupplierPayload } from "@/model/supplier.model";
+import { type UserPayload, userPayloadSchema } from "@/model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Role } from "@prisma/client";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
 import { useState } from "react";
@@ -28,29 +29,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 
 const AddNewUserPage = () => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<any>({
-    // resolver: zodResolver(supplierPayloadSchema),
+    resolver: zodResolver(userPayloadSchema),
     defaultValues: {
-      userName: "",
-      nama: "",
-      no_hp: "",
+      username: "",
       password: "",
-      role_id: "",
-      alamat: "",
+      role: Role.USER,
     },
   });
 
-  const onSubmit: SubmitHandler<any> = async (data) => {
+  const { mutateAsync: createUser } = api.user.create.useMutation();
+
+  const onSubmit: SubmitHandler<UserPayload> = async (data) => {
+    setIsLoading(true);
     try {
-      toast.promise(async () => {}, {
+      toast.promise(async () => createUser(data), {
         loading: "Memproses...",
         success: async () => {
-          // await utils.supplier.getAll.invalidate();
+          // await utils.user.getAll.invalidate();
+
           setIsLoading(false);
           form.reset();
           return "Berhasil tambah user";
@@ -82,7 +83,7 @@ const AddNewUserPage = () => {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="userName"
+              name="username"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>User Name</FormLabel>
@@ -95,38 +96,16 @@ const AddNewUserPage = () => {
             />
             <FormField
               control={form.control}
-              name="nama"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Nama</FormLabel>
-                  <FormControl>
-                    <Input placeholder="nama user" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="no_hp"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>No Hp</FormLabel>
-                  <FormControl>
-                    <Input placeholder="no hp user" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="password user" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="password user"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,7 +113,7 @@ const AddNewUserPage = () => {
             />
             <FormField
               control={form.control}
-              name="role_id"
+              name="role"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>Role</FormLabel>
@@ -148,29 +127,13 @@ const AddNewUserPage = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="role 1">Owner</SelectItem>
-                      <SelectItem value="role 2">Admin</SelectItem>
-                      <SelectItem value="role 3">User</SelectItem>
+                      {Object.values(Role).map((role, index) => (
+                        <SelectItem key={role} value={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="alamat"
-              render={({ field }) => (
-                <FormItem className="mt-3">
-                  <FormLabel>Alamat</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="alamat user"
-                      rows={4}
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

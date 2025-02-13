@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  type SupplierPayload,
-  supplierPayloadSchema,
-} from "@/model/supplier.model";
+  type CustomerPayload,
+  customerPayloadSchema,
+} from "@/model/customer.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,24 +31,24 @@ const AddNewCustomerPage = () => {
   const router = useRouter();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<SupplierPayload>({
-    resolver: zodResolver(supplierPayloadSchema),
+  const form = useForm<CustomerPayload>({
+    resolver: zodResolver(customerPayloadSchema),
     defaultValues: { nama: "", alamat: "" },
   });
 
-  const { mutateAsync: createSupplier } = api.supplier.create.useMutation();
+  const { mutateAsync: createCustomer } = api.customer.create.useMutation();
 
-  const onSubmit: SubmitHandler<SupplierPayload> = async (data) => {
+  const onSubmit: SubmitHandler<CustomerPayload> = async (data) => {
     setIsLoading(true);
     try {
       toast.promise(
         async () => {
-          return createSupplier(data);
+          return createCustomer(data);
         },
         {
           loading: "Memproses...",
           success: async () => {
-            await utils.supplier.getAll.invalidate();
+            await utils.customer.getAll.invalidate();
             setIsLoading(false);
             form.reset();
             return "Berhasil tambah customer";
