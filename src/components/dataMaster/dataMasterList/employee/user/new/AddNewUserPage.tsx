@@ -8,7 +8,7 @@ import { Role } from "@prisma/client";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
@@ -33,7 +33,7 @@ import {
 const AddNewUserPage = () => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<any>({
+  const form = useForm<UserPayload>({
     resolver: zodResolver(userPayloadSchema),
     defaultValues: {
       username: "",

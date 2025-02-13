@@ -179,7 +179,7 @@ export const adminCompanyProcedure = companyProcedure.use(({ ctx, next }) => {
  */
 export const ownerCompanyProcedure = adminCompanyProcedure.use(
   ({ ctx, next }) => {
-    if (ctx.session?.user?.role !== "ADMIN") {
+    if (ctx.session?.user?.role !== "OWNER") {
       throw new TRPCError({ code: "FORBIDDEN" });
     }
 

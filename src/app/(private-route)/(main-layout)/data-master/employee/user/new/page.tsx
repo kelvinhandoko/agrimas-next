@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import AddNewUserPage from "@/components/dataMaster/dataMasterList/employee/user/new/AddNewUserPage";
 
