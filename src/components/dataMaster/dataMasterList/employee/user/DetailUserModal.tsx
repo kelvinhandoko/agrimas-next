@@ -14,14 +14,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
-export default function DetailCustomerModal({
+export default function DetailUserModal({
   id,
   name,
-  alamat,
+  role,
 }: {
   id: string;
   name: string;
-  alamat?: string;
+  role: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -54,10 +54,8 @@ export default function DetailCustomerModal({
               <Text className="block text-base text-black">{name}</Text>
             </span>
             <span className="mt-4 block">
-              <Text>Alamat</Text>
-              <Text className="block text-base text-black">
-                {alamat ? alamat : "-"}
-              </Text>
+              <Text>Role</Text>
+              <Text className="block text-base text-black">{role}</Text>
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>

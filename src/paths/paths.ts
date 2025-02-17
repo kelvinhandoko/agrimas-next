@@ -32,6 +32,7 @@ export const paths = {
     employee: {
       root: "/data-master/employee",
       newUser: "/data-master/employee/user/new",
+      editUser: (id: string) => `/data-master/employee/user/${id}/edit`,
       newSales: "/data-master/employee/sales/new",
       edit: (id: string) => `/data-master/employee/${id}/edit`,
     },

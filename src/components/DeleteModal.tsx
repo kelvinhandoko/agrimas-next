@@ -1,5 +1,5 @@
 import { Trash2, Trash2Icon } from "lucide-react";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 
 import {
   AlertDialog,
@@ -15,9 +15,11 @@ import { Button } from "@/components/ui/button";
 export default function DeleteModal({
   id,
   name,
+  handleDelete,
 }: {
   id: string;
   name: string;
+  handleDelete?: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -39,7 +41,9 @@ export default function DeleteModal({
           <Button variant={"destructiveOnline"} onClick={() => setOpen(false)}>
             Batal
           </Button>
-          <Button variant={"destructive"}>Hapus</Button>
+          <Button variant={"destructive"} onClick={handleDelete}>
+            Hapus
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
