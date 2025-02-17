@@ -13,7 +13,11 @@ import DetailUserModal from "./DetailUserModal";
 const columnHelper =
   createColumnHelper<UserRouterOutputs["getAll"]["data"][0]>();
 
-export const userlColumn = (handleDeleteUser: (id: string) => void) =>
+interface UserColumnProps {
+  handleDeleteUser: (id: string) => Promise<void>;
+}
+
+export const userColumn = ({ handleDeleteUser }: UserColumnProps) =>
   [
     columnHelper.accessor("username", {
       header: () => <div>Nama</div>,

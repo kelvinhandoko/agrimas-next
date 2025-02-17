@@ -4,7 +4,6 @@ import { z } from "zod";
 import { TransactionService } from "@/server/services";
 import { deleteUserUseCase } from "@/server/user/use-cases/delete-user.use-case";
 import { UserRepository } from "@/server/user/user.repository";
-import { deleteUserCompanyUseCase } from "@/server/userCompany/use-cases/delete-user-company.use-case";
 import { UserCompanyRepository } from "@/server/userCompany/user-company.repository";
 
 export const deleteUserController = adminCompanyProcedure
@@ -15,8 +14,9 @@ export const deleteUserController = adminCompanyProcedure
       const userRepo = new UserRepository(tx);
       const userCompanyRepo = new UserCompanyRepository(tx);
       const deleteUser = await deleteUserUseCase(userRepo)(input);
-      await deleteUserCompanyUseCase(userCompanyRepo)(
-        deleteUser.userCompany[0]?.id ?? "",
-      );
+      console.log(deleteUser);
+      // await deleteUserCompanyUseCase(userCompanyRepo)(
+      //   deleteUser.userCompany?.id ?? "",
+      // );
     });
   });

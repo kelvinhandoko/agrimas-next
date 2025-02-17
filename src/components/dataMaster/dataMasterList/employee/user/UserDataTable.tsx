@@ -6,8 +6,7 @@ import { toast } from "sonner";
 
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
-
-import { userlColumn } from "./Column";
+import { userColumn } from "@/components/dataMaster/dataMasterList/employee/user/Column";
 
 const UserDataTable = () => {
   const utils = api.useUtils();
@@ -35,8 +34,8 @@ const UserDataTable = () => {
   }
   return (
     <DataTable
-      columns={userlColumn(handleDeleteUser)}
-      data={data?.data || []}
+      columns={userColumn({ handleDeleteUser })}
+      data={data?.data ?? []}
       colFilterName="username"
       path={paths.dataMaster.employee.newUser}
       buttonAddName="Tambah User"

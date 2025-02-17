@@ -96,7 +96,7 @@ const DataTable = <TData, TValue>({
   return (
     <Card className={className}>
       <h2 className="mt-3 text-2xl font-bold tracking-tight">
-        {titleTable || "Data User"}
+        {titleTable ?? "Data User"}
       </h2>
       <CardContent>
         <div className="flex items-center justify-between py-4">

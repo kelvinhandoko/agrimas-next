@@ -1,4 +1,5 @@
 import { type EmployeePayload } from "@/model";
+import { hashPassword } from "@/utils/passwordHandler";
 import { TRPCError } from "@trpc/server";
 
 import { type UserRepository } from "@/server/user/user.repository";
@@ -18,7 +19,10 @@ export const createUserUseCase =
         message: "user ini sudah dibuat sebelumnya",
       });
     }
-    const createUser = await userRepo.create(others);
+    const createUser = await userRepo.create({
+      ...others,
+      password: await hashPassword(others.password),
+    });
     await userCompanyRepo.create({ companyId, userId: createUser.id });
     return createUser;
   };

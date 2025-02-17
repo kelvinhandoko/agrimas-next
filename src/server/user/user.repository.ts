@@ -12,7 +12,10 @@ export class UserRepository {
   }
 
   async findUserById(id: string) {
-    const data = await this._db.user.findUnique({ where: { id } });
+    const data = await this._db.user.findUnique({
+      where: { id },
+      include: { userCompany: true },
+    });
     return data;
   }
 
@@ -99,7 +102,6 @@ export class UserRepository {
   async delete(id: string) {
     return await this._db.user.delete({
       where: { id },
-      include: { userCompany: true },
     });
   }
 }

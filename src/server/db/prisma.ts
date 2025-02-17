@@ -27,7 +27,7 @@ const createPrismaClient = () =>
           Object.keys(Prisma.ModelName).map((model) => [model, true]),
         ),
         defaultConfig: {
-          field: "deletedAt",
+          field: "deleted",
           createValue: (deleted) => {
             if (deleted) return new Date();
             return null;
