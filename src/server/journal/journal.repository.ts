@@ -88,15 +88,15 @@ export class JournalRepository extends BaseRepository {
       };
     }
 
-    const totalPromise = this._db.journal.count({ where: whereClause });
-    const dataPromise = this._db.journal.findMany({
+    const total = await this._db.journal.count({ where: whereClause });
+    const data = await this._db.journal.findMany({
       where: whereClause,
       take: take,
       cursor: cursorClause,
       skip: skipClause,
       include: include ?? (undefined as unknown as T),
     });
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
+
     let nextCursor: typeof cursor | undefined = undefined;
     if (!takeAll && data.length > limit) {
       const nextItem = data.pop();

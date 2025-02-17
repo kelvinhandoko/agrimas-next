@@ -74,8 +74,8 @@ export class SubAccountRepository extends BaseRepository {
       ];
     }
 
-    const totalPromise = this._db.subAccount.count({ where: whereClause });
-    const dataPromise = this._db.subAccount.findMany({
+    const total = await this._db.subAccount.count({ where: whereClause });
+    const data = await this._db.subAccount.findMany({
       where: whereClause,
       take: take,
       cursor: cursorClause,
@@ -83,7 +83,6 @@ export class SubAccountRepository extends BaseRepository {
       include: include ?? (undefined as unknown as S),
     });
 
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
     let nextCursor: typeof cursor | undefined = undefined;
     if (!takeAll && data.length > limit) {
       const nextItem = data.pop();

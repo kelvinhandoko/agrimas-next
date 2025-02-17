@@ -73,16 +73,14 @@ export class UserRepository {
     //   ];
     // }
 
-    const totalPromise = this._db.user.count({ where: whereClause });
-    const dataPromise = this._db.user.findMany({
+    const total = await this._db.user.count({ where: whereClause });
+    const data = await this._db.user.findMany({
       where: whereClause,
       take: take,
       cursor: cursorClause,
       skip: skipClause,
       include: include ?? (undefined as unknown as T),
     });
-
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
 
     let nextCursor: typeof cursor | undefined = undefined;
     if (!takeAll && data.length > limit) {

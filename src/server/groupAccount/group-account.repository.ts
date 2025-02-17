@@ -43,66 +43,43 @@ export class GroupAccountRepository extends BaseRepository {
   async getAll<S extends Prisma.GroupAccountInclude>(
     query: GetAllGroupAccountQuery<S>,
   ) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
+    const { infiniteScroll, limit, cursor, search, companyId, include, page } =
+      query;
+
+    // Where Clause
+    const whereClause: Prisma.GroupAccountWhereInput = {
       companyId,
-      include,
-    } = query;
-    const whereClause: Prisma.GroupAccountWhereInput = {};
+    };
 
-    let cursorClause = undefined;
-
-    whereClause.companyId = companyId;
-
-    // state skip clause klo tidak infinite scroll
-    let skipClause: number | undefined = (page - 1) * limit;
-
-    let take = limit;
-
-    if (infiniteScroll) {
-      if (cursor) {
-        cursorClause = { id: cursor };
-      }
-      take = limit + 1;
-      skipClause = undefined;
-    }
     if (search) {
-      const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
-      whereClause.OR = [
-        {
-          code: { contains: search },
-        },
-      ];
+      whereClause.OR = [{ code: { contains: search } }];
     }
 
-    const totalPromise = this._db.groupAccount.count({ where: whereClause });
-    const dataPromise = this._db.groupAccount.findMany({
-      where: whereClause,
-      take: take,
-      cursor: cursorClause,
-      skip: skipClause,
-      include: include ?? (undefined as unknown as S),
-    });
-
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
-
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (!takeAll && data.length > limit) {
-      const nextItem = data.pop();
-      nextCursor = nextItem?.id;
+    if (cursor && infiniteScroll) {
+      const [data, meta] = await this._db.groupAccount.paginate().withCursor({
+        limit,
+        after: cursor || undefined,
+      });
+      return {
+        data,
+        meta,
+        nextCursor: meta.endCursor,
+      };
     }
+
+    const [data, meta] = await this._db.groupAccount
+      .paginate({
+        where: whereClause,
+        include,
+      })
+      .withPages({
+        limit,
+        page,
+      });
+
     return {
       data,
-      meta: {
-        totalData: total,
-      },
-      nextCursor,
+      meta,
     };
   }
 }

@@ -69,8 +69,8 @@ export class SupplierRepository extends BaseRepository {
       ];
     }
 
-    const totalPromise = this._db.supplier.count({ where: whereClause });
-    const dataPromise = this._db.supplier.findMany({
+    const total = await this._db.supplier.count({ where: whereClause });
+    const data = await this._db.supplier.findMany({
       where: whereClause,
       take: take,
       cursor: cursorClause,
@@ -78,7 +78,6 @@ export class SupplierRepository extends BaseRepository {
       include: include ?? (undefined as unknown as S),
     });
 
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
     let nextCursor: typeof cursor | undefined = undefined;
     if (!takeAll && data.length > limit) {
       const nextItem = data.pop();

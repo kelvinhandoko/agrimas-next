@@ -1,5 +1,7 @@
 import { env } from "@/env";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { pagination } from "prisma-extension-pagination";
+import { createSoftDeleteExtension } from "prisma-extension-soft-delete";
 
 const createPrismaClient = () =>
   new PrismaClient({
@@ -7,7 +9,32 @@ const createPrismaClient = () =>
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     errorFormat: "pretty",
     transactionOptions: { maxWait: 5000, timeout: 100000 },
-  });
+  })
+    .$extends(
+      pagination({
+        pages: {
+          limit: 10,
+          includePageCount: true,
+        },
+        cursor: {
+          limit: 10,
+        },
+      }),
+    )
+    .$extends(
+      createSoftDeleteExtension({
+        models: Object.fromEntries(
+          Object.keys(Prisma.ModelName).map((model) => [model, true]),
+        ),
+        defaultConfig: {
+          field: "deletedAt",
+          createValue: (deleted) => {
+            if (deleted) return new Date();
+            return null;
+          },
+        },
+      }),
+    );
 
 const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient> | undefined;
