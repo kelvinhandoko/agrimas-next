@@ -1,4 +1,7 @@
-import { type SalesPayload } from "@/model/sales.model";
+import {
+  type FindSalesByNameQuery,
+  type SalesPayload,
+} from "@/model/sales.model";
 
 import { BaseRepository } from "@/server/common";
 
@@ -16,6 +19,14 @@ export class SalesRepository extends BaseRepository {
 
   async findById(id: string) {
     return await this._db.sales.findUnique({ where: { id } });
+  }
+
+  async findByName(query: FindSalesByNameQuery) {
+    return await this._db.sales.findUnique({
+      where: {
+        name_companyId: { name: query.name, companyId: query.companyId },
+      },
+    });
   }
 
   async delete(id: string) {
