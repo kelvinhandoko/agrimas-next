@@ -7,6 +7,7 @@ import { customerRouter } from "@/server/customer";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
 import { journalRouter } from "@/server/journal";
 import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
+import { salesRouter } from "@/server/sales/sales.router";
 import { userRouter } from "@/server/user/user.router";
 
 /**
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   supplier: supplierRouter,
   customer: customerRouter,
   errorLog: errorLogRouter,
+  sales: salesRouter,
   user: userRouter,
 });
 

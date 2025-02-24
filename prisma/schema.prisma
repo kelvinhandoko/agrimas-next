@@ -2,222 +2,233 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["relationJoins"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
-    provider = "mysql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "mysql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
 // Necessary for Next auth
 model Company {
-    id             String           @id @default(cuid())
-    name           String           @unique
-    address        String?
-    createdAt      DateTime         @default(now())
-    updatedAt      DateTime         @updatedAt
-    UserCompany    User_Company[]
-    groupAccount   GroupAccount[]
-    account        Account[]
-    Report_Account Report_Account[]
-    SubAcount      SubAccount[]
-    Journal        Journal[]
-    suppliers      Supplier[]
-    customers      Customer[]
-    ErrorLog       ErrorLog[]
-    deleted        DateTime?
+  id             String           @id @default(cuid())
+  name           String           @unique
+  address        String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  UserCompany    User_Company[]
+  groupAccount   GroupAccount[]
+  account        Account[]
+  Report_Account Report_Account[]
+  SubAcount      SubAccount[]
+  Journal        Journal[]
+  suppliers      Supplier[]
+  customers      Customer[]
+  ErrorLog       ErrorLog[]
+  deleted        DateTime?
+  Sales          Sales[]
 }
 
 model User {
-    id          String         @id @default(cuid())
-    username    String
-    image       String?
-    password    String
-    userCompany User_Company[]
-    role        Role           @default(USER)
-    createdAt   DateTime       @default(now())
-    updatedAt   DateTime       @updatedAt
-    ErrorLog    ErrorLog[]
-    deleted     DateTime?
+  id          String         @id @default(cuid())
+  username    String
+  image       String?
+  password    String
+  userCompany User_Company[]
+  role        Role           @default(USER)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  ErrorLog    ErrorLog[]
+  deleted     DateTime?
 }
 
 model User_Company {
-    id        String    @id @default(cuid())
-    userId    String
-    companyId String
-    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deleted   DateTime?
+  id        String    @id @default(cuid())
+  userId    String
+  companyId String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deleted   DateTime?
 }
 
 model GroupAccount {
-    id           String       @id @default(cuid())
-    name         String
-    code         String
-    accountClass AccountClass
-    companyId    String
-    company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt    DateTime     @default(now())
-    updatedAt    DateTime     @updatedAt
-    account      Account[]
-    deleted      DateTime?
+  id           String       @id @default(cuid())
+  name         String
+  code         String
+  accountClass AccountClass
+  companyId    String
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  account      Account[]
+  deleted      DateTime?
 
-    @@unique([code, companyId])
+  @@unique([code, companyId])
 }
 
 model Account {
-    id             String           @id @default(cuid())
-    posisi         NormalPosition
-    code           String
-    name           String
-    currentBalance Int              @default(0)
-    groupAccountId String
-    groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
-    companyId      String
-    company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt      DateTime         @default(now())
-    updatedAt      DateTime         @updatedAt
-    report         Report_Account[]
-    subAccount     SubAccount[]
-    journalDetail  JournalDetail[]
-    deleted        DateTime?
+  id             String           @id @default(cuid())
+  posisi         NormalPosition
+  code           String
+  name           String
+  currentBalance Int              @default(0)
+  groupAccountId String
+  groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
+  companyId      String
+  company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  report         Report_Account[]
+  subAccount     SubAccount[]
+  journalDetail  JournalDetail[]
+  deleted        DateTime?
 
-    @@unique([code, companyId])
+  @@unique([code, companyId])
 }
 
 model SubAccount {
-    id            String          @id @default(cuid())
-    code          String
-    name          String
-    accountId     String
-    account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-    companyId     String
-    company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    journalDetail JournalDetail[]
-    deleted       DateTime?
+  id            String          @id @default(cuid())
+  code          String
+  name          String
+  accountId     String
+  account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  companyId     String
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  journalDetail JournalDetail[]
+  deleted       DateTime?
 
-    @@unique([code, companyId])
+  @@unique([code, companyId])
 }
 
 model Report_Account {
-    id        String    @id @default(cuid())
-    report    Laporan
-    account   Account   @relation(fields: [accountId], references: [id])
-    companyId String
-    company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    accountId String
-    deleted   DateTime?
+  id        String    @id @default(cuid())
+  report    Laporan
+  account   Account   @relation(fields: [accountId], references: [id])
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  accountId String
+  deleted   DateTime?
 
-    @@unique([companyId, report, accountId])
+  @@unique([companyId, report, accountId])
 }
 
 model Journal {
-    id            String          @id @default(cuid())
-    date          DateTime
-    ref           String
-    description   String?
-    type          JournalType
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    companyId     String
-    company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    deleted       DateTime?
-    JournalDetail JournalDetail[]
+  id            String          @id @default(cuid())
+  date          DateTime
+  ref           String
+  description   String?
+  type          JournalType
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  companyId     String
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted       DateTime?
+  JournalDetail JournalDetail[]
 }
 
 model JournalDetail {
-    id           String      @id @default(cuid())
-    debit        Int
-    credit       Int
-    journalId    String
-    accountId    String
-    subAccountId String?
-    createdAt    DateTime    @default(now())
-    updatedAt    DateTime    @updatedAt
-    journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
-    account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
-    subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
-    deleted      DateTime?
+  id           String      @id @default(cuid())
+  debit        Int
+  credit       Int
+  journalId    String
+  accountId    String
+  subAccountId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  deleted      DateTime?
 }
 
 model Supplier {
-    id        String    @id @default(cuid())
-    nama      String
-    alamat    String?
-    companyId String
-    company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    deleted   DateTime?
+  id        String    @id @default(cuid())
+  nama      String
+  alamat    String?
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted   DateTime?
 
-    @@unique([nama, companyId])
+  @@unique([nama, companyId])
 }
 
 model Customer {
-    id        String    @id @default(cuid())
-    nama      String
-    alamat    String?
-    companyId String
-    company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    deleted   DateTime?
+  id        String    @id @default(cuid())
+  nama      String
+  alamat    String?
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted   DateTime?
 
-    @@unique([nama, companyId])
+  @@unique([nama, companyId])
+}
+
+model Sales {
+  id        String    @id @default(cuid())
+  name      String
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted   DateTime?
+
+  @@unique([name, companyId])
 }
 
 model ErrorLog {
-    id         String    @id @default(cuid())
-    path       String
-    message    String
-    stackTrace Json?
-    statusCode String?
-    userId     String?
-    input      Json?
-    ipAddress  String?
-    createdAt  DateTime  @default(now()) // Timestamp
-    company    Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
-    user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-    companyId  String?
-    deleted    DateTime?
+  id         String    @id @default(cuid())
+  path       String
+  message    String
+  stackTrace Json?
+  statusCode String?
+  userId     String?
+  input      Json?
+  ipAddress  String?
+  createdAt  DateTime  @default(now()) // Timestamp
+  company    Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  companyId  String?
+  deleted    DateTime?
 }
 
 enum JournalType {
-    GENERAL
-    ADJUSTING
-    REVERSING
-    CLOSING
+  GENERAL
+  ADJUSTING
+  REVERSING
+  CLOSING
 }
 
 enum AccountClass {
-    ASSET
-    LIABILITY
-    EQUITY
-    REVENUE
-    EXPENSE
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
 }
 
 enum NormalPosition {
-    DEBIT
-    CREDIT
+  DEBIT
+  CREDIT
 }
 
 enum Laporan {
-    NERACA
-    PERUBAHAN_MODAL
-    LABA_RUGI
+  NERACA
+  PERUBAHAN_MODAL
+  LABA_RUGI
 }
 
 enum Role {
-    OWNER
-    ADMIN
-    USER
+  OWNER
+  ADMIN
+  USER
 }
