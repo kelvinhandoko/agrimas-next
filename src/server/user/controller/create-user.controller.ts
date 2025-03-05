@@ -7,6 +7,7 @@ import { UserRepository } from "@/server/user/user.repository";
 import { UserCompanyRepository } from "@/server/userCompany/user-company.repository";
 
 export const createUserController = ownerCompanyProcedure
+  .meta({ /* 👉 */ description: "This shows in the panel." })
   .input(userPayloadSchema)
   .mutation(async ({ ctx, input }) => {
     const transactionService = new TransactionService(ctx.db);

@@ -2,6 +2,7 @@
 
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -9,8 +10,12 @@ import DataTable from "@/components/common/table/DataTable";
 import { userColumn } from "@/components/dataMaster/dataMasterList/employee/user/Column";
 
 const UserDataTable = () => {
+  const searchparams = useSearchParams();
+  const search = searchparams.get("search") ?? "";
   const utils = api.useUtils();
-  const { data, isLoading } = api.user.getAll.useQuery({});
+  const { data, isLoading } = api.user.getAll.useQuery({
+    search,
+  });
 
   const { mutateAsync: deleteUser } = api.user.delete.useMutation({
     onSuccess: async () => {
@@ -33,13 +38,16 @@ const UserDataTable = () => {
     return <LoadingIndicator />;
   }
   return (
-    <DataTable
-      columns={userColumn({ handleDeleteUser })}
-      data={data?.data ?? []}
-      colFilterName="username"
-      path={paths.dataMaster.employee.newUser}
-      buttonAddName="Tambah User"
-    />
+    <>
+      <DataTable
+        columns={userColumn({ handleDeleteUser })}
+        data={data?.data ?? []}
+        searchAble
+        hideColumn={["role"]}
+        path={paths.dataMaster.employee.newUser}
+        buttonAddName="Tambah User"
+      />
+    </>
   );
 };
 

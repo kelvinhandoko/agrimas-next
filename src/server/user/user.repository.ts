@@ -66,15 +66,14 @@ export class UserRepository {
       skipClause = undefined;
     }
 
-    // if (search) {
-    //   const splitSearch = search.split(" ");
-    //   const formatedSearch = splitSearch.join(" & ");
-    //   whereClause.OR = [
-    //     {
-    //       ref: { contains: search },
-    //     },
-    //   ];
-    // }
+    if (search) {
+      const splitSearch = search.split(" ");
+      whereClause.OR = [
+        {
+          username: { contains: search },
+        },
+      ];
+    }
 
     const total = await this._db.user.count({ where: whereClause });
     const data = await this._db.user.findMany({

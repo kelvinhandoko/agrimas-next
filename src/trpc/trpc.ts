@@ -10,6 +10,7 @@
  */
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
+import { type TRPCPanelMeta } from "trpc-ui";
 import { ZodError } from "zod";
 
 import { CompanyRepository } from "@/server/company/company.repository";
@@ -41,19 +42,22 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * - Custom transformer (superjson)
  * - Error formatting for Zod validation errors
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+const t = initTRPC
+  .context<typeof createTRPCContext>()
+  .meta<TRPCPanelMeta>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * Creates a server-side caller for invoking tRPC procedures directly.

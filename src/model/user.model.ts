@@ -8,7 +8,7 @@ type UserInclude<T> = {
 };
 
 export const userPayloadSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().optional().describe("The name to say hello too."),
   username: z.string().trim().min(1, { message: "username wajib diisi" }),
   password: z.string().trim().min(1, { message: "password wajib diisi" }),
   role: z.nativeEnum(Role),

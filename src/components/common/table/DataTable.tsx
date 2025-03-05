@@ -16,10 +16,10 @@ import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
+import { SearchInput } from "@/components/common/input/SearchInput";
 import { columnAlign } from "@/components/common/table/tableHelper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -39,9 +39,10 @@ interface DataTableProps<TData, TValue> {
   canSelectRow?: boolean;
   isLoading?: boolean;
   path?: string;
-  colFilterName?: string;
   buttonAddName?: string;
   titleTable?: string;
+  searchAble?: boolean;
+  searchPlaceholder?: string;
 }
 
 const DataTable = <TData, TValue>({
@@ -53,7 +54,8 @@ const DataTable = <TData, TValue>({
   canSelectRow = false,
   isLoading = false,
   path,
-  colFilterName,
+  searchPlaceholder = "Search...",
+  searchAble = false,
   buttonAddName,
   titleTable,
 }: DataTableProps<TData, TValue>) => {
@@ -100,20 +102,7 @@ const DataTable = <TData, TValue>({
       </h2>
       <CardContent>
         <div className="flex items-center justify-between py-4">
-          <Input
-            placeholder="Search..."
-            value={
-              (table
-                .getColumn(colFilterName ?? "")
-                ?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table
-                .getColumn(colFilterName ?? "")
-                ?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+          {searchAble && <SearchInput placeholder={searchPlaceholder} />}
           <Link href={path ? path : ""}>
             <Button>
               <PlusIcon />

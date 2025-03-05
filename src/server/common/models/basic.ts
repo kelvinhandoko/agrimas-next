@@ -21,7 +21,6 @@ export const basicQuery = z.object({
   infiniteScroll: z.boolean().default(false),
   takeAll: z.boolean().default(false),
   cursor: z.string().optional(),
-  companyId: z.string().default(""),
 });
 
-export type BasicQuery = z.infer<typeof basicQuery>;
+export type BasicQuery = z.infer<typeof basicQuery> & WithCompany;

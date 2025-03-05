@@ -27,6 +27,7 @@ const createPrismaClient = () =>
           Object.keys(Prisma.ModelName).map((model) => [model, true]),
         ),
         defaultConfig: {
+          allowCompoundUniqueIndexWhere: true,
           field: "deleted",
           createValue: (deleted) => {
             if (deleted) return new Date();

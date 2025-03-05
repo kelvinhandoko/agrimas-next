@@ -22,8 +22,7 @@ const CustomerPage = () => {
       </Box>
       <DataTable
         columns={customerlColumn}
-        data={data?.data || []}
-        colFilterName="nama"
+        data={data?.data ?? []}
         path={paths.dataMaster.customer.new}
         buttonAddName="Tambah Customer"
         titleTable="Data Customer"

@@ -1,4 +1,4 @@
-import { type WithCompany } from "@/server";
+import { type WithCompany, basicQuery } from "@/server";
 import { z } from "zod";
 
 export const productPayloadSchema = z.object({
@@ -9,3 +9,8 @@ export const productPayloadSchema = z.object({
 });
 
 export type ProductPayload = z.infer<typeof productPayloadSchema> & WithCompany;
+
+export const getAllProductQuerySchema = basicQuery;
+
+export type GetAllProductQuery = z.infer<typeof getAllProductQuerySchema> &
+  WithCompany;

@@ -1,7 +1,7 @@
 import { paths } from "@/paths/paths";
 import { Flex } from "@radix-ui/themes";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Eye, PencilIcon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 
 import { type CustomerRouterOutputs } from "@/server/customer";

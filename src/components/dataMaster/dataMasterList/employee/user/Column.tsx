@@ -26,7 +26,8 @@ export const userColumn = ({ handleDeleteUser }: UserColumnProps) =>
       ),
     }),
     columnHelper.accessor("role", {
-      header: () => <div>Role</div>,
+      header: "role",
+      id: "role",
       cell: (info) => info.getValue(),
     }),
     {
