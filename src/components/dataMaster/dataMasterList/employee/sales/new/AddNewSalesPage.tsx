@@ -1,5 +1,6 @@
 "use client";
 
+import { SalesPayload, salesPayloadSchema } from "@/model/sales.model";
 import { SupplierPayload } from "@/model/supplier.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
@@ -21,36 +22,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 
 const AddNewSalesPage = () => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<any>({
-    // resolver: zodResolver(supplierPayloadSchema),
+  const form = useForm<SalesPayload>({
+    resolver: zodResolver(salesPayloadSchema),
     defaultValues: {
-      nama: "",
-      no_hp: "",
-      alamat: "",
+      name: "",
     },
   });
 
-  const onSubmit: SubmitHandler<any> = async (data) => {
+  const { mutateAsync: createSales } = api.sales.create.useMutation();
+  const onSubmit: SubmitHandler<SalesPayload> = async (data) => {
     try {
-      toast.promise(async () => {}, {
+      toast.promise(async () => createSales(data), {
         loading: "Memproses...",
         success: async () => {
-          // await utils.supplier.getAll.invalidate();
+          await utils.sales.findAll.invalidate();
           setIsLoading(false);
           form.reset();
-          return "Berhasil tambah user";
+          return "Berhasil tambah sales";
         },
         error: (error) => {
           setIsLoading(false);
@@ -79,43 +71,12 @@ const AddNewSalesPage = () => {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="nama"
+              name="name"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>Nama</FormLabel>
                   <FormControl>
-                    <Input placeholder="nama user" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="no_hp"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>No Hp</FormLabel>
-                  <FormControl>
-                    <Input placeholder="no hp user" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="alamat"
-              render={({ field }) => (
-                <FormItem className="mt-3">
-                  <FormLabel>Alamat</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="alamat user"
-                      rows={4}
-                      {...field}
-                      value={field.value ?? ""}
-                    />
+                    <Input placeholder="nama sales" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -11,6 +11,7 @@ export const paths = {
   },
   profile: {
     root: "/profile",
+    changePassword: "/profile/change-password",
   },
   dataMaster: {
     root: "/data-master",
@@ -34,11 +35,33 @@ export const paths = {
       newUser: "/data-master/employee/user/new",
       editUser: (id: string) => `/data-master/employee/user/${id}/edit`,
       newSales: "/data-master/employee/sales/new",
-      edit: (id: string) => `/data-master/employee/${id}/edit`,
+      editSales: (id: string) => `/data-master/employee/sales/${id}/edit`,
     },
   },
   sale: {
     root: "/sale",
+    saleOrder: {
+      root: "/sale/sale-order",
+      new: "/sale/sale-order/new",
+      detail: (id: string) => `/sale/sale-order/${id}/detail`,
+    },
+    saleShipping: {
+      root: "/sale/sale-shipping",
+      new: "/sale/sale-shipping/new",
+      detail: (id: string) => `/sale/sale-shipping/${id}/detail`,
+    },
+    saleReturn: {
+      root: "/sale/sale-return",
+      detail: (id: string) => `/sale/sale-return/${id}/detail`,
+    },
+    saleFaktur: {
+      root: "/sale/sale-faktur",
+      detail: (id: string) => `/sale/sale-faktur/${id}/detail`,
+    },
+    salePayment: {
+      root: "/sale/sale-payment",
+      detail: (id: string) => `/sale/sale-payment/${id}/detail`,
+    },
   },
   purchase: {
     root: "/purchase",

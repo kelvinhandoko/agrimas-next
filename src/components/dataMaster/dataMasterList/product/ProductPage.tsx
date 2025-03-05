@@ -3,15 +3,38 @@
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box } from "@radix-ui/themes";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
-import { customerlColumn } from "../customer/Column";
+import { productColumn } from "./Column";
 
 const ProductPage = () => {
-  const { data, isLoading } = api.supplier.getAll.useQuery({});
+  const utils = api.useUtils();
+  const searchparams = useSearchParams();
+  const search = searchparams.get("search") ?? "";
+  const { data, isLoading } = api.product.getAll.useQuery({ search });
+
+  const { mutateAsync: deleteSales } = api.user.delete.useMutation({
+    onSuccess: async () => {
+      toast.success("Berhasil hapus product");
+      await utils.user.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error("Gagal menghapus sales");
+    },
+  });
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await deleteSales(id);
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
   if (isLoading) {
     return <LoadingIndicator />;
   }
@@ -21,9 +44,9 @@ const ProductPage = () => {
         <BackButton path={paths.dataMaster.root} />
       </Box>
       <DataTable
-        columns={customerlColumn}
-        data={data?.data || []}
-        colFilterName="nama"
+        columns={productColumn({ handleDeleteProduct })}
+        data={data?.[0] || []}
+        searchAble
         path={paths.dataMaster.product.new}
         buttonAddName="Tambah Product"
         titleTable="Data Product"

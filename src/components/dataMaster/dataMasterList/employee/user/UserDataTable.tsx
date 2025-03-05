@@ -43,7 +43,7 @@ const UserDataTable = () => {
         columns={userColumn({ handleDeleteUser })}
         data={data?.data ?? []}
         searchAble
-        hideColumn={["role"]}
+        // hideColumn={["role"]}
         path={paths.dataMaster.employee.newUser}
         buttonAddName="Tambah User"
       />

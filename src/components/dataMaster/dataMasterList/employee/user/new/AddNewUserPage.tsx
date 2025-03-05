@@ -49,9 +49,9 @@ const AddNewUserPage = () => {
     try {
       toast.promise(async () => createUser(data), {
         loading: "Memproses...",
-        success: async () => {
-          // await utils.user.getAll.invalidate();
 
+        success: async () => {
+          await utils.user.getAll.invalidate();
           setIsLoading(false);
           form.reset();
           return "Berhasil tambah user";

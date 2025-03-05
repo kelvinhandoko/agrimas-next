@@ -75,12 +75,19 @@ const NavigationMobile = ({ menuItems }: NavigationMobileProps) => {
           <div className="mt-6 text-left">
             <nav className="mt-2">
               <div className="text-sm font-semibold">Account</div>
-              <ul>
+              <ul className="space-y-1">
                 <li onClick={handleMenuClick}>
                   <ListItem
                     title="Profile"
                     path={paths.profile.root}
                     isActive={activePath === paths.profile.root}
+                  />
+                </li>
+                <li onClick={handleMenuClick}>
+                  <ListItem
+                    title="Change Password"
+                    path={paths.profile.changePassword}
+                    isActive={activePath === paths.profile.changePassword}
                   />
                 </li>
               </ul>

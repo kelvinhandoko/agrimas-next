@@ -1,3 +1,4 @@
+import { fallbackName } from "@/utils/fallback-name";
 import { Text } from "@radix-ui/themes";
 import { Eye } from "lucide-react";
 import { useState } from "react";
@@ -25,16 +26,6 @@ export default function DetailUserModal({
 }) {
   const [open, setOpen] = useState(false);
 
-  const fallbackName = (name: string) => {
-    const result = name
-      .split(" ")
-      .slice(0, 2)
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase();
-
-    return result;
-  };
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>

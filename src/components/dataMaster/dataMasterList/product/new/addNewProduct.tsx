@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  type SupplierPayload,
-  supplierPayloadSchema,
-} from "@/model/supplier.model";
+  type ProductPayload,
+  productPayloadSchema,
+} from "@/model/product.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,25 +33,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 
 const AddNewProductPage = () => {
   const router = useRouter();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<any>({
-    // resolver: zodResolver(supplierPayloadSchema),
+  const form = useForm<ProductPayload>({
+    resolver: zodResolver(productPayloadSchema),
     defaultValues: {
-      nama: "",
-      sku_product: "",
-      price_product: 0,
-      supplier_id: "",
-      stock: 0,
-      is_active: true,
+      name: "",
+      price: 0,
+      quantity: 0,
+      supplierId: "",
     },
   });
 
-  const onSubmit: SubmitHandler<any> = async (data) => {
+  // const {} = api.product.create.useMutation();
+  const onSubmit: SubmitHandler<ProductPayload> = async (data) => {
     setIsLoading(true);
     try {
       toast.promise(
@@ -96,7 +93,7 @@ const AddNewProductPage = () => {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="nama"
+              name="name"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>Nama Produk</FormLabel>
@@ -109,20 +106,7 @@ const AddNewProductPage = () => {
             />
             <FormField
               control={form.control}
-              name="sku_product"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Kode Produk</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Kode produk" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price_product"
+              name="price"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>Harga Beli Produk</FormLabel>
@@ -140,7 +124,7 @@ const AddNewProductPage = () => {
             />
             <FormField
               control={form.control}
-              name="supplier_id"
+              name="supplierId"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel>Supplier</FormLabel>
@@ -169,14 +153,14 @@ const AddNewProductPage = () => {
             />
             <FormField
               control={form.control}
-              name="stock"
+              name="quantity"
               render={({ field }) => (
                 <FormItem className="mb-3">
-                  <FormLabel>Stok Produk</FormLabel>
+                  <FormLabel>Quantity Produk</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Stok produk"
+                      placeholder="Quantity produk"
                       min={0}
                       {...field}
                     />
@@ -185,7 +169,7 @@ const AddNewProductPage = () => {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="is_active"
               render={({ field }) => (
@@ -201,9 +185,9 @@ const AddNewProductPage = () => {
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
             <Flex justify={"end"} className="mt-3 gap-x-3">
-              <Link href={paths.dataMaster.customer.root}>
+              <Link href={paths.dataMaster.product.root}>
                 <Button variant={"destructiveOnline"}>Batal</Button>
               </Link>
               <Button type="submit" disabled={isLoading}>

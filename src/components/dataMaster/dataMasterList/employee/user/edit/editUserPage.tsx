@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Role } from "@prisma/client";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -34,24 +34,30 @@ const EditUserPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
 
+  // get data detail user query
+  const { data: userDetail } = api.user.getDetail.useQuery(id);
+
   const form = useForm<UserPayload>({
     resolver: zodResolver(userPayloadSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      id: id,
+      username: userDetail?.username ?? "",
+      password: userDetail?.password ?? "",
       role: Role.USER,
     },
   });
 
-  const { mutateAsync: createUser } = api.user.create.useMutation();
+  // edit user mutation
+  const { mutateAsync: edituser } = api.user.update.useMutation();
 
   const onSubmit: SubmitHandler<UserPayload> = async (data) => {
     setIsLoading(true);
+
     try {
-      toast.promise(async () => createUser(data), {
+      toast.promise(async () => edituser(data), {
         loading: "Memproses...",
         success: async () => {
-          // await utils.user.getAll.invalidate();
+          await utils.user.getAll.invalidate();
 
           setIsLoading(false);
           form.reset();
@@ -70,12 +76,22 @@ const EditUserPage = ({ id }: { id: string }) => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (userDetail) {
+      form.reset({
+        id: userDetail.id || "",
+        username: userDetail.username || "",
+        password: userDetail.password || "",
+        role: userDetail.role || Role.USER,
+      });
+    }
+  }, [userDetail, form]);
   return (
     <Box>
       <Box className="mb-8">
         <BackButton path={paths.dataMaster.employee.root} />
       </Box>
-      {id}
       <Grid
         columns={{ initial: "1", md: "2" }}
         maxHeight={"100vh"}
@@ -101,10 +117,10 @@ const EditUserPage = ({ id }: { id: string }) => {
               name="password"
               render={({ field }) => (
                 <FormItem className="mb-3">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="hidden">Password</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
+                      type="hidden"
                       placeholder="password user"
                       {...field}
                     />

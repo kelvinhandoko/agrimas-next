@@ -24,6 +24,7 @@ const menuItems = [
   {
     title: "Penjualan",
     path: paths.sale.root,
+    subPaths: [paths.sale.saleOrder.root],
   },
   {
     title: "Pembelian",

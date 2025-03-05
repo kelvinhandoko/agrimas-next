@@ -1,5 +1,8 @@
+import { HydrateClient } from "@/trpc/server";
 import { type Metadata } from "next";
 import React from "react";
+
+import DataAccountantList from "@/components/accountant/DataAccountantList";
 
 export const metadata: Metadata = {
   title: "Agrimas - Accountant Page",
@@ -8,7 +11,11 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <div>accountant page</div>;
+  return (
+    <HydrateClient>
+      <DataAccountantList />
+    </HydrateClient>
+  );
 };
 
 export default page;

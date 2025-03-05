@@ -7,10 +7,14 @@ import { BaseRepository } from "@/server/common";
 
 export class SalesRepository extends BaseRepository {
   async create(payload: SalesPayload) {
+    ``;
     return await this._db.sales.create({ data: payload });
   }
   async update(payload: SalesPayload) {
-    return await this._db.sales.create({ data: payload });
+    return await this._db.sales.update({
+      where: { id: payload.id },
+      data: payload,
+    });
   }
 
   async findAll() {

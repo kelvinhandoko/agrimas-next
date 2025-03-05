@@ -1,5 +1,8 @@
+import { HydrateClient } from "@/trpc/server";
 import { Metadata } from "next";
 import React from "react";
+
+import DataReportList from "@/components/report/DataReportList";
 
 export const metadata: Metadata = {
   title: "Agrimas - Report Page",
@@ -8,7 +11,11 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <div>Report page</div>;
+  return (
+    <HydrateClient>
+      <DataReportList />
+    </HydrateClient>
+  );
 };
 
 export default page;
