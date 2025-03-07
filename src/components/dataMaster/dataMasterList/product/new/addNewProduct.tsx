@@ -1,15 +1,11 @@
 "use client";
 
-import {
-  type ProductPayload,
-  productPayloadSchema,
-} from "@/model/product.model";
+import { ProductPayload, productPayloadSchema } from "@/model/product.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,10 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 
 const AddNewProductPage = () => {
-  const router = useRouter();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<ProductPayload>({

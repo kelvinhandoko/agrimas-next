@@ -41,7 +41,7 @@ export const salesColumn = ({ handleDeleteSales }: SalesColumnProps) =>
             <DeleteModal
               id={row.id}
               name={""}
-              handleDelete={() => handleDeleteSales(row.id)}
+              handleDelete={() => handleDeleteSales(row.original.id)}
             />
           </Flex>
         );

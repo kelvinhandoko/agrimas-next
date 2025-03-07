@@ -14,10 +14,10 @@ const SalesDataTable = () => {
 
   const { data, isLoading } = api.sales.findAll.useQuery();
 
-  const { mutateAsync: deleteSales } = api.user.delete.useMutation({
+  const { mutateAsync: deleteSales } = api.sales.delete.useMutation({
     onSuccess: async () => {
       toast.success("Berhasil hapus sales");
-      await utils.user.getAll.invalidate();
+      await utils.sales.findAll.invalidate();
     },
     onError: () => {
       toast.error("Gagal menghapus sales");
