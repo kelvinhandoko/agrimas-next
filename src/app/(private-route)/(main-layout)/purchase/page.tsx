@@ -1,5 +1,5 @@
 import { HydrateClient } from "@/trpc/server";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import DataPurchaseList from "@/components/purchase/DataPurchaseList";
 

@@ -6,7 +6,7 @@ import { AccountRepository } from "@/server/account";
 import { createAccountBatchUseCase } from "@/server/account/use-cases/create-account-batch.use-case";
 import { CompanyRepository } from "@/server/company/company.repository";
 import { CreateCompanyUseCase } from "@/server/company/use-cases";
-import { GroupAccountRepository } from "@/server/groupAccount";
+import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
 import { createGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
 import { ReportRepository } from "@/server/report/report.repository";
 import { TransactionService } from "@/server/services";

@@ -1,8 +1,10 @@
 "use client";
 
-import { ProductPayload, productPayloadSchema } from "@/model/product.model";
+import {
+  type ProductPayload,
+  productPayloadSchema,
+} from "@/model/product.model";
 import { paths } from "@/paths/paths";
-import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
@@ -30,7 +32,7 @@ import {
 } from "@/components/ui/select";
 
 const AddNewProductPage = () => {
-  const utils = api.useUtils();
+  // const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<ProductPayload>({
     resolver: zodResolver(productPayloadSchema),
@@ -53,7 +55,7 @@ const AddNewProductPage = () => {
         {
           loading: "Memproses...",
           success: async () => {
-            await utils.supplier.getAll.invalidate();
+            // await utils.supplier.getAll.invalidate();
             setIsLoading(false);
             form.reset();
             return "Berhasil tambah produk";

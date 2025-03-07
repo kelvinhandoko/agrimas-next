@@ -1,6 +1,7 @@
-import { type WithCompany } from "@/server";
 import { TRANSACTION_CATEGORY } from "@prisma/client";
 import { z } from "zod";
+
+import { type WithCompany } from "@/server/common";
 
 export const defaultAccountPayloadSchema = z.object({
   accountId: z.string().describe("account id of the default account"),

@@ -1,7 +1,7 @@
 import { Box, Grid } from "@radix-ui/themes";
 import { Trash2Icon } from "lucide-react";
-import { FC } from "react";
-import { Control, FieldArrayWithId } from "react-hook-form";
+import { type FC } from "react";
+import { type Control, type FieldArrayWithId } from "react-hook-form";
 
 import {
   FormControl,

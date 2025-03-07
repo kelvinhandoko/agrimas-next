@@ -1,9 +1,10 @@
 import { paths } from "@/paths/paths";
-import { type SupplierRouterOutputs } from "@/server";
 import { Flex } from "@radix-ui/themes";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Eye, PencilIcon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import Link from "next/link";
+
+import { type SupplierRouterOutputs } from "@/server/supplier";
 
 import DeleteSupplierModal from "./deleteSupplierModal";
 import DetailSupplierModal from "./detailSupplierModal";
@@ -29,7 +30,7 @@ export const supplierlColumn = [
         <DetailSupplierModal
           id={row.original.id}
           name={row.original.nama}
-          alamat={row.original.alamat || ""}
+          alamat={row.original.alamat ?? ""}
         />
         <Link
           href={paths.dataMaster.supplier.edit(row.original.id)}

@@ -5,8 +5,8 @@ import { TRPCError } from "@trpc/server";
 import { AccountRepository } from "@/server/account";
 import { db } from "@/server/db/prisma";
 import { JournalRepository } from "@/server/journal/journal.repository";
-import { createJournalUseCase } from "@/server/journal/use-cases";
-import { JournalDetailRepository } from "@/server/journalDetail";
+import { createJournalUseCase } from "@/server/journal/use-cases/create-journal.use-case";
+import { JournalDetailRepository } from "@/server/journalDetail/journal-detail.repository";
 import { TransactionService } from "@/server/services";
 
 export const createJournalController = companyProcedure

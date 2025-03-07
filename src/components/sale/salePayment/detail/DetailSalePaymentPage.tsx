@@ -4,7 +4,6 @@ import { paths } from "@/paths/paths";
 import { fallbackName } from "@/utils/fallback-name";
 import { handleSimulationPromise } from "@/utils/promise-simulation";
 import { Box, Grid, Text } from "@radix-ui/themes";
-import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

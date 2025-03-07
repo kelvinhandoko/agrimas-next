@@ -3,10 +3,10 @@
 import { api } from "@/trpc/react";
 import { Flex, Spinner } from "@radix-ui/themes";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,

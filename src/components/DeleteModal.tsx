@@ -1,5 +1,5 @@
 import { Trash2, Trash2Icon } from "lucide-react";
-import { MouseEvent, useState } from "react";
+import { type MouseEvent, useState } from "react";
 
 import {
   AlertDialog,

@@ -1,5 +1,6 @@
-import { type WithCompany, basicQuery } from "@/server";
 import { z } from "zod";
+
+import { type WithCompany, basicQuery } from "@/server/common";
 
 export const productPayloadSchema = z.object({
   name: z.string().trim().min(1, "nama produk wajib diisi"),

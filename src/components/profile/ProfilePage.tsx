@@ -1,13 +1,10 @@
 "use client";
 
-import { SupplierPayload, supplierPayloadSchema } from "@/model/supplier.model";
-import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
+import { Flex, Spinner } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "../ui/button";

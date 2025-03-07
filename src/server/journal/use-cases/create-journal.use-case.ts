@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 
 import { type AccountRepository } from "@/server/account";
 import { type JournalRepository } from "@/server/journal/journal.repository";
-import { type JournalDetailRepository } from "@/server/journalDetail";
+import { type JournalDetailRepository } from "@/server/journalDetail/journal-detail.repository";
 
 export const createJournalUseCase =
   (
