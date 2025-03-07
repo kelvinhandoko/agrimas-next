@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["relationJoins"]
+  previewFeatures = ["relationJoins", "omitApi"]
 }
 
 datasource db {
@@ -35,6 +35,7 @@ model Company {
   Sales          Sales[]
   Product        Product[]
   InitialProduct InitialProduct[]
+  DefaultAccount DefaultAccount[]
 }
 
 model User {
@@ -92,6 +93,7 @@ model Account {
   subAccount     SubAccount[]
   journalDetail  JournalDetail[]
   deleted        DateTime?
+  defaultAccount DefaultAccount?
 
   @@unique([code, companyId])
 }
@@ -238,6 +240,18 @@ model ErrorLog {
   deleted    DateTime?
 }
 
+model DefaultAccount {
+  id        String               @id @default(cuid())
+  accountId String               @unique
+  account   Account              @relation(fields: [accountId], references: [id])
+  company   Company              @relation(fields: [companyId], references: [id])
+  companyId String
+  category  TRANSACTION_CATEGORY
+  deleted   DateTime?
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
 enum JournalType {
   GENERAL
   ADJUSTING
@@ -268,4 +282,21 @@ enum Role {
   OWNER
   ADMIN
   USER
+}
+
+enum TRANSACTION_CATEGORY {
+  PERSEDIAAN
+  PENJUALAN
+  RETUR_PENJUALAN
+  DISKON_PENJUALAN
+  PEMBAYARAN_PENJUALAN
+  PEMBELIAN
+  RETUR_PEMBELIAN
+  DISKON_PEMBELIAN
+  PEMBAYARAN_PEMBELIAN
+  PAJAK_PENGHASILAN
+  LABA_DITAHAN
+  EKUITAS
+  PIUTANG_USAHA
+  HUTANG_USAHA
 }

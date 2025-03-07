@@ -14,4 +14,19 @@ export class InitialProductRepository extends BaseRepository {
       },
     });
   }
+
+  async update(payload: InitialProductPayload) {
+    const { companyId, price, quantity, productId, id } = payload;
+    return await this._db.initialProduct.update({
+      data: {
+        price,
+        companyId,
+        quantity,
+        productId,
+      },
+      where: {
+        id,
+      },
+    });
+  }
 }
