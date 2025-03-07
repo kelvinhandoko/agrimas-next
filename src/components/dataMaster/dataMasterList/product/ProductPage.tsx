@@ -45,7 +45,7 @@ const ProductPage = () => {
       </Box>
       <DataTable
         columns={productColumn({ handleDeleteProduct })}
-        data={data?.[0] || []}
+        data={data?.[0] ?? []}
         searchAble
         path={paths.dataMaster.product.new}
         buttonAddName="Tambah Product"
