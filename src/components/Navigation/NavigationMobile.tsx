@@ -2,7 +2,6 @@
 
 import { paths } from "@/paths/paths";
 import { Text } from "@radix-ui/themes";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -11,7 +10,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,

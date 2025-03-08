@@ -2,8 +2,8 @@ import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
 import Link from "next/link";
 import { BiArchive, BiBook } from "react-icons/bi";
-import { FiBook, FiFolder } from "react-icons/fi";
-import { LuBookMinus, LuBookText } from "react-icons/lu";
+import { FiBook } from "react-icons/fi";
+import { LuBookText } from "react-icons/lu";
 
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 

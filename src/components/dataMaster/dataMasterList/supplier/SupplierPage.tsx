@@ -22,8 +22,7 @@ const SupplierPage = () => {
       </Box>
       <DataTable
         columns={supplierlColumn}
-        data={data?.data || []}
-        searchAble
+        data={data?.data ?? []}
         path={paths.dataMaster.supplier.new}
         buttonAddName="Tambah Supplier"
         titleTable="Data Supplier"

@@ -1,7 +1,7 @@
 import { AccountClass, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
-import { basicQuery } from "@/server/common/models/basic";
+import { type WithCompany, basicQuery } from "@/server/common/models/basic";
 
 type GroupAccountInclude<T> = {
   include?: Prisma.Subset<T, Prisma.GroupAccountInclude>;
@@ -24,4 +24,5 @@ export const getAllGroupAccountQuerySchema = basicQuery;
 export type GetAllGroupAccountQuery<T> = z.infer<
   typeof getAllGroupAccountQuerySchema
 > &
-  GroupAccountInclude<T>;
+  GroupAccountInclude<T> &
+  WithCompany;

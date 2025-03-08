@@ -1,9 +1,8 @@
 import { type ReportPayload } from "@/model/report.model";
-import { type Prisma, type PrismaClient } from "@prisma/client";
 
-export class ReportRepository {
-  constructor(private _db: PrismaClient | Prisma.TransactionClient) {}
+import { BaseRepository } from "@/server/common";
 
+export class ReportRepository extends BaseRepository {
   async create(payload: ReportPayload) {
     return this._db.report_Account.create({
       data: payload,

@@ -1,8 +1,9 @@
 import { type AccountPayload, type GroupAccountPayload } from "@/model";
+import { type TRANSACTION_CATEGORY } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 interface GroupAccountPayloadWithAccount extends GroupAccountPayload {
-  accounts: AccountPayload[];
+  accounts: Array<AccountPayload & { category?: TRANSACTION_CATEGORY }>;
 }
 
 // default group account
@@ -32,6 +33,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         id: nanoid(),
         companyId: "",
         groupAccountId: "",
+        category: "PERSEDIAAN",
         name: "persediaan barang jadi",
         posisi: "DEBIT",
         report: ["NERACA"],
@@ -56,6 +58,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         id: nanoid(),
         companyId: "",
         groupAccountId: "",
+        category: "PIUTANG_USAHA",
         name: "piutang usaha",
         posisi: "DEBIT",
         report: ["NERACA"],
@@ -102,6 +105,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         id: nanoid(),
         companyId: "",
         groupAccountId: "",
+        category: "HUTANG_USAHA",
         name: "hutang usaha",
         posisi: "CREDIT",
         report: ["NERACA"],
@@ -110,6 +114,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         id: nanoid(),
         companyId: "",
         groupAccountId: "",
+        category: "PAJAK_PENGHASILAN",
         name: "PPh 21",
         posisi: "CREDIT",
         report: ["NERACA"],
@@ -171,6 +176,7 @@ export const defaultGroupAccountData: GroupAccountPayloadWithAccount[] = [
         id: nanoid(),
         companyId: "",
         groupAccountId: "",
+        category: "PENJUALAN",
         name: "penjualan",
         posisi: "CREDIT",
         report: ["LABA_RUGI"],

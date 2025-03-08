@@ -120,27 +120,16 @@ export class AccountRepository extends BaseRepository {
       ];
     }
 
-    const totalPromise = this._db.account.count({ where: whereClause });
-    const dataPromise = this._db.account.findMany({
-      where: whereClause,
-      take: take,
-      cursor: cursorClause,
-      skip: skipClause,
-      include: include ?? (undefined as unknown as S),
-    });
+    const [data, meta] = await this._db.account
+      .paginate({
+        where: whereClause,
+        include: include ?? (undefined as unknown as S),
+      })
+      .withCursor({ after: cursor ?? undefined });
 
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (!takeAll && data.length > limit) {
-      const nextItem = data.pop();
-      nextCursor = nextItem?.id;
-    }
     return {
       data,
-      meta: {
-        totalData: total,
-      },
-      nextCursor,
+      meta,
     };
   }
 

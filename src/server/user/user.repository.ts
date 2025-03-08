@@ -81,6 +81,7 @@ export class UserRepository {
       take: take,
       cursor: cursorClause,
       skip: skipClause,
+      omit: { password: true },
       include: include ?? (undefined as unknown as T),
     });
 

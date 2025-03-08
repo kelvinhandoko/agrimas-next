@@ -1,5 +1,6 @@
-import { type WithCompany } from "@/server";
 import { z } from "zod";
+
+import { type WithCompany } from "@/server/common";
 
 export const salesPayloadSchema = z.object({
   name: z.string().min(1, "Name required"),

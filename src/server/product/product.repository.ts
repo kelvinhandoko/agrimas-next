@@ -21,8 +21,20 @@ export class ProductRepository extends BaseRepository {
     });
   }
 
+  async update(payload: ProductPayload) {
+    const { companyId, name, supplierId, id } = payload;
+    return await this._db.product.update({
+      where: { id },
+      data: {
+        companyId,
+        name,
+        supplierId,
+      },
+    });
+  }
+
   async findAll(query: GetAllProductQuery) {
-    const { companyId, limit, page, takeAll, search } = query;
+    const { companyId, limit, page, search } = query;
     const whereClause: Prisma.ProductWhereInput = {};
     whereClause.companyId = companyId;
     if (search) {
