@@ -71,6 +71,7 @@ export const paths = {
   },
   report: {
     root: "/report",
+    stock: "/report/stock",
   },
   finance: {
     root: "/finance",

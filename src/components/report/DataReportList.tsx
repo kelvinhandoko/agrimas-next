@@ -11,7 +11,7 @@ const listMenu = [
   {
     title: "Laporan Stok",
     icon: <BiArchive size={"50px"} />,
-    path: paths.dataMaster.product.root,
+    path: paths.report.stock,
   },
   {
     title: "Laporan Piutang",

@@ -23,7 +23,7 @@ const SupplierPage = () => {
       <DataTable
         columns={supplierlColumn}
         data={data?.data || []}
-        colFilterName="nama"
+        searchAble
         path={paths.dataMaster.supplier.new}
         buttonAddName="Tambah Supplier"
         titleTable="Data Supplier"
