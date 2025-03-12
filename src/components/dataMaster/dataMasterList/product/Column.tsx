@@ -1,4 +1,5 @@
 import { paths } from "@/paths/paths";
+import { formatPrice } from "@/utils/format-price";
 import { Flex } from "@radix-ui/themes";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { PencilIcon } from "lucide-react";
@@ -8,7 +9,7 @@ import { type ProductRouterOutput } from "@/server/product/product.router";
 
 import DeleteModal from "@/components/DeleteModal";
 
-import DetailUserModal from "../employee/user/DetailUserModal";
+import DetailProductModal from "./detailProductModal";
 
 const columnHelper = createColumnHelper<ProductRouterOutput["getAll"][0][0]>();
 
@@ -24,9 +25,7 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
     }),
     columnHelper.accessor("averagePrice", {
       header: () => <div>Harga Produk</div>,
-      cell: ({ row }) => (
-        <div className="lowercase">{row.original.averagePrice}</div>
-      ),
+      cell: ({ row }) => <div>{formatPrice(row.original.averagePrice)}</div>,
     }),
     columnHelper.accessor("currentQuantity", {
       header: () => <div>Qty</div>,
@@ -40,10 +39,11 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
       header: () => <div className="text-center">Aksi</div>,
       cell: ({ row }) => (
         <Flex justify="center" gapX="3">
-          <DetailUserModal
+          <DetailProductModal
             id={row.original.id}
             name={row.original.name}
-            role={row.original.name}
+            price={row.original.averagePrice}
+            supplierId={row.original.supplierId}
           />
           <Link
             href={paths.dataMaster.employee.editUser(row.original.id)}

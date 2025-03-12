@@ -32,10 +32,16 @@ const menuItems = [
   {
     title: "Akuntansi",
     path: paths.accountant.root,
+    subPaths: [paths.accountant.chartOfAccount],
   },
   {
     title: "Laporan",
     path: paths.report.root,
+    subPaths: [
+      paths.report.payable,
+      paths.report.receiveable,
+      paths.report.stock,
+    ],
   },
   {
     title: "Keuangan",

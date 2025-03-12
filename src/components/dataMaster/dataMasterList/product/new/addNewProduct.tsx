@@ -5,6 +5,7 @@ import {
   productPayloadSchema,
 } from "@/model/product.model";
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
@@ -32,7 +33,7 @@ import {
 } from "@/components/ui/select";
 
 const AddNewProductPage = () => {
-  // const utils = api.useUtils();
+  const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<ProductPayload>({
     resolver: zodResolver(productPayloadSchema),
@@ -44,18 +45,22 @@ const AddNewProductPage = () => {
     },
   });
 
-  // const {} = api.product.create.useMutation();
+  const { data: dataSupplier } = api.supplier.getAll.useQuery({});
+
+  const { mutateAsync: createProduct } = api.product.create.useMutation();
   const onSubmit: SubmitHandler<ProductPayload> = async (data) => {
     setIsLoading(true);
+    console.log(data);
+
     try {
       toast.promise(
         async () => {
-          //   return void(data);
+          createProduct(data);
         },
         {
           loading: "Memproses...",
           success: async () => {
-            // await utils.supplier.getAll.invalidate();
+            await utils.product.getAll.invalidate();
             setIsLoading(false);
             form.reset();
             return "Berhasil tambah produk";
@@ -112,6 +117,10 @@ const AddNewProductPage = () => {
                       placeholder="Harga beli produk"
                       min={0}
                       {...field}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        form.setValue("price", value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -134,13 +143,11 @@ const AddNewProductPage = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                      {dataSupplier?.data.map((supplier, index) => (
+                        <SelectItem value={supplier.id} key={index}>
+                          {supplier.nama}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -159,6 +166,10 @@ const AddNewProductPage = () => {
                       placeholder="Quantity produk"
                       min={0}
                       {...field}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        form.setValue("quantity", value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

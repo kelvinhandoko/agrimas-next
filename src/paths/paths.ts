@@ -68,10 +68,20 @@ export const paths = {
   },
   accountant: {
     root: "/accountant",
+    chartOfAccount: "/accountant/chart-of-account",
+    newAccount: "/accountant/chart-of-account/new",
+    journal: "/accountant/journal",
+    newJournal: "/accountant/journal/new",
+    editJournal: (id: string) => `/accountant/journal/${id}/edit`,
+    detailJournal: (id: string) => `/accountant/journal/${id}/detail`,
   },
   report: {
     root: "/report",
     stock: "/report/stock",
+    receiveable: "/report/receiveable",
+    payable: "/report/payable",
+    sale: "/report/sale",
+    purchase: "/report/purchase",
   },
   finance: {
     root: "/finance",

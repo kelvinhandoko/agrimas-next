@@ -44,11 +44,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const StockPage = () => {
+const ReportPurchasePage = () => {
   const form = useForm<any>({
     // resolver: zodResolver(FormSchema),
     defaultValues: {
-      barang: "",
+      supplier: "",
       tgl_awal: "",
       tgl_akhir: "",
     },
@@ -77,7 +77,8 @@ const StockPage = () => {
       console.error("Login error:", error);
     }
   };
-  const { data, isLoading: isLoadingGet } = api.supplier.getAll.useQuery({});
+  const { data: dataSupplierReportSale, isLoading: isLoadingGet } =
+    api.supplier.getAll.useQuery({});
   if (isLoadingGet) {
     return <LoadingIndicator />;
   }
@@ -89,7 +90,7 @@ const StockPage = () => {
       <Card className="px-4 py-7">
         <CardContent>
           <Text size={"5"} weight={"bold"}>
-            Laporan Stok Barang
+            Laporan Pembelian
           </Text>
           <Box className="grid grid-cols-12 items-end">
             <Box className="col-span-10">
@@ -188,29 +189,30 @@ const StockPage = () => {
                       />
                       <FormField
                         control={form.control}
-                        name="barang"
+                        name="supplier"
                         render={({ field }) => (
                           <FormItem className="mr-4 w-full">
-                            <FormLabel>Stok Barang</FormLabel>
+                            <FormLabel>Supplier</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Pilih barang" />
+                                  <SelectValue placeholder="Pilih supplier" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="m@example.com">
                                   Keseluruhan
                                 </SelectItem>
-                                <SelectItem value="m@google.com">
-                                  Barang A
-                                </SelectItem>
-                                <SelectItem value="m@support.com">
-                                  Barang B
-                                </SelectItem>
+                                {dataSupplierReportSale?.data.map(
+                                  (supplier, index) => (
+                                    <SelectItem value={supplier.id} key={index}>
+                                      {supplier.nama}
+                                    </SelectItem>
+                                  ),
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -258,4 +260,4 @@ const StockPage = () => {
   );
 };
 
-export default StockPage;
+export default ReportPurchasePage;

@@ -3,17 +3,19 @@ import { Box } from "@radix-ui/themes";
 
 import BackButton from "@/components/BackButton";
 
-import SaleOrderDataTable from "./SaleOrderDataTable";
+import JournalDataTable from "./JournalDataTable";
 
-const SaleOrderPage = () => {
+const JournalPage = () => {
   return (
     <Box>
       <Box className="mb-8">
-        <BackButton path={paths.sale.root} />
+        <BackButton path={paths.accountant.root} />
       </Box>
-      <SaleOrderDataTable />
+      <Box>
+        <JournalDataTable />
+      </Box>
     </Box>
   );
 };
 
-export default SaleOrderPage;
+export default JournalPage;
