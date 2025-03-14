@@ -15,3 +15,5 @@ export const NUMERIC_PROPS: NumericFormatProps = {
 };
 
 export const TIMEZONE = "Asia/Jakarta";
+
+export const PPN = 11;

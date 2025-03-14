@@ -36,6 +36,7 @@ model Company {
   Product        Product[]
   InitialProduct InitialProduct[]
   DefaultAccount DefaultAccount[]
+  Purchase       Purchase[]
 }
 
 model User {
@@ -158,15 +159,16 @@ model JournalDetail {
 }
 
 model Supplier {
-  id        String    @id @default(cuid())
+  id        String     @id @default(cuid())
   nama      String
   alamat    String?
   companyId String
-  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   deleted   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-  Product   Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  products  Product[]
+  purchases Purchase[]
 
   @@unique([nama, companyId])
 }
@@ -222,6 +224,89 @@ model InitialProduct {
   quantity  Int
   price     Int
   productId String    @unique
+}
+
+model Purchase {
+  id                  String                     @id @default(cuid())
+  ref                 String
+  purchaseDate        DateTime
+  totalBeforeDiscount Int
+  netTotal            Int
+  note                String?
+  discount            Int
+  supplierId          String
+  supplier            Supplier                   @relation(fields: [supplierId], references: [id])
+  ppn                 Int
+  companyId           String
+  company             Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted             DateTime?
+  status              TRANSACTION_STATUS         @default(DIPROSES)
+  paymentStatus       TRANSACTION_PAYMENT_STATUS @default(UNPAID)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  ReceiveItem         ReceiveItem[]
+  purchaseDetail      PurchaseDetail[]
+}
+
+model PurchaseDetail {
+  id                  String    @id @default(cuid())
+  purchaseId          String
+  productId           String
+  quantity            Int
+  price               Int
+  discount            Int
+  totalBeforeDiscount Int
+  netTotal            Int
+  deleted             DateTime?
+  purchase            Purchase  @relation(fields: [purchaseId], references: [id])
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model PurchasePayment {
+  id              String        @id @default(cuid())
+  paymentDate     DateTime
+  purchaseId      String
+  amount          Int
+  note            String?
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  deleted         DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  paymentMethodId String
+}
+
+model ReceiveItem {
+  id          String    @id @default(cuid())
+  purchaseId  String
+  receiveDate DateTime
+  purchase    Purchase  @relation(fields: [purchaseId], references: [id])
+  deleted     DateTime?
+  note        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ReceiveItemDetail {
+  id        String    @id @default(cuid())
+  receiveId String
+  productId String
+  quantity  Int
+  deleted   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model PaymentMethod {
+  id            String  @id @default(cuid())
+  name          String
+  accountNumber String?
+  amount        Int     @default(0)
+
+  deleted          DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  purchasePayments PurchasePayment[]
 }
 
 model ErrorLog {
@@ -284,6 +369,12 @@ enum Role {
   USER
 }
 
+enum TRANSACTION_STATUS {
+  SELESAI
+  DIANTAR_SEBAGIAN
+  DIPROSES
+}
+
 enum TRANSACTION_CATEGORY {
   PERSEDIAAN
   PENJUALAN
@@ -299,4 +390,16 @@ enum TRANSACTION_CATEGORY {
   EKUITAS
   PIUTANG_USAHA
   HUTANG_USAHA
+  HPP
+}
+
+enum TRANSACTION_PAYMENT_STATUS {
+  PAID
+  UNPAID
+  PARTIAL
+}
+
+enum PaymentStatus {
+  PAID
+  REFUND
 }

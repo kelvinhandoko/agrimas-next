@@ -1,4 +1,4 @@
-import { defaultGroupAccountData } from "@/data/defaultAccountantData";
+import { defaultAccountData } from "@/data/defaultAccountantData";
 import { companyPayloadSchema } from "@/model";
 import { ownerProcedure } from "@/trpc/trpc";
 
@@ -33,7 +33,7 @@ export const createCompanyController = ownerProcedure
 
       // Use Promise.all to handle group account creation
       await Promise.all(
-        defaultGroupAccountData.map(async (groupAccount) => {
+        defaultAccountData.map(async (groupAccount) => {
           const { accounts, ...groupAccountRelated } = groupAccount;
 
           const groupAccountData = await createGroupAccount({
