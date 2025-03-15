@@ -24,10 +24,14 @@ export const createPurchaseController = companyProcedure
       const purchaseRepo = new PurchaseRepository(tx);
       const purchaseDetailRepo = new PurchaseDetailRepository(tx);
       const productRepo = new ProductRepository(tx);
+
+      // create purchase
       const createdPurchase = await createPurchaseUseCase(purchaseRepo)({
         ...input,
         companyId: ctx.session.user.companyId,
       });
+
+      // create purchase detail
       await Promise.all(
         input.detail.map(async (detail) => {
           const product = await getDetailProductUseCase(productRepo)(
@@ -54,6 +58,8 @@ export const createPurchaseController = companyProcedure
           });
         }),
       );
+
+      // create purchase payment if payment is not null
       if (input.payment) {
         await createPurchasePaymentUseCase(purchasePaymentRepo)({
           ...input.payment,
