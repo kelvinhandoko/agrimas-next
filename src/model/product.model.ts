@@ -19,10 +19,23 @@ export type GetAllProductQuery = z.infer<typeof getAllProductQuerySchema> &
 
 export const updateProductStatsSchema = z.object({
   productId: z.string(),
-  beforeQuantity: z
+  prevQuantity: z
     .number()
-    .nonnegative("quantity tidak boleh lebih kecil dari 0"),
-  afterQQuantity: z
+    .nonnegative("quantity tidak boleh lebih kecil dari 0")
+    .describe("quantity sebelum diubah"),
+  currentQuantity: z.number().describe("quantity saat ini"),
+  prevAveragePrice: z
     .number()
-    .nonnegative("quantity tidak boleh lebih kecil dari 0"),
+    .nonnegative("harga rata-rata tidak boleh lebih kecil dari 0")
+    .describe("harga rata-rata sebelum diubah"),
+  prevPrice: z
+    .number()
+    .nonnegative("quantity tidak boleh lebih kecil dari 0")
+    .describe("harga sebelum diubah"),
+  currentPrice: z
+    .number()
+    .nonnegative("harga tidak boleh lebih kecil dari 0")
+    .describe("harga saat ini"),
 });
+
+export type UpdateProductStats = z.infer<typeof updateProductStatsSchema>;
