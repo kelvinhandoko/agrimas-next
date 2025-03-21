@@ -16,12 +16,12 @@ const listMenu = [
   {
     title: "Pesanan Pembelian",
     icon: <FiShoppingCart size={"50px"} />,
-    path: paths.dataMaster.product.root,
+    path: paths.purchase.purchaseOrder.root,
   },
   {
     title: "Penerimaan Barang",
     icon: <FiPackage size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.purchase.purchaseReceived.root,
   },
   {
     title: "Pengembalian Barang",

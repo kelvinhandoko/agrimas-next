@@ -9,6 +9,7 @@ export const purchaseDetailPayloadSchema = z.object({
   quantity: z.number().describe("jumlah barang"),
   price: z.number().describe("harga satuan"),
   discount: z.number().optional().describe("diskon (optional)"),
+  ppn: z.number().optional().describe("ppn (optional)"),
 });
 
 export type PurchaseDetailPayload = z.infer<

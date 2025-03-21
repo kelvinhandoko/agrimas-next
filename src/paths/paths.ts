@@ -65,6 +65,17 @@ export const paths = {
   },
   purchase: {
     root: "/purchase",
+    purchaseOrder: {
+      root: "/purchase/purchase-order",
+      new: "/purchase/purchase-order/new",
+      detail: (id: string) => `/purchase/purchase-order/${id}/detail`,
+    },
+    purchaseReceived: {
+      root: "/purchase/purchase-received",
+      new: "/purchase/purchase-received/new",
+      detail: (id: string) => `/purchase/purchase-received/${id}/detail`,
+      edit: (id: string) => `/purchase/purchase-received/${id}/edit`,
+    },
   },
   accountant: {
     root: "/accountant",

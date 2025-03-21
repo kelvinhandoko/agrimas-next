@@ -28,6 +28,7 @@ const menuItems = [
   {
     title: "Pembelian",
     path: paths.purchase.root,
+    subPaths: [paths.purchase.purchaseOrder.root],
   },
   {
     title: "Akuntansi",

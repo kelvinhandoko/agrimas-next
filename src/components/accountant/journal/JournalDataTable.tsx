@@ -41,7 +41,7 @@ const JournalDataTable = () => {
       columns={journalColumn({ handleDeleteJournal })}
       data={data?.data ?? []}
       searchAble
-      path={paths.dataMaster.employee.newUser}
+      path={paths.accountant.newJournal}
       buttonAddName="Tambah Jurnal Umum"
       titleTable="Data Jurnal Umum"
     />
