@@ -11,27 +11,27 @@ const listMenu = [
   {
     title: "Laporan Stok",
     icon: <BiArchive size={"50px"} />,
-    path: paths.dataMaster.product.root,
+    path: paths.report.stock,
   },
   {
     title: "Laporan Piutang",
     icon: <BiBook size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.report.receiveable,
   },
   {
     title: "Laporan Utang",
     icon: <FiBook size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.report.payable,
   },
   {
     title: "Laporan Penjualan",
     icon: <LuBookText size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.report.sale,
   },
   {
     title: "Laporan Pembelian",
     icon: <LuBookMinus size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.report.purchase,
   },
 ];
 const DataReportList = () => {

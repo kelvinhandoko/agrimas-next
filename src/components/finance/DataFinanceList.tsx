@@ -14,7 +14,7 @@ const listMenu = [
     path: paths.dataMaster.product.root,
   },
   {
-    title: "Hutang Customer",
+    title: "Hutang Supplier",
     icon: <BiBook size={"50px"} />,
     path: paths.dataMaster.supplier.root,
   },

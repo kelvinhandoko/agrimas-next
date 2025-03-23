@@ -2,6 +2,7 @@
 
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -10,7 +11,9 @@ import { userColumn } from "@/components/dataMaster/dataMasterList/employee/user
 
 const SaleOrderDataTable = () => {
   const utils = api.useUtils();
-  const { data, isLoading } = api.user.getAll.useQuery({});
+  const searchparams = useSearchParams();
+  const search = searchparams.get("search") ?? "";
+  const { data, isLoading } = api.user.getAll.useQuery({ search });
 
   const { mutateAsync: deleteUser } = api.user.delete.useMutation({
     onSuccess: async () => {
@@ -36,7 +39,7 @@ const SaleOrderDataTable = () => {
     <DataTable
       columns={userColumn({ handleDeleteUser })}
       data={data?.data ?? []}
-      colFilterName="username"
+      searchAble
       path={paths.sale.saleOrder.new}
       titleTable="Data Pesanan Penjualan"
       buttonAddName="Tambah Pesanan Penjualan"

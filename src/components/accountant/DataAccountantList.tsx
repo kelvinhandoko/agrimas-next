@@ -9,12 +9,12 @@ const listMenu = [
   {
     title: "Daftar Akun",
     icon: <FiFolder size={"50px"} />,
-    path: paths.dataMaster.product.root,
+    path: paths.accountant.chartOfAccount,
   },
   {
     title: "Jurnal Umum",
     icon: <FiBook size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.accountant.journal,
   },
 ];
 const DataAccountantList = () => {
