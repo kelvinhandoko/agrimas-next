@@ -5,7 +5,6 @@ import { TRPCError } from "@trpc/server";
 
 import { ProductRepository } from "@/server/product/product.repository";
 import { getDetailProductUseCase } from "@/server/product/use-cases/get-detail-product.use-case";
-import { updateStockAndAveragePriceUseCase } from "@/server/product/use-cases/update-stock-and-average-price.use-case";
 import { PurchaseRepository } from "@/server/purchase/purchase.repository";
 import { createPurchaseUseCase } from "@/server/purchase/use-cases/create-purchase.use-case";
 import { updatePurcahseStatusUseCase } from "@/server/purchase/use-cases/update-purchase-status.use-case";
@@ -47,14 +46,6 @@ export const createPurchaseController = companyProcedure
             ...detail,
             purchaseId: createdPurchase.id,
             companyId: ctx.session.user.companyId,
-          });
-          await updateStockAndAveragePriceUseCase(productRepo)({
-            productId: detail.productId,
-            currentQuantity: product.currentQuantity + detail.quantity,
-            currentPrice: detail.price,
-            prevAveragePrice: product.averagePrice,
-            prevPrice: product.averagePrice,
-            prevQuantity: product.currentQuantity,
           });
         }),
       );
