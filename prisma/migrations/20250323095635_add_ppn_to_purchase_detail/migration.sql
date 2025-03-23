@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `PurchaseDetail` ADD COLUMN `ppn` INTEGER NOT NULL DEFAULT 0;

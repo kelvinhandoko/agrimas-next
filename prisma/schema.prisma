@@ -257,6 +257,7 @@ model PurchaseDetail {
   price               Int
   discount            Int
   totalBeforeDiscount Int
+  ppn                 Int       @default(0)
   netTotal            Int
   deleted             DateTime?
   purchase            Purchase  @relation(fields: [purchaseId], references: [id])

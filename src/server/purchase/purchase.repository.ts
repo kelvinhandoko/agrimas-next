@@ -1,4 +1,3 @@
-import { PPN } from "@/constant";
 import {
   type PurchaseDetailQuery,
   type PurchasePayload,
@@ -25,13 +24,21 @@ export class PurchaseRepository extends BaseRepository {
   }
 
   async create(payload: PurchasePayload) {
-    const { detail, purchaseDate, supplierId, discount, note, ref, companyId } =
-      payload;
+    const {
+      detail,
+      purchaseDate,
+      supplierId,
+      discount,
+      note,
+      ref,
+      companyId,
+      ppn,
+    } = payload;
     const totalBeforeDiscount = detail.reduce(
       (prev, curr) => prev + curr.price * curr.quantity,
       0,
     );
-    const totalTax = totalBeforeDiscount * (PPN / 100);
+    const totalTax = ppn ?? 0;
     const netTotal = discountHandler(totalBeforeDiscount, discount) + totalTax;
     return await this._db.purchase.create({
       data: {
