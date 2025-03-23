@@ -35,7 +35,7 @@ export class PurchaseRepository extends BaseRepository {
       ppn,
     } = payload;
     const totalBeforeDiscount = detail.reduce(
-      (prev, curr) => prev + curr.price * curr.quantity,
+      (prev, curr) => prev + curr.price * curr.quantity - (curr.ppn ?? 0),
       0,
     );
     const totalTax = ppn ?? 0;
