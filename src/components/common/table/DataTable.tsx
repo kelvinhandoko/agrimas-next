@@ -42,6 +42,7 @@ interface DataTableProps<TData, TValue> {
   buttonAddName?: string;
   titleTable?: string;
   searchAble?: boolean;
+  buttonNew?: boolean;
   searchPlaceholder?: string;
 }
 
@@ -58,6 +59,7 @@ const DataTable = <TData, TValue>({
   searchAble = false,
   buttonAddName,
   titleTable,
+  buttonNew = true,
 }: DataTableProps<TData, TValue>) => {
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();

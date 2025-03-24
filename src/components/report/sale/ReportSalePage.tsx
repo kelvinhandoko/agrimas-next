@@ -62,7 +62,7 @@ const ReportSalePage = () => {
         {
           loading: "Memproses...",
           success: async () => {
-            return "Berhasil filter stock";
+            return "Berhasil filter laporan penjualan";
           },
           error: (error) => {
             if (error instanceof Error) {
@@ -136,7 +136,16 @@ const ReportSalePage = () => {
                                   selected={field.value}
                                   onSelect={field.onChange}
                                   initialFocus
-                                  className="h-auto"
+                                  className="flex h-full w-full"
+                                  classNames={{
+                                    months:
+                                      "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
+                                    month: "space-y-4 w-full flex flex-col",
+                                    table:
+                                      "w-full h-full border-collapse space-y-1",
+                                    head_row: "",
+                                    row: "w-full mt-2",
+                                  }}
                                 />
                               </PopoverContent>
                             </Popover>
@@ -179,6 +188,16 @@ const ReportSalePage = () => {
                                   selected={field.value}
                                   onSelect={field.onChange}
                                   initialFocus
+                                  className="flex h-full w-full"
+                                  classNames={{
+                                    months:
+                                      "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
+                                    month: "space-y-4 w-full flex flex-col",
+                                    table:
+                                      "w-full h-full border-collapse space-y-1",
+                                    head_row: "",
+                                    row: "w-full mt-2",
+                                  }}
                                 />
                               </PopoverContent>
                             </Popover>

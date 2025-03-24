@@ -16,32 +16,32 @@ const listMenu = [
   {
     title: "Pesanan Pembelian",
     icon: <FiShoppingCart size={"50px"} />,
-    path: paths.dataMaster.product.root,
+    path: paths.purchase.purchaseOrder.root,
   },
   {
     title: "Penerimaan Barang",
     icon: <FiPackage size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.purchase.purchaseReceived.root,
   },
   {
     title: "Pengembalian Barang",
     icon: <FiCornerUpLeft size={"50px"} />,
-    path: paths.dataMaster.customer.root,
+    path: paths.purchase.purchaseReturn.root,
   },
   {
     title: "Faktur Pembelian",
     icon: <FiFileText size={"50px"} />,
-    path: paths.dataMaster.employee.root,
+    path: paths.purchase.purchaseFaktur.root,
   },
   {
     title: "Utang Usaha",
     icon: <FiDollarSign size={"50px"} />,
-    path: paths.dataMaster.employee.root,
+    path: paths.purchase.purchasePayable.root,
   },
   {
     title: "Pembayaran",
     icon: <FiCreditCard size={"50px"} />,
-    path: paths.dataMaster.employee.root,
+    path: paths.purchase.purchasePayment.root,
   },
 ];
 
