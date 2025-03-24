@@ -30,8 +30,8 @@ export const updateProductStatsSchema = z.object({
     .describe("harga rata-rata sebelum diubah"),
   prevPrice: z
     .number()
-    .nonnegative("quantity tidak boleh lebih kecil dari 0")
-    .describe("harga sebelum diubah"),
+    .nonnegative("harga tidak boleh lebih kecil dari 0")
+    .describe("harga sebelum diubah (dipakai saat update)"),
   currentPrice: z
     .number()
     .nonnegative("harga tidak boleh lebih kecil dari 0")

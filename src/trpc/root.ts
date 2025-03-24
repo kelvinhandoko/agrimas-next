@@ -9,6 +9,7 @@ import { journalRouter } from "@/server/journal/journal.router";
 import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
 import { productRouter } from "@/server/product/product.router";
 import { purchaseRouter } from "@/server/purchase/purchase.router";
+import { receiveItemRouter } from "@/server/recieveItem/receive-item.router";
 import { salesRouter } from "@/server/sales/sales.router";
 import { supplierRouter } from "@/server/supplier";
 import { userRouter } from "@/server/user/user.router";
@@ -31,6 +32,7 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   product: productRouter,
   purchase: purchaseRouter,
+  receiveItem: receiveItemRouter,
 });
 
 // export type definition of API
