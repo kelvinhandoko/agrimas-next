@@ -21,7 +21,9 @@ export const purchasePayloadSchema = z.object({
   discount: z.number().nonnegative().default(0).describe("diskon (optional)"),
   ppn: z.number().nonnegative().default(0).describe("ppn (optional)"),
   supplierId: z.string().describe("id supplier"),
-  detail: z.array(purchaseDetailPayloadSchema),
+  detail: z
+    .array(purchaseDetailPayloadSchema.omit({ purchaseId: true }))
+    .describe("detail pembelian"),
   payment: purchasePaymentPayloadSchema.optional(),
 });
 

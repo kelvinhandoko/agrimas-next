@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { TableDetailSaleShipping } from "./TableDetailSaleShipping";
+
 const DetailSaleShippingPage = ({ id }: { id: string }) => {
   const handleDownloadInvoice = () => {
     handleSimulationPromise({
@@ -90,43 +92,7 @@ const DetailSaleShippingPage = ({ id }: { id: string }) => {
               </Box>
               <Box className="mt-5">
                 <Text weight={"bold"}>Detail Barang</Text>
-                <Grid
-                  columns={{ initial: "1", md: "3" }}
-                  gap="4"
-                  className="mt-3"
-                >
-                  <Label htmlFor="email">Kode Barang</Label>
-                  <Label htmlFor="email">Nama Barang</Label>
-                  <Label htmlFor="email">Qty</Label>
-                </Grid>
-                {Array.from({ length: 3 }).map((v, i) => (
-                  <Grid
-                    columns={{ initial: "1", md: "3" }}
-                    gap="4"
-                    className="mt-3"
-                    key={i}
-                  >
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input
-                        type="text"
-                        id="email"
-                        value={`kode-barang-${i + 1}00`}
-                        readOnly
-                      />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input
-                        type="text"
-                        id="email"
-                        value={`nama-barang-${i + 1}00`}
-                        readOnly
-                      />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="number" id="email" value={i + 1} readOnly />
-                    </div>
-                  </Grid>
-                ))}
+                <TableDetailSaleShipping />
               </Box>
             </CardContent>
           </Card>

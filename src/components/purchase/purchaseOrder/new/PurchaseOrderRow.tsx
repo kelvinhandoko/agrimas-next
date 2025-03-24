@@ -121,7 +121,6 @@ const PurchaseOrderRow = ({
           type="button"
           onClick={() =>
             append({
-              purchaseId: "",
               productId: "",
               quantity: 1,
               price: 0,

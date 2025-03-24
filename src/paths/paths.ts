@@ -44,11 +44,13 @@ export const paths = {
       root: "/sale/sale-order",
       new: "/sale/sale-order/new",
       detail: (id: string) => `/sale/sale-order/${id}/detail`,
+      edit: (id: string) => `/sale/sale-order/${id}/edit`,
     },
     saleShipping: {
       root: "/sale/sale-shipping",
       new: "/sale/sale-shipping/new",
       detail: (id: string) => `/sale/sale-shipping/${id}/detail`,
+      edit: (id: string) => `/sale/sale-shipping/${id}/edit`,
     },
     saleReturn: {
       root: "/sale/sale-return",
@@ -69,12 +71,37 @@ export const paths = {
       root: "/purchase/purchase-order",
       new: "/purchase/purchase-order/new",
       detail: (id: string) => `/purchase/purchase-order/${id}/detail`,
+      edit: (id: string) => `/purchase/purchase-order/${id}/edit`,
     },
     purchaseReceived: {
       root: "/purchase/purchase-received",
       new: "/purchase/purchase-received/new",
       detail: (id: string) => `/purchase/purchase-received/${id}/detail`,
       edit: (id: string) => `/purchase/purchase-received/${id}/edit`,
+    },
+    purchaseReturn: {
+      root: "/purchase/purchase-return",
+      new: "/purchase/purchase-return/new",
+      detail: (id: string) => `/purchase/purchase-return/${id}/detail`,
+      edit: (id: string) => `/purchase/purchase-return/${id}/edit`,
+    },
+    purchaseFaktur: {
+      root: "/purchase/purchase-faktur",
+      new: "/purchase/purchase-faktur/new",
+      detail: (id: string) => `/purchase/purchase-faktur/${id}/detail`,
+      edit: (id: string) => `/purchase/purchase-faktur/${id}/edit`,
+    },
+    purchasePayment: {
+      root: "/purchase/purchase-payment",
+      new: "/purchase/purchase-payment/new",
+      detail: (id: string) => `/purchase/purchase-payment/${id}/detail`,
+      edit: (id: string) => `/purchase/purchase-payment/${id}/edit`,
+    },
+    purchasePayable: {
+      root: "/purchase/purchase-payable",
+      new: "/purchase/purchase-payable/new",
+      detail: (id: string) => `/purchase/purchase-payable/${id}/detail`,
+      edit: (id: string) => `/purchase/purchase-payable/${id}/edit`,
     },
   },
   accountant: {

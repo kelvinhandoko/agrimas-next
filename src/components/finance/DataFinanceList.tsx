@@ -8,16 +8,16 @@ import { LuBookText } from "react-icons/lu";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 const listMenu = [
-  {
-    title: "Piutang Customer",
-    icon: <BiArchive size={"50px"} />,
-    path: paths.dataMaster.product.root,
-  },
-  {
-    title: "Hutang Supplier",
-    icon: <BiBook size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
-  },
+  // {
+  //   title: "Piutang Customer",
+  //   icon: <BiArchive size={"50px"} />,
+  //   path: paths.dataMaster.product.root,
+  // },
+  // {
+  //   title: "Hutang Supplier",
+  //   icon: <BiBook size={"50px"} />,
+  //   path: paths.dataMaster.supplier.root,
+  // },
   {
     title: "Pelunasan Piutang",
     icon: <FiBook size={"50px"} />,

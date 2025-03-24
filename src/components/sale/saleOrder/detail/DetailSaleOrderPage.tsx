@@ -12,6 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { TableDetailSaleOrder } from "./TableDetailSaleOrder";
+
 const DetailSaleOrderPage = ({ id }: { id: string }) => {
   const form = useForm<any>({
     // resolver: zodResolver(supplierPayloadSchema),
@@ -79,98 +81,7 @@ const DetailSaleOrderPage = ({ id }: { id: string }) => {
               </Box>
               <Box className="mt-5">
                 <Text weight={"bold"}>Detail Barang</Text>
-                <Grid
-                  columns={{ initial: "1", md: "5" }}
-                  gap="4"
-                  className="mt-3"
-                >
-                  <Label htmlFor="email">Nama Barang</Label>
-                  <Label htmlFor="email">Qty</Label>
-                  <Label htmlFor="email">Diskon</Label>
-                  <Label htmlFor="email">PPN</Label>
-                  <Label htmlFor="email">Total</Label>
-                </Grid>
-                {Array.from({ length: 3 }).map((v, i) => (
-                  <Grid
-                    columns={{ initial: "1", md: "5" }}
-                    gap="4"
-                    className="mt-3"
-                    key={i}
-                  >
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="email" id="email" placeholder="Email" />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="email" id="email" placeholder="Email" />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="email" id="email" placeholder="Email" />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="email" id="email" placeholder="Email" />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="email" id="email" placeholder="Email" />
-                    </div>
-                  </Grid>
-                ))}
-                <Box className="mt-8 flex flex-col items-end">
-                  <Grid
-                    columns={{ initial: "1", md: "2" }}
-                    gap="4"
-                    justify={"end"}
-                  >
-                    <Box></Box>
-                    <Box className="flex flex-col items-end justify-end gap-3">
-                      <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                        <Text className="text-right">Sub Total</Text>
-                        <Box></Box>
-                        <Input
-                          type="number"
-                          readOnly
-                          className="md:col-span-2"
-                        />
-                      </Grid>
-                      <Box className="flex">
-                        <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                          <Text className="text-right">PPN</Text>
-                          <Box className="flex items-center gap-3">
-                            <Input type="number" readOnly />
-                            <Text>%</Text>
-                          </Box>
-                          <Input
-                            type="number"
-                            readOnly
-                            className="md:col-span-2"
-                          />
-                        </Grid>
-                      </Box>
-                      <Box className="flex">
-                        <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                          <Text className="text-right">Diskon</Text>
-                          <Box className="flex items-center gap-3">
-                            <Input type="number" readOnly />
-                            <Text>%</Text>
-                          </Box>
-                          <Input
-                            type="number"
-                            readOnly
-                            className="md:col-span-2"
-                          />
-                        </Grid>
-                      </Box>
-                      <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                        <Text className="text-right">Total</Text>
-                        <Box></Box>
-                        <Input
-                          type="number"
-                          readOnly
-                          className="md:col-span-2"
-                        />
-                      </Grid>
-                    </Box>
-                  </Grid>
-                </Box>
+                <TableDetailSaleOrder />
               </Box>
             </CardContent>
           </Card>

@@ -42,6 +42,7 @@ interface DataTableProps<TData, TValue> {
   buttonAddName?: string;
   titleTable?: string;
   searchAble?: boolean;
+  buttonNew?: boolean;
   searchPlaceholder?: string;
 }
 
@@ -58,6 +59,7 @@ const DataTable = <TData, TValue>({
   searchAble = false,
   buttonAddName,
   titleTable,
+  buttonNew = true,
 }: DataTableProps<TData, TValue>) => {
   const [rowSelection, setRowSelection] = useState({});
   const searchParams = useSearchParams();
@@ -103,12 +105,14 @@ const DataTable = <TData, TValue>({
       <CardContent>
         <div className="flex items-center justify-between py-4">
           {searchAble && <SearchInput placeholder={searchPlaceholder} />}
-          <Link href={path ? path : ""}>
-            <Button>
-              <PlusIcon />
-              {buttonAddName}
-            </Button>
-          </Link>
+          {buttonNew && (
+            <Link href={path ? path : ""}>
+              <Button>
+                <PlusIcon />
+                {buttonAddName}
+              </Button>
+            </Link>
+          )}
         </div>
         <Table>
           <TableHeader className="table-header-group">

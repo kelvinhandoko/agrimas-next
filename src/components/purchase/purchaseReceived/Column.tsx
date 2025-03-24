@@ -8,10 +8,10 @@ import Link from "next/link";
 
 import DeleteModal from "@/components/DeleteModal";
 
-type PurchaseReceived = {
+export type PurchaseReceived = {
   noPurchaseReceived: string;
   noPurchaseOrder: string;
-  date: string; // Bisa juga Date jika memproses tanggal
+  date: string;
   supplier: string;
   totalItem: number;
   totalPrice: number;
@@ -22,11 +22,11 @@ const columnHelper = createColumnHelper<PurchaseReceived>();
 export const purchaseReceivedColumn = () =>
   [
     columnHelper.accessor("noPurchaseReceived", {
-      header: "Tanggal",
+      header: "No Penerimaan",
       cell: ({ row }) => <div>{row.original.noPurchaseReceived}</div>,
     }),
     columnHelper.accessor("noPurchaseOrder", {
-      header: "Deskripsi",
+      header: "No Pembelian",
       cell: ({ row }) => <div>{row.original.noPurchaseOrder}</div>,
     }),
     columnHelper.accessor("date", {

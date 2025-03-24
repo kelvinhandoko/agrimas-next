@@ -1,12 +1,17 @@
 "use client";
 
+import { SalePayload, salePayloadSchema } from "@/model/dummy/sale-order.model";
+import {
+  type PurchasePayload,
+  purchasePayloadSchema,
+} from "@/model/purchase.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
-import { Box, Grid, Text } from "@radix-ui/themes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Box, Grid } from "@radix-ui/themes";
 import { format } from "date-fns";
-import { CalendarIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { CalendarIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -14,6 +19,14 @@ import { cn } from "@/lib/utils";
 import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -30,364 +43,236 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
-import SaleOrderForm from "./SaleOrderForm";
+import SaleOrder from "./SaleOrderRow";
 
 const AddNewSaleOrderPage = () => {
-  const utils = api.useUtils();
-  const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<any>({
-    // resolver: zodResolver(supplierPayloadSchema),
-    defaultValues: {
-      details: [],
-    },
+  const defaultValues = {
+    saleDate: undefined,
+    ref: "",
+    note: "",
+    discount: 0,
+    ppn: 0,
+    customerId: "",
+    detail: [
+      {
+        purchaseId: "",
+        productId: "",
+        quantity: 1,
+        price: 0,
+        discount: 0,
+        ppn: 0,
+      },
+    ],
+  };
+
+  const { data: dataCustomer, isLoading } = api.customer.getAll.useQuery({});
+
+  const form = useForm<SalePayload>({
+    resolver: zodResolver(salePayloadSchema),
+    defaultValues,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "details",
-    keyName: "uid",
-  });
-
-  const onSubmit: SubmitHandler<any> = async (data) => {
-    setIsLoading(true);
+  const {
+    watch,
+    control,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = form;
+  const onSubmit: SubmitHandler<SalePayload> = async (data) => {
     try {
-      toast.promise(
-        async () => {
-          //   return void(data);
-        },
-        {
-          loading: "Memproses...",
-          success: async () => {
-            await utils.supplier.getAll.invalidate();
-            setIsLoading(false);
-            form.reset();
-            return "Berhasil tambah produk";
-          },
-          error: (error) => {
-            setIsLoading(false);
-            if (error instanceof Error) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
-        },
-      );
+      console.log(data);
+      toast.success("Berhasil tambah pesanan pembelian");
     } catch (error) {
-      console.error("Login error:", error);
-      setIsLoading(false);
+      console.log(error);
     }
   };
+  console.log("error", errors);
+
   return (
     <Box>
+      {/* <pre>{JSON.stringify(errors, undefined, 2)}</pre> */}
+      {/* <pre>{JSON.stringify(getValues(), undefined, 2)}</pre> */}
       <Box className="mb-8">
         <BackButton path={paths.sale.saleOrder.root} />
       </Box>
-      <Box>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(console.log)}>
-            <Grid columns={{ initial: "1", md: "2" }} gap="4">
-              {/* No Penjualan */}
-              <FormField
-                control={form.control}
-                name="no_penjualan"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>No Penjualan</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Masukkan No Penjualan"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </Grid>
-
-            <Grid columns={{ initial: "1", md: "2" }} gap="4" className="mt-3">
-              {/* Tanggal */}
-              <FormField
-                control={form.control}
-                name="tanggal"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Tanggal</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="mb-4 max-h-64 w-full overflow-auto"
-                        align="start"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          className="w-full"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Tanggal jatuh tempo */}
-              <FormField
-                control={form.control}
-                name="tanggal"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Tgl Jatuh Tempo</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="mb-4 max-h-64 w-full overflow-auto"
-                        align="start"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          className="w-full"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </Grid>
-            <Grid columns={{ initial: "1", md: "2" }} gap="4" className="mt-3">
-              {/* Nama Customer */}
-              <FormField
-                control={form.control}
-                name="alamat_customer"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nama Customer</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Masukkan Nama Customer"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Alamat Customer */}
-              <FormField
-                control={form.control}
-                name="alamat_customer"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Alamat Customer</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Masukkan alamat" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </Grid>
-            <Grid columns={{ initial: "1", md: "2" }} gap="4" className="mt-3">
-              {/* Deskripsi */}
-              <FormField
-                control={form.control}
-                name="deskripsi"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Deskripsi</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Masukkan Deskripsi" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </Grid>
-
-            <hr className="my-7" />
-            <Box className="flex justify-end">
-              <Button
-                type="button"
-                onClick={() =>
-                  append({
-                    accountId: "",
-                  })
-                }
-              >
-                <PlusIcon /> Tambah Baris
-              </Button>
-            </Box>
-            <Box className="mt-5">
-              {fields.map((field, index) => (
-                <SaleOrderForm
-                  control={form.control}
-                  field={field}
-                  index={index}
-                  remove={() => remove(index)}
-                  key={index}
-                />
-              ))}
-            </Box>
-            <hr className="my-7" />
-            <Box className="flex flex-col items-end">
-              <Grid columns={{ initial: "1", md: "2" }} gap="4" justify={"end"}>
-                <Box></Box>
-                <Box className="flex flex-col items-end justify-end gap-3">
-                  <Grid columns={{ initial: "1", md: "3" }} gap="4">
-                    <Text className="text-right">Sub Total</Text>
-                    <Box></Box>
-                    <FormField
-                      control={form.control}
-                      name="no_penjualan"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input type="number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </Grid>
-                  <Box className="flex">
-                    <Grid columns={{ initial: "1", md: "3" }} gap="4">
-                      <Text className="text-right">PPN</Text>
-                      <Box className="flex items-center gap-3">
-                        <FormField
-                          control={form.control}
-                          name="no_penjualan"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input type="number" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Grid columns={{ initial: "1", md: "2" }}>
+            <FormField
+              control={form.control}
+              name="ref"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>No Penjualan</FormLabel>
+                  <FormControl>
+                    <Input placeholder="no penjualan (opsional)" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
+          <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
+            {/* Tanggal */}
+            <FormField
+              control={form.control}
+              name="saleDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Tanggal</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
                           )}
-                        />
-                        <Text>%</Text>
-                      </Box>
-                      <FormField
-                        control={form.control}
-                        name="no_penjualan"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input type="number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </Grid>
-                  </Box>
-                  <Box className="flex">
-                    <Grid columns={{ initial: "1", md: "3" }} gap="4">
-                      <Text className="text-right">Diskon</Text>
-                      <Box className="flex items-center gap-3">
-                        <FormField
-                          control={form.control}
-                          name="no_penjualan"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input type="number" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
                           )}
-                        />
-                        <Text>%</Text>
-                      </Box>
-                      <FormField
-                        control={form.control}
-                        name="no_penjualan"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input type="number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="mb-4 max-h-64 w-full overflow-auto"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        className="flex h-full w-full"
+                        classNames={{
+                          months:
+                            "flex w-full flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 flex-1",
+                          month: "space-y-4 w-full flex flex-col",
+                          table: "w-full h-full border-collapse space-y-1",
+                          head_row: "",
+                          row: "w-full mt-2",
+                        }}
                       />
-                    </Grid>
-                  </Box>
-                  <Grid columns={{ initial: "1", md: "3" }} gap="4">
-                    <Text className="text-right">Total</Text>
-                    <Box></Box>
-                    <FormField
-                      control={form.control}
-                      name="no_penjualan"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input type="number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
+          <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
+            <FormField
+              control={form.control}
+              name="customerId"
+              render={({ field }) => (
+                <FormItem className="flex w-full flex-col">
+                  <FormLabel>Customer</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value
+                            ? dataCustomer?.data.find(
+                                (customer) => customer.id === field.value,
+                              )?.nama
+                            : "Select customer"}
+                          <ChevronsUpDownIcon className="opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search customer..."
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>No customer found.</CommandEmpty>
+                          <CommandGroup>
+                            {dataCustomer &&
+                              dataCustomer?.data.map((customer) => (
+                                <CommandItem
+                                  value={customer.id}
+                                  key={customer.id}
+                                  onSelect={() => {
+                                    form.setValue("customerId", customer.id);
+                                  }}
+                                >
+                                  {customer.nama}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      customer.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
+          <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
+            <FormField
+              control={form.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="deskripsi...."
+                      rows={4}
+                      {...field}
+                      value={field.value ?? ""}
                     />
-                  </Grid>
-                </Box>
-              </Grid>
-              {/* Submit Button */}
-              <Box className="mt-4 flex items-center gap-2">
-                <Button
-                  type="submit"
-                  variant={"destructiveOnline"}
-                  className="mt-4"
-                >
-                  Batal
-                </Button>
-                <Button type="submit" className="mt-4">
-                  Simpan
-                </Button>
-              </Box>
-            </Box>
-          </form>
-        </Form>
-      </Box>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
+          <hr className="my-7" />
+          {/* <PurchaseOrderRow
+            control={control}
+            setValue={setValue}
+            watch={watch}
+          /> */}
+          <SaleOrder control={control} setValue={setValue} watch={watch} />
+          {/* Submit Button */}
+          <Box className="mt-4 flex items-center justify-end gap-2">
+            <Button
+              type="submit"
+              variant={"destructiveOnline"}
+              className="mt-4"
+            >
+              Batal
+            </Button>
+            <Button type="submit" className="mt-4">
+              Simpan
+            </Button>
+          </Box>
+        </form>
+      </Form>
     </Box>
   );
 };
