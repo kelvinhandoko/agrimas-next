@@ -1,5 +1,6 @@
 "use client";
 
+import { NUMERIC_PROPS } from "@/constant";
 import {
   type ProductPayload,
   productPayloadSchema,
@@ -9,8 +10,10 @@ import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
@@ -33,6 +36,7 @@ import {
 } from "@/components/ui/select";
 
 const AddNewProductPage = () => {
+  const router = useRouter();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<ProductPayload>({
@@ -40,6 +44,7 @@ const AddNewProductPage = () => {
     defaultValues: {
       name: "",
       price: 0,
+      sellingPrice: 0,
       quantity: 0,
       supplierId: "",
     },
@@ -50,7 +55,6 @@ const AddNewProductPage = () => {
   const { mutateAsync: createProduct } = api.product.create.useMutation();
   const onSubmit: SubmitHandler<ProductPayload> = async (data) => {
     setIsLoading(true);
-    console.log(data);
 
     try {
       toast.promise(
@@ -62,6 +66,7 @@ const AddNewProductPage = () => {
           success: async () => {
             await utils.product.getAll.invalidate();
             setIsLoading(false);
+            router.replace(paths.dataMaster.product.root);
             form.reset();
             return "Berhasil tambah produk";
           },
@@ -107,20 +112,20 @@ const AddNewProductPage = () => {
             />
             <FormField
               control={form.control}
-              name="price"
+              name="sellingPrice"
               render={({ field }) => (
                 <FormItem className="mb-3">
-                  <FormLabel>Harga Beli Produk</FormLabel>
+                  <FormLabel>Harga jual Produk</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Harga beli produk"
-                      min={0}
-                      {...field}
-                      onChange={(event) => {
-                        const value = Number(event.target.value);
-                        form.setValue("price", value);
-                      }}
+                    <NumericFormat
+                      placeholder="Harga jual produk"
+                      name={field.name}
+                      value={field.value === 0 ? "" : field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      {...NUMERIC_PROPS}
+                      displayType="input"
                     />
                   </FormControl>
                   <FormMessage />
@@ -156,19 +161,42 @@ const AddNewProductPage = () => {
             />
             <FormField
               control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormLabel>Harga Beli Produk Awal (optional)</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      placeholder="optional"
+                      name={field.name}
+                      value={field.value === 0 ? "" : field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      {...NUMERIC_PROPS}
+                      displayType="input"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="quantity"
               render={({ field }) => (
                 <FormItem className="mb-3">
-                  <FormLabel>Quantity Produk</FormLabel>
+                  <FormLabel>Quantity Produk Awal (optional)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Quantity produk"
+                      placeholder="optional"
                       min={0}
-                      {...field}
+                      name={field.name}
+                      value={field.value === 0 ? "" : field.value}
                       onChange={(event) => {
                         const value = Number(event.target.value);
-                        form.setValue("quantity", value);
+                        field.onChange(value);
                       }}
                     />
                   </FormControl>
@@ -176,23 +204,6 @@ const AddNewProductPage = () => {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="is_active"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>Status</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
             <Flex justify={"end"} className="mt-3 gap-x-3">
               <Link href={paths.dataMaster.product.root}>
                 <Button variant={"destructiveOnline"}>Batal</Button>

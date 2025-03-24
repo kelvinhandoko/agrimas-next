@@ -8,51 +8,13 @@ import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
-import { PurchaseOrder, purchaseOrderColumn } from "./Column";
-
-const purchaseOrderData: PurchaseOrder[] = [
-  {
-    noPurchaseOrder: "PO-20250301-001",
-    date: "2025-03-01",
-    supplier: "PT. Maju Jaya",
-    totalItem: 10,
-    totalPrice: 5000000,
-  },
-  {
-    noPurchaseOrder: "PO-20250305-002",
-    date: "2025-03-05",
-    supplier: "CV. Sumber Rezeki",
-    totalItem: 15,
-    totalPrice: 7500000,
-  },
-  {
-    noPurchaseOrder: "PO-20250310-003",
-    date: "2025-03-10",
-    supplier: "UD. Berkah Makmur",
-    totalItem: 8,
-    totalPrice: 3200000,
-  },
-  {
-    noPurchaseOrder: "PO-20250315-004",
-    date: "2025-03-15",
-    supplier: "PT. Indo Supplies",
-    totalItem: 20,
-    totalPrice: 10000000,
-  },
-  {
-    noPurchaseOrder: "PO-20250320-005",
-    date: "2025-03-20",
-    supplier: "CV. Makmur Sentosa",
-    totalItem: 12,
-    totalPrice: 6000000,
-  },
-];
+import { purchaseOrderColumn } from "./Column";
 
 const PurchaseOrderPage = () => {
-  // const { data, isLoading } = api.supplier.getAll.useQuery({});
-  // if (isLoading) {
-  //   return <LoadingIndicator />;
-  // }
+  const { data, isLoading } = api.purchase.getAll.useQuery({});
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
   return (
     <Box>
       <Box className="mb-8">
@@ -60,7 +22,7 @@ const PurchaseOrderPage = () => {
       </Box>
       <DataTable
         columns={purchaseOrderColumn()}
-        data={purchaseOrderData || []}
+        data={data?.data ?? []}
         path={paths.purchase.purchaseOrder.new}
         searchAble
         searchPlaceholder="cari no pesanan pembelian"

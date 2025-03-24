@@ -1,8 +1,9 @@
-import { PurchasePayload } from "@/model/purchase.model";
+import { NUMERIC_PROPS } from "@/constant";
+import { type PurchasePayload } from "@/model/purchase.model";
 import { formatPrice } from "@/utils/format-price";
 import { Box, Grid, Text } from "@radix-ui/themes";
-import { ChangeEvent } from "react";
-import { Control, UseFormSetValue } from "react-hook-form";
+import { type Control, type UseFormSetValue } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 import {
   FormControl,
@@ -45,12 +46,15 @@ const PurchaseOrderSummaryForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                            setValue("discount", Number(event.target.value));
-                          }}
+                        <NumericFormat
+                          placeholder="diskon"
+                          name={field.name}
+                          value={field.value === 0 ? "" : field.value}
+                          onValueChange={({ floatValue }) =>
+                            field.onChange(floatValue)
+                          }
+                          customInput={Input}
+                          displayType="input"
                         />
                       </FormControl>
                       <FormMessage />
@@ -71,12 +75,15 @@ const PurchaseOrderSummaryForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                            setValue("ppn", Number(event.target.value));
-                          }}
+                        <NumericFormat
+                          placeholder=""
+                          name={field.name}
+                          value={field.value === 0 ? "" : field.value}
+                          onValueChange={({ floatValue }) =>
+                            field.onChange(floatValue)
+                          }
+                          {...NUMERIC_PROPS}
+                          displayType="input"
                         />
                       </FormControl>
                       <FormMessage />

@@ -30,7 +30,7 @@ export default async function RootLayout({
             </Theme>
           </SessionProvider>
         </TRPCReactProvider>
-        <Toaster richColors />
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

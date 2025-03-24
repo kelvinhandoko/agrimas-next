@@ -6,11 +6,14 @@ import {
 } from "@/model/purchase.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
+import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Grid } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { CalendarIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { DateTime } from "luxon";
+import { useRouter } from "next/navigation";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -45,8 +48,10 @@ import { Textarea } from "@/components/ui/textarea";
 import PurchaseOrderRow from "./PurchaseOrderRow";
 
 const AddNewPurchaseOrderPage = () => {
+  const utils = api.useUtils();
+
   const defaultValues = {
-    purchaseDate: undefined,
+    purchaseDate: DateTime.now().toJSDate(),
     ref: "",
     note: "",
     discount: 0,
@@ -63,8 +68,10 @@ const AddNewPurchaseOrderPage = () => {
       },
     ],
   };
-
+  const router = useRouter();
   const { data: dataSuppliers, isLoading } = api.supplier.getAll.useQuery({});
+
+  const { mutateAsync: createPurchase } = api.purchase.create.useMutation();
 
   const form = useForm<PurchasePayload>({
     resolver: zodResolver(purchasePayloadSchema),
@@ -76,22 +83,23 @@ const AddNewPurchaseOrderPage = () => {
     control,
     formState: { errors },
     setValue,
-    getValues,
   } = form;
   const onSubmit: SubmitHandler<PurchasePayload> = async (data) => {
-    try {
-      console.log(data);
-      toast.success("Berhasil tambah pesanan pembelian");
-    } catch (error) {
-      console.log(error);
-    }
+    toast.promise(async () => await createPurchase(data), {
+      loading: "Loading...",
+      success: async (e) => {
+        await utils.purchase.getAll.invalidate();
+        router.replace(paths.purchase.purchaseOrder.root);
+        return `Berhasil menambahkan pembelian dengan no. pembelian ${e.ref}`;
+      },
+      error: (error) => {
+        return errorFormatter(error);
+      },
+    });
   };
-  console.log("error", errors);
 
   return (
     <Box>
-      {/* <pre>{JSON.stringify(errors, undefined, 2)}</pre> */}
-      {/* <pre>{JSON.stringify(getValues(), undefined, 2)}</pre> */}
       <Box className="mb-8">
         <BackButton path={paths.purchase.purchaseOrder.root} />
       </Box>
@@ -200,26 +208,25 @@ const AddNewPurchaseOrderPage = () => {
                         <CommandList>
                           <CommandEmpty>No supplier found.</CommandEmpty>
                           <CommandGroup>
-                            {dataSuppliers &&
-                              dataSuppliers?.data.map((supplier) => (
-                                <CommandItem
-                                  value={supplier.id}
-                                  key={supplier.id}
-                                  onSelect={() => {
-                                    form.setValue("supplierId", supplier.id);
-                                  }}
-                                >
-                                  {supplier.nama}
-                                  <CheckIcon
-                                    className={cn(
-                                      "ml-auto",
-                                      supplier.id === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
+                            {dataSuppliers?.data.map((supplier) => (
+                              <CommandItem
+                                value={supplier.nama}
+                                key={supplier.id}
+                                onSelect={() => {
+                                  form.setValue("supplierId", supplier.id);
+                                }}
+                              >
+                                {supplier.nama}
+                                <CheckIcon
+                                  className={cn(
+                                    "ml-auto",
+                                    supplier.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0",
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
                           </CommandGroup>
                         </CommandList>
                       </Command>
@@ -258,11 +265,7 @@ const AddNewPurchaseOrderPage = () => {
           />
           {/* Submit Button */}
           <Box className="mt-4 flex items-center justify-end gap-2">
-            <Button
-              type="submit"
-              variant={"destructiveOnline"}
-              className="mt-4"
-            >
+            <Button type="reset" variant={"destructiveOnline"} className="mt-4">
               Batal
             </Button>
             <Button type="submit" className="mt-4">

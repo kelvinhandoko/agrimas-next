@@ -14,15 +14,19 @@ export const createProductController = adminCompanyProcedure
     return await transactionService.startTransaction(async (tx) => {
       const productRepo = new ProductRepository(tx);
       const initialProductRepo = new InitialProductRepository(tx);
+
       const product = await createProductUseCase(productRepo)({
         ...input,
         companyId: ctx.session.user.companyId,
       });
-      await createInitialProductUseCase(initialProductRepo)({
-        ...input,
-        companyId: ctx.session.user.companyId,
-        productId: product.id,
-      });
+
+      if (input.quantity && input.price) {
+        await createInitialProductUseCase(initialProductRepo)({
+          ...input,
+          companyId: ctx.session.user.companyId,
+          productId: product.id,
+        });
+      }
       return product;
     });
   });

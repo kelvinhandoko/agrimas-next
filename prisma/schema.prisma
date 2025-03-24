@@ -38,8 +38,6 @@ model Company {
   DefaultAccount DefaultAccount[]
   purchases      Purchase[]
   receiveItems   ReceiveItem[]
-  purchases      Purchase[]
-  receiveItems   ReceiveItem[]
 }
 
 model User {
@@ -163,17 +161,11 @@ model JournalDetail {
 
 model Supplier {
   id        String     @id @default(cuid())
-  id        String     @id @default(cuid())
   nama      String
   alamat    String?
   companyId String
   company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   deleted   DateTime?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now()) @updatedAt
-  products  Product[]
-  purchases Purchase[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt
   products  Product[]
@@ -219,6 +211,7 @@ model Product {
   supplierId      String
   currentQuantity Int
   averagePrice    Int
+  sellingPrice    Int             @default(0)
   initialProduct  InitialProduct?
 }
 
@@ -388,12 +381,6 @@ enum TRANSACTION_STATUS {
   DIPROSES
 }
 
-enum TRANSACTION_STATUS {
-  SELESAI
-  DIANTAR_SEBAGIAN
-  DIPROSES
-}
-
 enum TRANSACTION_CATEGORY {
   PERSEDIAAN
   PENJUALAN
@@ -422,15 +409,4 @@ enum PaymentStatus {
   PAID
   REFUND
   HPP
-}
-
-enum TRANSACTION_PAYMENT_STATUS {
-  PAID
-  UNPAID
-  PARTIAL
-}
-
-enum PaymentStatus {
-  PAID
-  REFUND
 }

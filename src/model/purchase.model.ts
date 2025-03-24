@@ -7,7 +7,7 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 
-import { type WithCompany } from "@/server/common";
+import { type WithCompany, basicQuery } from "@/server/common";
 
 type PurchaseInclude<T> = {
   include?: Prisma.Subset<T, Prisma.PurchaseInclude>;
@@ -46,3 +46,9 @@ export const purchaseDetailQuerySchema = z.object({
 
 export type PurchaseDetailQuery<T> = z.infer<typeof purchaseDetailQuerySchema> &
   PurchaseInclude<T>;
+
+export const GetAllPurchaseQuerySchema = basicQuery;
+
+export type GetAllPurchaseQuery<T> = z.infer<typeof GetAllPurchaseQuerySchema> &
+  PurchaseInclude<T> &
+  WithCompany;

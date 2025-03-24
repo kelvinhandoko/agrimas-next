@@ -50,11 +50,11 @@ export const createReceiveItemDetailUseCase =
     const newQuantity = findPurchaseDetail.quantity + quantity;
     await repos.productRepo.updateStockAndAverage({
       productId,
-      currentPrice: findPurchaseDetail.netTotal,
+      currentPrice: findPurchaseDetail.netTotal / findPurchaseDetail.quantity,
       prevAveragePrice: findProduct.averagePrice,
       prevQuantity: findPurchaseDetail.quantity,
       currentQuantity: newQuantity,
-      prevPrice: findPurchaseDetail.netTotal,
+      prevPrice: findPurchaseDetail.netTotal / findPurchaseDetail.quantity,
     });
 
     await repos.receiveItemDetail.create(payload);

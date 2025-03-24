@@ -1,19 +1,25 @@
 "use client";
 
+import { NUMERIC_PROPS } from "@/constant";
 import { type PurchasePayload } from "@/model/purchase.model";
 import { api } from "@/trpc/react";
 import { formatPrice } from "@/utils/format-price";
 import { Box, Grid } from "@radix-ui/themes";
-import { PlusIcon, Trash2Icon } from "lucide-react";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
 import {
-  Control,
-  UseFormSetValue,
-  UseFormWatch,
+  CheckIcon,
+  ChevronsUpDownIcon,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  type Control,
+  type UseFormSetValue,
+  type UseFormWatch,
   useFieldArray,
   useWatch,
 } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 import { cn } from "@/lib/utils";
 
@@ -63,18 +69,25 @@ const PurchaseOrderRow = ({
 
   const [totalPerItem, setTotalPerItem] = useState<number[]>([]);
 
-  const { data: dataProducts, isLoading } = api.product.getAll.useQuery({});
+  const { data: dataProducts, isLoading } = api.product.getAll.useQuery(
+    {
+      supplierId: watch("supplierId"),
+    },
+    {
+      enabled: !!watch("supplierId"),
+    },
+  );
 
-  const detail = useWatch({ control, name: "detail" }) || [];
-  const discountAll = useWatch({ control, name: "discount" }) || 0;
-  const ppnAll = useWatch({ control, name: "ppn" }) || 0;
+  const detail = useWatch({ control, name: "detail" });
+  const discountAll = useWatch({ control, name: "discount" });
+  const ppnAll = useWatch({ control, name: "ppn" });
 
   const handleRemoveRow = (index: number) => {
-    console.log(index);
     if (detail.length > 1) {
       remove(index);
     }
   };
+
   const handleSelectProduct = (
     productId: string,
     averagePrice: number,
@@ -87,15 +100,14 @@ const PurchaseOrderRow = ({
     const totalPerItemArray = detail.map((item) => {
       const quantity = item.quantity || 1;
       const price = item.price || 0;
-      const discount = item.discount || 0;
+      const discount = item.discount ?? 0;
       const discountPercent = discount / 100;
       const ppn = item.ppn || 0;
-      const ppnPercent = ppn / 100;
 
       const totalBeforeTax =
         quantity * price - quantity * price * discountPercent;
-      const ppnAmount = totalBeforeTax * ppnPercent;
-      return totalBeforeTax + ppnAmount;
+
+      return totalBeforeTax + ppn;
     });
 
     setTotalPerItem(totalPerItemArray);
@@ -107,10 +119,8 @@ const PurchaseOrderRow = ({
 
   useEffect(() => {
     const discountAllPercent = discountAll / 100;
-    const ppnAllPercent = ppnAll / 100;
     const totalAllBeforeTax = subTotal - subTotal * discountAllPercent;
-    const ppnAllAmount = totalAllBeforeTax * ppnAllPercent;
-    const totalAllAfterTax = totalAllBeforeTax + ppnAllAmount;
+    const totalAllAfterTax = totalAllBeforeTax + ppnAll;
     setTotalAll(totalAllAfterTax);
   }, [discountAll, ppnAll, subTotal]);
 
@@ -150,17 +160,20 @@ const PurchaseOrderRow = ({
                     <FormControl>
                       <Button
                         variant="outline"
+                        disabled={!watch("supplierId")}
                         role="combobox"
                         className={cn(
                           "w-full justify-between",
                           !field.value && "text-muted-foreground",
                         )}
                       >
-                        {field.value
-                          ? dataProducts?.[0].find(
-                              (product) => product.id === field.value,
-                            )?.name
-                          : "Select product"}
+                        {!watch("supplierId")
+                          ? "Pilih Supplier"
+                          : field.value
+                            ? dataProducts?.[0].find(
+                                (product) => product.id === field.value,
+                              )?.name
+                            : "Select product"}
                         <ChevronsUpDownIcon className="opacity-50" />
                       </Button>
                     </FormControl>
@@ -174,30 +187,29 @@ const PurchaseOrderRow = ({
                       <CommandList>
                         <CommandEmpty>No product found.</CommandEmpty>
                         <CommandGroup>
-                          {dataProducts &&
-                            dataProducts?.[0].map((product) => (
-                              <CommandItem
-                                value={product.id}
-                                key={product.id}
-                                onSelect={() =>
-                                  handleSelectProduct(
-                                    product.id,
-                                    product.averagePrice,
-                                    index,
-                                  )
-                                }
-                              >
-                                {product.name}
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto",
-                                    product.id === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
+                          {dataProducts?.[0].map((product) => (
+                            <CommandItem
+                              value={product.id}
+                              key={product.id}
+                              onSelect={() =>
+                                handleSelectProduct(
+                                  product.id,
+                                  product.averagePrice,
+                                  index,
+                                )
+                              }
+                            >
+                              {product.name}
+                              <CheckIcon
+                                className={cn(
+                                  "ml-auto",
+                                  product.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
                         </CommandGroup>
                       </CommandList>
                     </Command>
@@ -214,16 +226,15 @@ const PurchaseOrderRow = ({
               <FormItem className="flex w-full flex-col gap-2">
                 <FormLabel>Qty</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    min={0}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setValue(
-                        `detail.${index}.quantity`,
-                        Number(event.target.value),
-                      );
-                    }}
+                  <NumericFormat
+                    placeholder="qty"
+                    name={field.name}
+                    value={field.value === 0 ? "" : field.value}
+                    onValueChange={({ floatValue }) =>
+                      field.onChange(floatValue)
+                    }
+                    displayType="input"
+                    customInput={Input}
                   />
                 </FormControl>
                 <FormMessage />
@@ -237,7 +248,16 @@ const PurchaseOrderRow = ({
               <FormItem className="flex w-full flex-col gap-2">
                 <FormLabel>Harga Barang</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} min={0} />
+                  <NumericFormat
+                    placeholder="masukan harga barang"
+                    name={field.name}
+                    value={field.value === 0 ? "" : field.value}
+                    onValueChange={({ floatValue }) =>
+                      field.onChange(floatValue)
+                    }
+                    {...NUMERIC_PROPS}
+                    displayType="input"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -250,16 +270,15 @@ const PurchaseOrderRow = ({
               <FormItem className="flex w-full flex-col gap-2">
                 <FormLabel>Diskon</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    min={0}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setValue(
-                        `detail.${index}.discount`,
-                        Number(event.target.value),
-                      );
-                    }}
+                  <NumericFormat
+                    placeholder="diskon"
+                    name={field.name}
+                    value={field.value === 0 ? "" : field.value}
+                    onValueChange={({ floatValue }) =>
+                      field.onChange(floatValue)
+                    }
+                    customInput={Input}
+                    displayType="input"
                   />
                 </FormControl>
                 <FormMessage />
@@ -271,18 +290,17 @@ const PurchaseOrderRow = ({
             name={`detail.${index}.ppn`}
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-2">
-                <FormLabel>PPN</FormLabel>
+                <FormLabel>PPN (opsional)</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    min={0}
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                      setValue(
-                        `detail.${index}.ppn`,
-                        Number(event.target.value),
-                      );
-                    }}
+                  <NumericFormat
+                    placeholder="ppn total"
+                    name={field.name}
+                    value={field.value === 0 ? "" : field.value}
+                    onValueChange={({ floatValue }) =>
+                      field.onChange(floatValue)
+                    }
+                    {...NUMERIC_PROPS}
+                    displayType="input"
                   />
                 </FormControl>
                 <FormMessage />

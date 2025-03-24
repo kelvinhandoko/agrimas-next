@@ -1,4 +1,5 @@
 import {
+  type GetAllPurchaseQuery,
   type PurchaseDetailQuery,
   type PurchasePayload,
   type UpdatePurchaseStatusPayload,
@@ -35,7 +36,10 @@ export class PurchaseRepository extends BaseRepository {
       ppn,
     } = payload;
     const totalBeforeDiscount = detail.reduce(
-      (prev, curr) => prev + curr.price * curr.quantity - (curr.ppn ?? 0),
+      (prev, curr) =>
+        prev +
+        discountHandler(curr.price, curr.discount ?? 0) * curr.quantity -
+        (curr.ppn ?? 0),
       0,
     );
     const totalTax = ppn ?? 0;
@@ -46,7 +50,7 @@ export class PurchaseRepository extends BaseRepository {
         supplierId,
         discount,
         note,
-        ref: ref ?? (await this._createUniqueRef()),
+        ref: ref?.length ? ref : await this._createUniqueRef(),
         totalBeforeDiscount,
         ppn: totalTax,
         companyId,
@@ -73,5 +77,36 @@ export class PurchaseRepository extends BaseRepository {
       where: { id },
       include: include ?? (undefined as unknown as T),
     });
+  }
+
+  async findMany<T extends Prisma.PurchaseInclude>(
+    query: GetAllPurchaseQuery<T>,
+  ) {
+    const { include, limit, page, search } = query;
+    const whereClause: Prisma.PurchaseWhereInput = {};
+    if (search) {
+      whereClause.OR = [
+        {
+          ref: {
+            contains: search,
+          },
+          id: {
+            contains: search,
+          },
+        },
+      ];
+    }
+
+    const [data, meta] = await this._db.purchase
+      .paginate({
+        where: whereClause,
+        include: include ?? (undefined as unknown as T),
+      })
+      .withPages({
+        limit,
+        page,
+        includePageCount: true,
+      });
+    return { data, meta };
   }
 }

@@ -1,10 +1,13 @@
+import { DATE_FORMAT, NUMERIC_PROPS } from "@/constant";
 import { paths } from "@/paths/paths";
-import { formatPrice } from "@/utils/format-price";
 import { Flex } from "@radix-ui/themes";
-import { createColumnHelper } from "@tanstack/react-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { EyeIcon, PencilIcon } from "lucide-react";
+import { DateTime } from "luxon";
 import Link from "next/link";
+import { NumericFormat } from "react-number-format";
+
+import { type PurchaseRouterOutputs } from "@/server/purchase/purchase.router";
 
 import DeleteModal from "@/components/DeleteModal";
 
@@ -16,41 +19,45 @@ export type PurchaseOrder = {
   totalPrice: number;
 };
 
-const columnHelper = createColumnHelper<PurchaseOrder>();
+const columnHelper =
+  createColumnHelper<PurchaseRouterOutputs["getAll"]["data"][number]>();
 
 export const purchaseOrderColumn = () =>
   [
-    columnHelper.accessor("noPurchaseOrder", {
+    columnHelper.accessor("ref", {
       header: "No Faktur",
-      cell: ({ row }) => <div>{row.original.noPurchaseOrder}</div>,
+      cell: ({ row, getValue }) => <div>{getValue()}</div>,
     }),
-    columnHelper.accessor("date", {
+    columnHelper.accessor("purchaseDate", {
       id: "date",
       header: "Date",
-      cell: ({ row }) => {
-        return <div>{row.original.date}</div>;
-      },
+      cell: ({ getValue }) =>
+        DateTime.fromJSDate(getValue()).toFormat(DATE_FORMAT),
     }),
 
-    columnHelper.accessor("supplier", {
+    columnHelper.accessor("supplier.nama", {
       id: "supplier",
       header: "Supplier",
-      cell: ({ row }) => {
-        return <div>{row.original.supplier}</div>;
-      },
+      cell: ({ getValue }) => getValue(),
     }),
-    columnHelper.accessor("totalPrice", {
+    columnHelper.accessor("netTotal", {
       id: "totalPrice",
       header: "Total Harga",
-      cell: ({ row }) => {
-        return <div>{row.original.totalPrice}</div>;
-      },
+      cell: ({ getValue }) => (
+        <NumericFormat
+          value={getValue()}
+          {...NUMERIC_PROPS}
+          displayType="text"
+        />
+      ),
     }),
-    columnHelper.accessor("totalItem", {
+    columnHelper.accessor("purchaseDetail", {
       id: "totalItem",
       header: "Total Barang",
-      cell: ({ row }) => {
-        return <div>{row.original.totalItem}</div>;
+      cell: ({ getValue }) => {
+        return (
+          <p>{getValue().reduce((prev, curr) => prev + curr.quantity, 0)}</p>
+        );
       },
     }),
     {
@@ -72,12 +79,12 @@ export const purchaseOrderColumn = () =>
               <PencilIcon className="text-yellow-400" />
             </Link>
             <DeleteModal
-              id={row.original.noPurchaseOrder}
-              name={row.original.noPurchaseOrder}
+              id={row.original.id}
+              name={row.original.ref}
               handleDelete={() => {}}
             />
           </Flex>
         );
       },
     },
-  ] as ColumnDef<PurchaseOrder>[];
+  ] as ColumnDef<PurchaseRouterOutputs["getAll"]["data"][number]>[];

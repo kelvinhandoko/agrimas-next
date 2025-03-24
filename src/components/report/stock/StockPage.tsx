@@ -6,7 +6,7 @@ import { Box, Flex, Text } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";

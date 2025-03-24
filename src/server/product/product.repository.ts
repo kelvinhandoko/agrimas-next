@@ -46,24 +46,27 @@ export class ProductRepository extends BaseRepository {
   }
 
   async create(payload: ProductPayload) {
-    const { companyId, name, price, quantity, supplierId } = payload;
+    const { companyId, name, price, quantity, supplierId, sellingPrice } =
+      payload;
     return await this._db.product.create({
       data: {
-        averagePrice: price,
+        averagePrice: price ?? 0,
+        sellingPrice,
         companyId,
         name,
-        currentQuantity: quantity,
+        currentQuantity: quantity ?? 0,
         supplierId,
       },
     });
   }
 
   async update(payload: ProductPayload) {
-    const { companyId, name, supplierId, id } = payload;
+    const { companyId, name, supplierId, id, sellingPrice } = payload;
     return await this._db.product.update({
       where: { id },
       data: {
         companyId,
+        sellingPrice,
         name,
         supplierId,
       },
@@ -71,17 +74,26 @@ export class ProductRepository extends BaseRepository {
   }
 
   async findAll(query: GetAllProductQuery) {
-    const { companyId, limit, page, search } = query;
+    const { companyId, limit, page, search, supplierId } = query;
     const whereClause: Prisma.ProductWhereInput = {};
+
     whereClause.companyId = companyId;
     if (search) {
       whereClause.name = {
         contains: search,
       };
     }
+
+    if (supplierId) {
+      whereClause.supplierId = supplierId;
+    }
+
     return await this._db.product
       .paginate({
         where: whereClause,
+        orderBy: {
+          name: "asc",
+        },
       })
       .withPages({ limit, page });
   }
@@ -89,6 +101,20 @@ export class ProductRepository extends BaseRepository {
   async findDetail(id: string) {
     return await this._db.product.findUnique({
       where: { id },
+    });
+  }
+
+  async isExists(payload: {
+    name: string;
+    companyId: string;
+    supplierId: string;
+  }) {
+    return await this._db.product.findFirst({
+      where: {
+        name: payload.name,
+        companyId: payload.companyId,
+        supplierId: payload.supplierId,
+      },
     });
   }
 

@@ -1,11 +1,9 @@
 "use client";
 
 import { paths } from "@/paths/paths";
-import { api } from "@/trpc/react";
 import { Box } from "@radix-ui/themes";
 
 import BackButton from "@/components/BackButton";
-import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
 import { purchaseFakturColumn } from "./Column";

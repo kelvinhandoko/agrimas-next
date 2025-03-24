@@ -23,8 +23,12 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
       header: () => <div>Nama Produk</div>,
       cell: ({ row }) => <div className="lowercase">{row.original.name}</div>,
     }),
+    columnHelper.accessor("sellingPrice", {
+      header: () => <div>Harga jual</div>,
+      cell: ({ getValue }) => <div>{formatPrice(getValue())}</div>,
+    }),
     columnHelper.accessor("averagePrice", {
-      header: () => <div>Harga Produk</div>,
+      header: () => <div>Harga rata-rata</div>,
       cell: ({ row }) => <div>{formatPrice(row.original.averagePrice)}</div>,
     }),
     columnHelper.accessor("currentQuantity", {

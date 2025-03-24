@@ -1,18 +1,16 @@
 "use client";
 
-import { SalePayload, salePayloadSchema } from "@/model/dummy/sale-order.model";
 import {
-  type PurchasePayload,
-  purchasePayloadSchema,
-} from "@/model/purchase.model";
+  type SalePayload,
+  salePayloadSchema,
+} from "@/model/dummy/sale-order.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Grid } from "@radix-ui/themes";
 import { format } from "date-fns";
-import { CalendarIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { CalendarIcon } from "lucide-react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -202,26 +200,25 @@ const AddNewSaleOrderPage = () => {
                         <CommandList>
                           <CommandEmpty>No customer found.</CommandEmpty>
                           <CommandGroup>
-                            {dataCustomer &&
-                              dataCustomer?.data.map((customer) => (
-                                <CommandItem
-                                  value={customer.id}
-                                  key={customer.id}
-                                  onSelect={() => {
-                                    form.setValue("customerId", customer.id);
-                                  }}
-                                >
-                                  {customer.nama}
-                                  <CheckIcon
-                                    className={cn(
-                                      "ml-auto",
-                                      customer.id === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
+                            {dataCustomer?.data.map((customer) => (
+                              <CommandItem
+                                value={customer.id}
+                                key={customer.id}
+                                onSelect={() => {
+                                  form.setValue("customerId", customer.id);
+                                }}
+                              >
+                                {customer.nama}
+                                <CheckIcon
+                                  className={cn(
+                                    "ml-auto",
+                                    customer.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0",
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
                           </CommandGroup>
                         </CommandList>
                       </Command>
