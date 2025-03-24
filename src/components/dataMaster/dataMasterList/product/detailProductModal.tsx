@@ -1,7 +1,7 @@
 import { api } from "@/trpc/react";
 import { formatPrice } from "@/utils/format-price";
-import { Box, Text } from "@radix-ui/themes";
-import { Eye, Trash2, Trash2Icon } from "lucide-react";
+import { Text } from "@radix-ui/themes";
+import { Eye } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export default function DetailProductModal({
@@ -75,7 +75,9 @@ export default function DetailProductModal({
             <span className="mt-4 block">
               <Text>Alamat Supplier</Text>
               <Text className="block text-base text-black">
-                {supplierProduct?.alamat ? supplierProduct?.alamat : "-"}
+                {supplierProduct?.alamat?.length
+                  ? supplierProduct?.alamat
+                  : "-"}
               </Text>
             </span>
           </AlertDialogDescription>

@@ -73,7 +73,7 @@ const ProfilePage = () => {
     }
   }, [data?.user]);
 
-  const detectChangeInput = form.watch("nama") === data?.user.username!;
+  const detectChangeInput = form.watch("nama") === data?.user.username;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

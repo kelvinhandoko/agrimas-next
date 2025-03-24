@@ -4,9 +4,9 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Grid, Text } from "@radix-ui/themes";
 import { format } from "date-fns";
-import { CalendarIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { CalendarIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";

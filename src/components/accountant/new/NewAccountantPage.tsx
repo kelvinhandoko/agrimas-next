@@ -5,7 +5,6 @@ import { api } from "@/trpc/react";
 import { Laporan, NormalPosition } from "@prisma/client";
 import { TRPCClientError } from "@trpc/client";
 import { camelCase } from "lodash";
-import { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 

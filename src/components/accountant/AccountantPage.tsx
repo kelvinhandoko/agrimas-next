@@ -1,9 +1,7 @@
 "use client";
 
-import { LIMIT } from "@/constant";
 import { dummyAccountResponse } from "@/data/dummyAccountResponse";
 import { paths } from "@/paths/paths";
-import { api } from "@/trpc/react";
 import { Box, Flex } from "@radix-ui/themes";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +9,6 @@ import Link from "next/link";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,

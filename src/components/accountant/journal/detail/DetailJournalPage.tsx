@@ -6,7 +6,6 @@ import BackButton from "@/components/BackButton";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,

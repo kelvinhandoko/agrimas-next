@@ -15,7 +15,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export default function DetailSupplierModal({
-  id,
   name,
   alamat,
 }: {

@@ -2,11 +2,10 @@
 
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
-import { Box, Grid, Text } from "@radix-ui/themes";
+import { Box, Text } from "@radix-ui/themes";
 import { ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
@@ -22,7 +21,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,

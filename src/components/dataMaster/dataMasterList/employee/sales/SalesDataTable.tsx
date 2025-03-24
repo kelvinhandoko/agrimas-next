@@ -38,7 +38,7 @@ const SalesDataTable = () => {
   return (
     <DataTable
       columns={salesColumn({ handleDeleteSales })}
-      data={data?.[0] || []}
+      data={data?.[0] ?? []}
       path={paths.dataMaster.employee.newSales}
       buttonAddName="Tambah Sales"
       titleTable="Data Sales"

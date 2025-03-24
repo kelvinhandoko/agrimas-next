@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function DeleteCustomerModal({
-  id,
   name,
 }: {
   id: string;

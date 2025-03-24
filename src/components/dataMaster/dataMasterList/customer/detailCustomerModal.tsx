@@ -1,5 +1,5 @@
-import { Box, Text } from "@radix-ui/themes";
-import { Eye, Trash2, Trash2Icon } from "lucide-react";
+import { Text } from "@radix-ui/themes";
+import { Eye } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 export default function DetailCustomerModal({
@@ -56,7 +56,7 @@ export default function DetailCustomerModal({
             <span className="mt-4 block">
               <Text>Alamat</Text>
               <Text className="block text-base text-black">
-                {alamat ? alamat : "-"}
+                {alamat?.length ? alamat : "-"}
               </Text>
             </span>
           </AlertDialogDescription>

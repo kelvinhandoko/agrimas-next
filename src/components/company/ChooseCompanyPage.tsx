@@ -38,7 +38,7 @@ import { Textarea } from "../ui/textarea";
 
 const ChooseCompanyPage = () => {
   const utils = api.useUtils();
-  const { update, data } = useSession();
+  const { update } = useSession();
   const { mutateAsync: createCompany } = api.company.create.useMutation();
 
   const { data: userCompanies, isLoading } =

@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import ReceiveablePage from "@/components/report/receiveable/ReceiveablePage";
 

@@ -54,7 +54,7 @@ export default function ForgotPassword() {
               Forgot Password?
             </Text>
             <Text size={"3"} color="gray">
-              No worries, we'll send your reset instruction
+              No worries, we&apos;ll send your reset instruction
             </Text>
           </Flex>
           <Callout.Root color="green" role="alert" my={"2"}>

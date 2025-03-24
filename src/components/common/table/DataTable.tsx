@@ -103,7 +103,7 @@ const DataTable = <TData, TValue>({
       <CardContent>
         <div className="flex items-center justify-between py-4">
           {searchAble && <SearchInput placeholder={searchPlaceholder} />}
-          <Link href={path ? path : ""}>
+          <Link href={path ?? ""}>
             <Button>
               <PlusIcon />
               {buttonAddName}

@@ -55,7 +55,7 @@ const AddNewProductPage = () => {
     try {
       toast.promise(
         async () => {
-          createProduct(data);
+          await createProduct(data);
         },
         {
           loading: "Memproses...",

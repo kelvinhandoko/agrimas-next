@@ -5,7 +5,7 @@ import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { EyeIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
-import { JournalRouterOutputs } from "@/server/journal/journal.router";
+import { type JournalRouterOutputs } from "@/server/journal/journal.router";
 
 import DeleteModal from "@/components/DeleteModal";
 

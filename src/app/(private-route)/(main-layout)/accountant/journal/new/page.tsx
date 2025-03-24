@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import NewJournalPage from "@/components/accountant/journal/new/NewJournalPage";
 

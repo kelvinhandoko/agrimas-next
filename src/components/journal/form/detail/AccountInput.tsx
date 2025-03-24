@@ -69,7 +69,7 @@ const AccountInput: FC<AccountInputProps> = ({ control, index }) => {
       limit: LIMIT,
       search: debounceSearch,
     },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor },
+    { getNextPageParam: (lastPage) => lastPage.meta.endCursor },
   );
   const accounts = accountData?.pages.flatMap((page) => page.data) ?? [];
 
