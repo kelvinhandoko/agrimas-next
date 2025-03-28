@@ -1,13 +1,14 @@
 // tests/router.test.ts
-import { db } from "@/server";
 import { createCaller } from "@/trpc/root";
 import { headers } from "next/headers";
 import { describe, expect, it } from "vitest";
 
+import { testDb } from "../setup";
+
 describe("test company procedure", async () => {
   const header = await headers();
   const caller = createCaller({
-    db: db,
+    db: testDb,
     session: {
       user: {
         companyId: "1",

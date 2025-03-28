@@ -47,12 +47,12 @@ export const createReceiveItemDetailUseCase =
       totalReceive: newPurchaseReceive,
     });
 
-    const newQuantity = findPurchaseDetail.quantity + quantity;
+    const newQuantity = findProduct.currentQuantity + quantity;
     await repos.productRepo.updateStockAndAverage({
       productId,
       currentPrice: findPurchaseDetail.netTotal / findPurchaseDetail.quantity,
       prevAveragePrice: findProduct.averagePrice,
-      prevQuantity: findPurchaseDetail.quantity,
+      prevQuantity: findProduct.currentQuantity,
       currentQuantity: newQuantity,
       prevPrice: findPurchaseDetail.netTotal / findPurchaseDetail.quantity,
     });

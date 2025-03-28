@@ -35,15 +35,16 @@ export class PurchaseRepository extends BaseRepository {
       companyId,
       ppn,
     } = payload;
-    const totalBeforeDiscount = detail.reduce(
-      (prev, curr) =>
-        prev +
-        discountHandler(curr.price, curr.discount ?? 0) * curr.quantity -
-        (curr.ppn ?? 0),
-      0,
-    );
-    const totalTax = ppn ?? 0;
-    const netTotal = discountHandler(totalBeforeDiscount, discount) + totalTax;
+    const totalBeforeDiscount = detail.reduce((prev, curr) => {
+      const itemTotal =
+        discountHandler(curr.price, curr.discount ?? 0) * curr.quantity;
+      return prev + itemTotal;
+    }, 0);
+
+    const discountedTotal = discountHandler(totalBeforeDiscount, discount);
+    const ppnPercent = (ppn ?? 0) / 100;
+    const totalTax = discountedTotal * ppnPercent;
+    const netTotal = discountedTotal + totalTax;
     return await this._db.purchase.create({
       data: {
         purchaseDate,

@@ -62,7 +62,7 @@ const PurchaseFakturSummaryForm = ({
           </Box>
           <Box className="flex">
             <Grid columns={{ initial: "1", md: "3" }} gap="4">
-              <Text className="text-right">PPN</Text>
+              <Text className="text-right">PPN (%)</Text>
               <Box></Box>
               <Box className="flex items-center gap-3">
                 <FormField

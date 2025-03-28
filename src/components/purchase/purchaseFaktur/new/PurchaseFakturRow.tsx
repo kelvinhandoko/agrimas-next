@@ -271,7 +271,7 @@ const PurchaseFakturRow = ({
             name={`detail.${index}.ppn`}
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-2">
-                <FormLabel>PPN</FormLabel>
+                <FormLabel>PPN (%)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"

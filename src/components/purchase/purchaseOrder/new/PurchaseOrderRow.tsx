@@ -1,6 +1,6 @@
 "use client";
 
-import { NUMERIC_PROPS } from "@/constant";
+import { NUMERIC_PROPS, PPN } from "@/constant";
 import { type PurchasePayload } from "@/model/purchase.model";
 import { api } from "@/trpc/react";
 import { formatPrice } from "@/utils/format-price";
@@ -102,12 +102,14 @@ const PurchaseOrderRow = ({
       const price = item.price || 0;
       const discount = item.discount ?? 0;
       const discountPercent = discount / 100;
-      const ppn = item.ppn || 0;
+      const ppnPercent = (item.ppn || 0) / 100;
 
       const totalBeforeTax =
         quantity * price - quantity * price * discountPercent;
 
-      return totalBeforeTax + ppn;
+      const ppnAmount = totalBeforeTax * ppnPercent;
+
+      return totalBeforeTax + ppnAmount;
     });
 
     setTotalPerItem(totalPerItemArray);
@@ -120,7 +122,9 @@ const PurchaseOrderRow = ({
   useEffect(() => {
     const discountAllPercent = discountAll / 100;
     const totalAllBeforeTax = subTotal - subTotal * discountAllPercent;
-    const totalAllAfterTax = totalAllBeforeTax + ppnAll;
+    const ppnAllPercent = ppnAll / 100;
+    const ppnAmount = totalAllBeforeTax * ppnAllPercent;
+    const totalAllAfterTax = totalAllBeforeTax + ppnAmount;
     setTotalAll(totalAllAfterTax);
   }, [discountAll, ppnAll, subTotal]);
 
@@ -290,7 +294,7 @@ const PurchaseOrderRow = ({
             name={`detail.${index}.ppn`}
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-2">
-                <FormLabel>PPN (opsional)</FormLabel>
+                <FormLabel>PPN (%) (opsional)</FormLabel>
                 <FormControl>
                   <NumericFormat
                     placeholder="ppn total"
