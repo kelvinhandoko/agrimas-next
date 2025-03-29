@@ -4,12 +4,13 @@ import { BaseRepository } from "@/server/common";
 
 export class ReceiveItemDetailRepository extends BaseRepository {
   async create(payload: ReceiveItemDetailPayload) {
-    const { productId, quantity, receiveItemId } = payload;
+    const { productId, quantity, receiveItemId, purchaseId } = payload;
     await this._db.receiveItemDetail.create({
       data: {
         productId,
         quantity,
         receiveId: receiveItemId,
+        purchaseDetailId: payload.purchaseDetailId,
       },
     });
   }

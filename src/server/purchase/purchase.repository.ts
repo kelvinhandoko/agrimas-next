@@ -56,17 +56,16 @@ export class PurchaseRepository extends BaseRepository {
         ppn: totalTax,
         companyId,
         status: "DIPROSES",
-        paymentStatus: "UNPAID",
         netTotal,
       },
     });
   }
 
   async updateStatus(payload: UpdatePurchaseStatusPayload) {
-    const { id, paymentStatus, status } = payload;
+    const { id, status } = payload;
     return await this._db.purchase.update({
       where: { id },
-      data: { status, paymentStatus },
+      data: { status },
     });
   }
 

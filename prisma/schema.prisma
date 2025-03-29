@@ -17,27 +17,28 @@ datasource db {
 
 // Necessary for Next auth
 model Company {
-  id             String           @id @default(cuid())
-  name           String           @unique
-  address        String?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  UserCompany    User_Company[]
-  groupAccount   GroupAccount[]
-  account        Account[]
-  Report_Account Report_Account[]
-  SubAcount      SubAccount[]
-  Journal        Journal[]
-  suppliers      Supplier[]
-  customers      Customer[]
-  ErrorLog       ErrorLog[]
-  deleted        DateTime?
-  Sales          Sales[]
-  Product        Product[]
-  InitialProduct InitialProduct[]
-  DefaultAccount DefaultAccount[]
-  purchases      Purchase[]
-  receiveItems   ReceiveItem[]
+  id              String            @id @default(cuid())
+  name            String            @unique
+  address         String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  UserCompany     User_Company[]
+  groupAccount    GroupAccount[]
+  account         Account[]
+  Report_Account  Report_Account[]
+  SubAcount       SubAccount[]
+  Journal         Journal[]
+  suppliers       Supplier[]
+  customers       Customer[]
+  ErrorLog        ErrorLog[]
+  deleted         DateTime?
+  Sales           Sales[]
+  Product         Product[]
+  InitialProduct  InitialProduct[]
+  DefaultAccount  DefaultAccount[]
+  purchases       Purchase[]
+  receiveItems    ReceiveItem[]
+  PurchaseInvoice PurchaseInvoice[]
 }
 
 model User {
@@ -229,7 +230,7 @@ model InitialProduct {
 }
 
 model Purchase {
-  id                  String                     @id @default(cuid())
+  id                  String             @id @default(cuid())
   ref                 String
   purchaseDate        DateTime
   totalBeforeDiscount Int
@@ -237,70 +238,92 @@ model Purchase {
   note                String?
   discount            Int
   supplierId          String
-  supplier            Supplier                   @relation(fields: [supplierId], references: [id])
+  supplier            Supplier           @relation(fields: [supplierId], references: [id])
   ppn                 Int
   companyId           String
-  company             Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company             Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
   deleted             DateTime?
-  status              TRANSACTION_STATUS         @default(DIPROSES)
-  paymentStatus       TRANSACTION_PAYMENT_STATUS @default(UNPAID)
-  createdAt           DateTime                   @default(now())
-  updatedAt           DateTime                   @updatedAt
+  status              TRANSACTION_STATUS @default(DIPROSES)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
   ReceiveItem         ReceiveItem[]
   purchaseDetail      PurchaseDetail[]
 }
 
 model PurchaseDetail {
-  id                  String    @id @default(cuid())
+  id                  String              @id @default(cuid())
   purchaseId          String
   productId           String
   quantity            Int
   price               Int
   discount            Int
   totalBeforeDiscount Int
-  ppn                 Int       @default(0)
+  ppn                 Int                 @default(0)
   netTotal            Int
-  totalReceive        Int       @default(0)
+  totalReceive        Int                 @default(0)
   deleted             DateTime?
-  purchase            Purchase  @relation(fields: [purchaseId], references: [id])
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  purchase            Purchase            @relation(fields: [purchaseId], references: [id])
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  receiveItemDetail   ReceiveItemDetail[]
 }
 
 model PurchasePayment {
-  id              String        @id @default(cuid())
-  paymentDate     DateTime
-  purchaseId      String
-  amount          Int
-  note            String?
-  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  deleted         DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  paymentMethodId String
+  id                String          @id @default(cuid())
+  paymentDate       DateTime
+  purchaseInvoiceId String
+  purchaseInvoice   PurchaseInvoice @relation(fields: [purchaseInvoiceId], references: [id])
+  amount            Int
+  note              String?
+  paymentMethod     PaymentMethod   @relation(fields: [paymentMethodId], references: [id])
+  deleted           DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  paymentMethodId   String
 }
 
 model ReceiveItem {
-  id          String    @id @default(cuid())
-  purchaseId  String
-  receiveDate DateTime
-  purchase    Purchase  @relation(fields: [purchaseId], references: [id])
-  deleted     DateTime?
-  note        String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId   String
+  id                String              @id @default(cuid())
+  purchaseId        String
+  receiveDate       DateTime
+  purchase          Purchase            @relation(fields: [purchaseId], references: [id])
+  deleted           DateTime?
+  note              String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId         String
+  totalAmount       Int                 @default(0)
+  purchaseInvoice   PurchaseInvoice[]
+  receiveItemDetail ReceiveItemDetail[]
 }
 
 model ReceiveItemDetail {
-  id        String    @id @default(cuid())
-  receiveId String
-  productId String
-  quantity  Int
-  deleted   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id               String         @id @default(cuid())
+  receiveId        String
+  receiveItem      ReceiveItem    @relation(fields: [receiveId], references: [id])
+  productId        String
+  quantity         Int
+  deleted          DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  purchaseDetailId String
+  purchaseDetail   PurchaseDetail @relation(fields: [purchaseDetailId], references: [id])
+}
+
+model PurchaseInvoice {
+  id               String                     @id @default(cuid())
+  date             DateTime
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  deleted          DateTime?
+  receiveId        String
+  receiveItem      ReceiveItem                @relation(fields: [receiveId], references: [id])
+  company          Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId        String
+  paymentStatus    TRANSACTION_PAYMENT_STATUS @default(UNPAID)
+  purchasePayments PurchasePayment[]
+  totalPayment     Int                        @default(0)
 }
 
 model PaymentMethod {

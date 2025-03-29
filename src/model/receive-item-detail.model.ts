@@ -3,7 +3,7 @@ import { z } from "zod";
 export const receiveItemDetailPayloadSchema = z.object({
   id: z.string().optional().describe("id detail penerimaan"),
   receiveItemId: z.string().describe("id penerimaan"),
-
+  purchaseDetailId: z.string().describe("id detail pembelian"),
   productId: z.string().describe("id produk"),
   quantity: z
     .number()

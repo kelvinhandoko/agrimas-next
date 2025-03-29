@@ -1,10 +1,5 @@
 import { purchaseDetailPayloadSchema } from "@/model/purchase-detail.model";
-import { purchasePaymentPayloadSchema } from "@/model/purchase-payment.model";
-import {
-  type Prisma,
-  TRANSACTION_PAYMENT_STATUS,
-  TRANSACTION_STATUS,
-} from "@prisma/client";
+import { type Prisma, TRANSACTION_STATUS } from "@prisma/client";
 import { z } from "zod";
 
 import { type WithCompany, basicQuery } from "@/server/common";
@@ -24,7 +19,6 @@ export const purchasePayloadSchema = z.object({
   detail: z
     .array(purchaseDetailPayloadSchema.omit({ purchaseId: true }))
     .describe("detail pembelian"),
-  payment: purchasePaymentPayloadSchema.optional(),
 });
 
 export type PurchasePayload = z.infer<typeof purchasePayloadSchema> &
@@ -32,8 +26,7 @@ export type PurchasePayload = z.infer<typeof purchasePayloadSchema> &
 
 export const updatePurchaseStatusSchema = z.object({
   id: z.string().describe("id pembelian"),
-  status: z.nativeEnum(TRANSACTION_STATUS).optional(),
-  paymentStatus: z.nativeEnum(TRANSACTION_PAYMENT_STATUS).optional(),
+  status: z.nativeEnum(TRANSACTION_STATUS).describe("status pembelian"),
 });
 
 export type UpdatePurchaseStatusPayload = z.infer<
