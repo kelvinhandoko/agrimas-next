@@ -8,10 +8,14 @@
  *
  * Use this file as a reference for creating API endpoints or extending server capabilities.
  */
+import { env } from "@/env";
 import { TRPCError, initTRPC } from "@trpc/server";
+import { getStatusCodeFromKey } from "@trpc/server/unstable-core-do-not-import";
 import superjson from "superjson";
 import { type TRPCPanelMeta } from "trpc-ui";
 import { ZodError } from "zod";
+
+import { logger } from "@/lib/winston";
 
 import { CompanyRepository } from "@/server/company/company.repository";
 import { GetCompanyByIdUseCase } from "@/server/company/use-cases";
@@ -95,19 +99,38 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   return result;
 });
 
+const loggerMiddleware = t.middleware(async ({ path, type, next }) => {
+  const start = Date.now();
+  const result = await next();
+  const durationMs = Date.now() - start;
+
+  if (result.ok) {
+    if (env.NODE_ENV !== "production") {
+      logger.info(`✅ ${type.toUpperCase()} ${path} - ${durationMs}ms ]`);
+    }
+  } else {
+    logger.error(`❌ ${type.toUpperCase()} ${path} - ${durationMs}ms`);
+    logger.error(
+      `Error [${getStatusCodeFromKey(result.error.code)}]: ${result.error.message}`,
+    );
+  }
+
+  return result;
+});
+
 /**
  * Public procedure: Accessible without authentication.
  *
  * Automatically uses timing middleware for debugging in development.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure.use(loggerMiddleware);
 
 /**
  * Protected procedure: Accessible only to authenticated users.
  *
  * Ensures `ctx.session.user` is non-null.
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = publicProcedure.use(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }

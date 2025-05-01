@@ -8,6 +8,7 @@ export class UserRepository {
 
   async findUserByUsername(username: string) {
     const data = await this._db.user.findFirst({ where: { username } });
+
     return data;
   }
 

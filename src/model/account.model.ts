@@ -19,7 +19,7 @@ export const accountPayloadSchema = z.object({
     message: "posisi akun antara debit atau kredit",
     required_error: "posisi akun tidak boleh kosong",
   }),
-  report: z.array(z.nativeEnum(Laporan, { message: "laporan tidak valid" })),
+  reports: z.array(z.nativeEnum(Laporan, { message: "laporan tidak valid" })),
   id: z.string().optional(),
 });
 
