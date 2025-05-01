@@ -1,5 +1,6 @@
 import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
+import { type TRPC_ERROR_CODE_KEY } from "@trpc/server/unstable-core-do-not-import";
 
 export const errorFormatter = (e: unknown) => {
   if (e instanceof TRPCClientError || e instanceof TRPCError) {
@@ -10,4 +11,14 @@ export const errorFormatter = (e: unknown) => {
   } else {
     return "Terjadi kesalahan";
   }
+};
+
+export const serverErrorFormatter = (
+  code: TRPC_ERROR_CODE_KEY,
+  message: string,
+) => {
+  throw new TRPCError({
+    code,
+    message,
+  });
 };

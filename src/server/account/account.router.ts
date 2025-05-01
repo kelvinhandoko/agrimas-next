@@ -9,15 +9,14 @@ import {
   GetAllAccountUseCase,
   createAccountUseCase,
 } from "@/server/account/use-cases";
-import { ReportRepository } from "@/server/report/report.repository";
 
 export const accountRouter = createTRPCRouter({
   create: companyProcedure
     .input(accountPayloadSchema.omit({ companyId: true }))
     .mutation(async ({ input, ctx }) => {
       const accountRepo = new AccountRepository(ctx.db);
-      const reportRepo = new ReportRepository(ctx.db);
-      const createAccount = createAccountUseCase(accountRepo, reportRepo);
+
+      const createAccount = createAccountUseCase(accountRepo);
       return createAccount({
         ...input,
         companyId: ctx.session.user.companyId,

@@ -3,11 +3,11 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["relationJoins", "omitApi"]
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -17,15 +17,15 @@ datasource db {
 
 // Necessary for Next auth
 model Company {
-  id              String            @id @default(cuid())
-  name            String            @unique
-  address         String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  UserCompany     User_Company[]
-  groupAccount    GroupAccount[]
-  account         Account[]
-  Report_Account  Report_Account[]
+  id           String         @id @default(cuid())
+  name         String         @unique
+  address      String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  UserCompany  User_Company[]
+  groupAccount GroupAccount[]
+  account      Account[]
+
   SubAcount       SubAccount[]
   Journal         Journal[]
   suppliers       Supplier[]
@@ -81,18 +81,18 @@ model GroupAccount {
 }
 
 model Account {
-  id             String           @id @default(cuid())
+  id             String          @id @default(cuid())
   posisi         NormalPosition
   code           String
   name           String
-  currentBalance Int              @default(0)
+  currentBalance Int             @default(0)
   groupAccountId String
-  groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
+  groupAccount   GroupAccount    @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
   companyId      String
-  company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  report         Report_Account[]
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  reports        Laporan[]
   subAccount     SubAccount[]
   journalDetail  JournalDetail[]
   deleted        DateTime?
@@ -115,20 +115,6 @@ model SubAccount {
   deleted       DateTime?
 
   @@unique([code, companyId])
-}
-
-model Report_Account {
-  id        String    @id @default(cuid())
-  report    Laporan
-  account   Account   @relation(fields: [accountId], references: [id])
-  companyId String
-  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  accountId String
-  deleted   DateTime?
-
-  @@unique([companyId, report, accountId])
 }
 
 model Journal {
@@ -324,6 +310,7 @@ model PurchaseInvoice {
   paymentStatus    TRANSACTION_PAYMENT_STATUS @default(UNPAID)
   purchasePayments PurchasePayment[]
   totalPayment     Int                        @default(0)
+  ref              String?
 }
 
 model PaymentMethod {

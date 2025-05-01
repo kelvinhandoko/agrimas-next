@@ -2,17 +2,47 @@ import {
   type PurchaseInvoicePayload,
   type UpdatedPurchaseInvoiceStatusPayload,
 } from "@/model/purchase-invoice";
+import { DateTime } from "luxon";
 
 import { BaseRepository } from "@/server/common";
 
 export class PurchaseInvoiceRepository extends BaseRepository {
+  private async _generateRef(): Promise<string> {
+    await this._db.$executeRawUnsafe(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'purchase_invoice_ref_seq') THEN
+          CREATE SEQUENCE purchase_invoice_ref_seq START 1;
+        END IF;
+      END
+      $$;
+    `);
+
+    // Get next value from the sequence
+    const sequenceData = await this._db.$queryRawUnsafe<{ nextval: number }[]>(
+      `SELECT nextval('purchase_invoice_ref_seq')`,
+    );
+
+    const paddedSeq = String(sequenceData[0]?.nextval ?? 1).padStart(3, "0");
+    const datePart = DateTime.now().toFormat("yyyyMMdd");
+    return `PI-${datePart}-${paddedSeq}`;
+  }
+
   async create(payload: PurchaseInvoicePayload) {
-    const { companyId, date, receiveItemId } = payload;
+    const { companyId, date, receiveItemId, ref } = payload;
     return this._db.purchaseInvoice.create({
       data: {
         companyId,
+        ref: ref?.length ? ref : await this._generateRef(),
         date,
         receiveId: receiveItemId,
+      },
+      include: {
+        receiveItem: {
+          select: {
+            totalAmount: true,
+          },
+        },
       },
     });
   }

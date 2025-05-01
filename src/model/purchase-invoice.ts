@@ -7,6 +7,7 @@ import { type WithCompany } from "@/server/common";
 export const purchaseInvoicePayloadSchema = z.object({
   receiveItemId: z.string().describe("id surat jalan pembelian"),
   date: z.date().describe("tanggal faktur pembelian"),
+  ref: z.string().optional().describe("referensi"),
   payment: purchasePaymentPayloadSchema
     .optional()
     .describe("pembayaran faktur pembelian (optional)"),

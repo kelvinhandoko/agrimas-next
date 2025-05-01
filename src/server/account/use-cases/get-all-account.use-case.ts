@@ -7,6 +7,6 @@ import { db } from "@/server/db/prisma";
 export class GetAllAccountUseCase {
   async execute<S extends Prisma.AccountInclude>(query: GetAllAccountQuery<S>) {
     const accountRepo = new AccountRepository(db);
-    return await accountRepo.getAll(query);
+    return await accountRepo.getAllWithPage(query);
   }
 }

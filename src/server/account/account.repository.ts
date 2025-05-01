@@ -10,61 +10,122 @@ import { TRPCError } from "@trpc/server";
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class AccountRepository extends BaseRepository {
+  // Generate single code
   private async _generateCode(groupAccountId: string) {
-    const findData = await this._db.groupAccount.findUnique({
+    const groupAccount = await this._db.groupAccount.findFirst({
       where: { id: groupAccountId },
-      include: {
-        _count: { select: { account: true } },
-      },
     });
 
-    if (!findData) {
+    if (!groupAccount) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "kelompok akun tidak ditemukan",
+        message: "Kelompok akun tidak ditemukan",
       });
     }
-    const currentTotal = findData._count.account;
+
+    const sequenceName = `group_account_seq_${groupAccountId}`;
+
+    await this._db.$executeRawUnsafe(
+      `CREATE SEQUENCE IF NOT EXISTS "${sequenceName}" START 1`,
+    );
+
+    const data = await this._db.$queryRawUnsafe<{ nextval: number }[]>(
+      `SELECT nextval('${sequenceName}')`,
+    );
+
+    const nextval = data[0]?.nextval ?? 0;
+
     return {
-      code: `${findData.code}.${currentTotal + 1}`,
-      currentTotal,
-      groupAccountCode: findData.code,
+      code: `${groupAccount.code}.${nextval}`,
+      groupAccountCode: groupAccount.code,
     };
   }
 
+  // Generate multiple codes
+  private async _generateMultipleCodes(groupAccountId: string, amount: number) {
+    const groupAccount = await this._db.groupAccount.findFirst({
+      where: { id: groupAccountId },
+    });
+
+    if (!groupAccount) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Kelompok akun tidak ditemukan",
+      });
+    }
+
+    const sequenceName = `group_account_seq_${groupAccountId}`;
+
+    await this._db.$executeRawUnsafe(
+      `CREATE SEQUENCE IF NOT EXISTS "${sequenceName}" START 1`,
+    );
+
+    const codes: string[] = [];
+
+    for (let i = 0; i < amount; i++) {
+      const data = await this._db.$queryRawUnsafe<{ nextval: number }[]>(
+        `SELECT nextval('${sequenceName}')`,
+      );
+      const nextval = data[0]?.nextval ?? 0;
+      codes.push(`${groupAccount.code}.${nextval}`);
+    }
+
+    return codes;
+  }
+
+  // Create single account
   async create(payload: Omit<AccountPayload, "report">) {
     const { code } = await this._generateCode(payload.groupAccountId);
-    return await this._db.account.create({
+
+    return this._db.account.create({
       data: { ...payload, code },
     });
   }
 
-  async createBatch(payload: Array<AccountPayload>) {
-    const { currentTotal, groupAccountCode } = await this._generateCode(
-      payload[0]!.groupAccountId,
+  // Create multiple accounts
+  async createBatch(payload: AccountPayload[]) {
+    if (payload.length === 0) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Payload batch kosong",
+      });
+    }
+
+    const groupAccountId = payload[0]!.groupAccountId;
+    const codes = await this._generateMultipleCodes(
+      groupAccountId,
+      payload.length,
     );
-    let updatedTotal = currentTotal + 1;
-    const createDataWithCode = payload.map(({ report, ...item }) => {
-      const code = `${groupAccountCode}.${updatedTotal}`;
-      updatedTotal++;
-      return { ...item, code };
+
+    const createData = payload.map(
+      ({ companyId, groupAccountId, name, posisi, reports }, index) => ({
+        companyId,
+        groupAccountId,
+        name,
+        reports,
+        posisi,
+        code: codes[index]!,
+      }),
+    );
+
+    await this._db.account.createMany({
+      data: createData,
     });
 
-    // Create accounts with unique codes for each item
-    return await this._db.account.createMany({
-      data: createDataWithCode,
-    });
+    return { success: true };
   }
 
+  // Update existing account
   async update(payload: Omit<AccountPayload, "report">) {
-    return await this._db.account.update({
+    return this._db.account.update({
       where: { id: payload.id },
       data: payload,
     });
   }
 
+  // Update only balance
   async updateBalance(payload: UpdateBalancePayload) {
-    await this._db.account.update({
+    return this._db.account.update({
       where: { id: payload.id },
       data: {
         currentBalance: payload.balance,
@@ -72,74 +133,96 @@ export class AccountRepository extends BaseRepository {
     });
   }
 
+  // Delete account by ID
   async delete(id: string) {
-    return await this._db.account.delete({
+    return this._db.account.delete({
       where: { id },
     });
   }
 
-  async getAll<S extends Prisma.AccountInclude>(query: GetAllAccountQuery<S>) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
-      companyId,
-      include,
-    } = query;
-    const whereClause: Prisma.AccountWhereInput = {};
+  async getAllInfinite<S extends Prisma.AccountInclude>(
+    query: GetAllAccountQuery<S>,
+  ) {
+    const { companyId, search, limit, cursor, include } = query;
 
-    let cursorClause = undefined;
-
-    whereClause.companyId = companyId;
-
-    // state skip clause klo tidak infinite scroll
-    let skipClause: number | undefined = (page - 1) * limit;
-
-    let take = limit;
-
-    if (infiniteScroll) {
-      if (cursor) {
-        cursorClause = { id: cursor };
-      }
-      take = limit + 1;
-      skipClause = undefined;
-    }
+    const whereClause: Prisma.AccountWhereInput = { companyId };
     if (search) {
-      const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
       whereClause.OR = [
-        {
-          code: { contains: search },
-        },
-        {
-          name: { contains: search },
-        },
+        { code: { contains: search } },
+        { name: { contains: search } },
       ];
     }
+
+    const take = limit + 1; // ambil satu lebih banyak untuk tahu ada next page
+    const cursorClause = cursor ?? undefined;
 
     const [data, meta] = await this._db.account
       .paginate({
         where: whereClause,
         include: include ?? (undefined as unknown as S),
       })
-      .withCursor({ after: cursor ?? undefined });
+      .withCursor({ after: cursorClause, limit: take });
+
+    return { data, meta };
+  }
+
+  async getAllWithPage<S extends Prisma.AccountInclude>(
+    query: GetAllAccountQuery<S>,
+  ) {
+    const { companyId, search, limit, page, include } = query;
+
+    const whereClause: Prisma.AccountWhereInput = { companyId };
+    if (search) {
+      whereClause.OR = [
+        { code: { contains: search } },
+        { name: { contains: search } },
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+    const take = limit;
+
+    const data = await this._db.account.findMany({
+      where: whereClause,
+      include: include ?? (undefined as unknown as S),
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const total = await this._db.account.count({
+      where: whereClause,
+    });
 
     return {
       data,
-      meta,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPage: Math.ceil(total / limit),
+      },
     };
   }
 
+  // Get account detail
   async getDetail<S extends Prisma.AccountInclude>(
     query: GetDetailAccountQuery<S>,
   ) {
     const { id, include } = query;
-    return await this._db.account.findUnique({
+
+    const account = await this._db.account.findFirst({
       where: { id },
       include: include ?? (undefined as unknown as S),
     });
+
+    if (!account) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Akun tidak ditemukan",
+      });
+    }
+
+    return account;
   }
 }
