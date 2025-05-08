@@ -16,7 +16,7 @@ export const errorFormatter = (e: unknown) => {
 export const serverErrorFormatter = (
   code: TRPC_ERROR_CODE_KEY,
   message: string,
-) => {
+): never => {
   throw new TRPCError({
     code,
     message,

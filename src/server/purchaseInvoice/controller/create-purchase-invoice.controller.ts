@@ -1,6 +1,7 @@
+import { type JournalPayload } from "@/model";
 import { purchaseInvoicePayloadSchema } from "@/model/purchase-invoice";
 import { companyProcedure } from "@/trpc/trpc";
-import { serverErrorFormatter } from "@/utils/formatter/errorFormatter";
+import { TRPCError } from "@trpc/server";
 
 import { AccountRepository } from "@/server/account";
 import { DefaultAccountRepository } from "@/server/defaultAccount/default-account.repository";
@@ -39,8 +40,33 @@ export const createPurchaseInvoiceController = companyProcedure
         (data) => data.category === "HUTANG_USAHA",
       );
 
-      if (!akunPersediaan || !akunHutang)
-        serverErrorFormatter("BAD_REQUEST", "Akun tidak ditemukan");
+      if (!akunPersediaan?.id) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Akun Persediaan tidak ditemukan",
+        });
+      }
+      if (!akunHutang?.id) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Akun hutang tidak ditemukan",
+        });
+      }
+
+      const journalDetailsData: Pick<JournalPayload, "details"> = {
+        details: [
+          {
+            accountId: akunPersediaan.id,
+            credit: 0,
+            debit: createPurchaseInvoice.receiveItem.totalAmount,
+          },
+          {
+            accountId: akunHutang.id,
+            credit: createPurchaseInvoice.receiveItem.totalAmount,
+            debit: 0,
+          },
+        ],
+      };
 
       await createJournalUseCase(
         journalRepo,
@@ -52,18 +78,7 @@ export const createPurchaseInvoiceController = companyProcedure
         description: `Pembelian Barang Dagang`,
         ref: createPurchaseInvoice.ref!,
         type: "GENERAL",
-        details: [
-          {
-            accountId: akunPersediaan!.id,
-            credit: 0,
-            debit: createPurchaseInvoice.receiveItem.totalAmount,
-          },
-          {
-            accountId: akunHutang!.id,
-            credit: createPurchaseInvoice.receiveItem.totalAmount,
-            debit: 0,
-          },
-        ],
+        details: journalDetailsData.details,
       });
     });
   });

@@ -1,17 +1,16 @@
 "use client";
 
-import { SalePayload } from "@/model/dummy/sale-order.model";
-import { type PurchasePayload } from "@/model/purchase.model";
+import { type SalePayload } from "@/model/dummy/sale-order.model";
 import { api } from "@/trpc/react";
 import { formatPrice } from "@/utils/format-price";
 import { Box, Grid } from "@radix-ui/themes";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import {
-  Control,
-  UseFormSetValue,
-  UseFormWatch,
+  type Control,
+  type UseFormSetValue,
+  type UseFormWatch,
   useFieldArray,
   useWatch,
 } from "react-hook-form";
@@ -171,30 +170,29 @@ const SaleOrder = ({ control, setValue, watch }: SaleOrderProps) => {
                       <CommandList>
                         <CommandEmpty>No product found.</CommandEmpty>
                         <CommandGroup>
-                          {dataProducts &&
-                            dataProducts?.[0].map((product) => (
-                              <CommandItem
-                                value={product.id}
-                                key={product.id}
-                                onSelect={() =>
-                                  handleSelectProduct(
-                                    product.id,
-                                    product.averagePrice,
-                                    index,
-                                  )
-                                }
-                              >
-                                {product.name}
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto",
-                                    product.id === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
+                          {dataProducts?.[0].map((product) => (
+                            <CommandItem
+                              value={product.id}
+                              key={product.id}
+                              onSelect={() =>
+                                handleSelectProduct(
+                                  product.id,
+                                  product.averagePrice,
+                                  index,
+                                )
+                              }
+                            >
+                              {product.name}
+                              <CheckIcon
+                                className={cn(
+                                  "ml-auto",
+                                  product.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
                         </CommandGroup>
                       </CommandList>
                     </Command>

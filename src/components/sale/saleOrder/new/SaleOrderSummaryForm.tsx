@@ -1,8 +1,8 @@
-import { SalePayload } from "@/model/dummy/sale-order.model";
+import { type SalePayload } from "@/model/dummy/sale-order.model";
 import { formatPrice } from "@/utils/format-price";
 import { Box, Grid, Text } from "@radix-ui/themes";
-import { ChangeEvent } from "react";
-import { Control, UseFormSetValue } from "react-hook-form";
+import { type ChangeEvent } from "react";
+import { type Control, type UseFormSetValue } from "react-hook-form";
 
 import {
   FormControl,

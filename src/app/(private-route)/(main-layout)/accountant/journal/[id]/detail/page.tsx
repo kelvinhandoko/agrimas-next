@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 };
 
 interface JournalDetailProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
-const page = ({ params }: JournalDetailProps) => {
-  return <DetailJournalPage id={params.id} />;
+const page = async ({ params }: JournalDetailProps) => {
+  return <DetailJournalPage id={(await params).id} />;
 };
 
 export default page;
