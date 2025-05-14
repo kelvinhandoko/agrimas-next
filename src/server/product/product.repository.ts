@@ -142,4 +142,49 @@ export class ProductRepository extends BaseRepository {
       },
     });
   }
+
+  async decreaseStock(payload: { productId: string; quantity: number }) {
+    const { productId, quantity } = payload;
+    return await this._db.product.update({
+      where: { id: productId },
+      data: {
+        currentQuantity: {
+          decrement: quantity,
+        },
+      },
+    });
+  }
+
+  async calculateCOGS(payload: Array<{ id: string; quantity: number }>) {
+    const quantityMap = new Map<string, number>();
+    for (const { id, quantity } of payload) {
+      quantityMap.set(id, (quantityMap.get(id) ?? 0) + quantity);
+    }
+
+    const productIds = Array.from(quantityMap.keys());
+    const products = await this._db.product.findMany({
+      where: { id: { in: productIds } },
+      select: {
+        id: true,
+        name: true,
+        averagePrice: true,
+      },
+    });
+
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
+    let totalCOGS = 0;
+
+    for (const id of productIds) {
+      const quantity = quantityMap.get(id)!;
+      const product = productMap.get(id);
+
+      if (!product) continue;
+
+      const totalCost = quantity * product.averagePrice;
+      totalCOGS += totalCost;
+    }
+
+    return { totalCOGS };
+  }
 }

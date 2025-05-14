@@ -4,7 +4,7 @@ import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 
-import { type SalesPersonRouterOutputs } from "@/server/salesPerson/sales.router";
+import { type SalesPersonRouterOutputs } from "@/server/salesPerson/sales-person.router";
 
 import DeleteModal from "@/components/DeleteModal";
 

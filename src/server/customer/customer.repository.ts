@@ -1,9 +1,8 @@
-import { type CustomerPayload } from "@/model/customer.model";
 import {
-  type GetAllSupplierQuery,
-  type GetDetailSupplierByIdQuery,
-  type GetUniqueSupplierQuery,
-} from "@/model/supplier.model";
+  type CustomerPayload,
+  type GetAllcustomerQuery,
+} from "@/model/customer.model";
+import { type GetUniqueSupplierQuery } from "@/model/supplier.model";
 import { type Prisma } from "@prisma/client";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
@@ -28,19 +27,9 @@ export class CustomerRepository extends BaseRepository {
     });
   }
 
-  async getAll<S extends Prisma.GroupAccountInclude>(
-    query: GetAllSupplierQuery<S>,
-  ) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
-      companyId,
-      include,
-    } = query;
+  async getAll(query: GetAllcustomerQuery) {
+    const { infiniteScroll, limit, page, cursor, takeAll, search, companyId } =
+      query;
     const whereClause: Prisma.CustomerWhereInput = {};
 
     let cursorClause = undefined;
@@ -61,7 +50,6 @@ export class CustomerRepository extends BaseRepository {
     }
     if (search) {
       const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
       whereClause.OR = [
         {
           nama: { contains: search },
@@ -75,7 +63,6 @@ export class CustomerRepository extends BaseRepository {
       take: take,
       cursor: cursorClause,
       skip: skipClause,
-      include: include ?? (undefined as unknown as S),
     });
 
     const [total, data] = await Promise.all([totalPromise, dataPromise]);
@@ -93,14 +80,11 @@ export class CustomerRepository extends BaseRepository {
     };
   }
 
-  async getDetailById<S extends Prisma.GroupAccountInclude>(
-    query: GetDetailSupplierByIdQuery<S>,
-  ) {
+  async getDetailById(id: string) {
     const getData = await this._db.customer.findUnique({
       where: {
-        id: query.id,
+        id,
       },
-      include: query.include,
     });
 
     return getData;

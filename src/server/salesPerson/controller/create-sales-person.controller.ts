@@ -1,7 +1,7 @@
 import { salesPersonPayloadSchema } from "@/model/salesPerson.model";
 import { adminCompanyProcedure } from "@/trpc/trpc";
 
-import { SalesPersonRepository } from "@/server/salesPerson/sales.repository";
+import { SalesPersonRepository } from "@/server/salesPerson/sales-person.repository";
 import { createSalesPersonUseCase } from "@/server/salesPerson/use-cases/create-sales-person.use-case";
 import { TransactionService } from "@/server/services";
 

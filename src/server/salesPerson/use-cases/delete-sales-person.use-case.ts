@@ -1,6 +1,6 @@
 import { serverErrorFormatter } from "@/utils/formatter/errorFormatter";
 
-import { type SalesPersonRepository } from "@/server/salesPerson/sales.repository";
+import { type SalesPersonRepository } from "@/server/salesPerson/sales-person.repository";
 
 export const deleteSalesPersonUseCase =
   (salesRepo: SalesPersonRepository) => async (id: string) => {

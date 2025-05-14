@@ -9,6 +9,7 @@ import { getDefaultAccountUseCase } from "@/server/defaultAccount/use-cases/get-
 import { JournalRepository } from "@/server/journal/journal.repository";
 import { createJournalUseCase } from "@/server/journal/use-cases/create-journal.use-case";
 import { JournalDetailRepository } from "@/server/journalDetail/journal-detail.repository";
+import { createJournalDetailUseCase } from "@/server/journalDetail/use-cases/create-journal-detail.use-case";
 import { PurchaseInvoiceRepository } from "@/server/purchaseInvoice/purchase-invoice.repository";
 import { createPurchaseInvoiceUseCase } from "@/server/purchaseInvoice/use-cases/create-purchase-invoice.use-case";
 import { TransactionService } from "@/server/services";
@@ -17,6 +18,7 @@ export const createPurchaseInvoiceController = companyProcedure
   .input(purchaseInvoicePayloadSchema)
   .mutation(async ({ ctx, input }) => {
     const transactionService = new TransactionService(ctx.db);
+
     return await transactionService.startTransaction(async (trx) => {
       const purchaseInvoiceRepo = new PurchaseInvoiceRepository(trx);
       const defaultAccountRepo = new DefaultAccountRepository(trx);
@@ -49,7 +51,7 @@ export const createPurchaseInvoiceController = companyProcedure
       if (!akunHutang?.id) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Akun hutang tidak ditemukan",
+          message: "Akun Hutang tidak ditemukan",
         });
       }
 
@@ -68,17 +70,23 @@ export const createPurchaseInvoiceController = companyProcedure
         ],
       };
 
-      await createJournalUseCase(
-        journalRepo,
-        journalDetailRepo,
-        accountRepo,
-      )({
+      const createdJournal = await createJournalUseCase(journalRepo)({
         companyId: ctx.session.user.companyId,
         date: input.date,
         description: `Pembelian Barang Dagang`,
         ref: createPurchaseInvoice.ref!,
         type: "GENERAL",
-        details: journalDetailsData.details,
       });
+
+      await Promise.all(
+        journalDetailsData.details.map(async (data) => {
+          await createJournalDetailUseCase({
+            accountRepo,
+            journalDetailRepo,
+          })({ ...data, journalId: createdJournal.id });
+        }),
+      );
+
+      return createPurchaseInvoice;
     });
   });
