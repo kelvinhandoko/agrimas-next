@@ -24,3 +24,11 @@ export const basicQuery = z.object({
 });
 
 export type BasicQuery = z.infer<typeof basicQuery> & WithCompany;
+
+export const paginatedQuery = basicQuery.pick({
+  page: true,
+  limit: true,
+  search: true,
+});
+
+export type PaginatedQuery = z.infer<typeof paginatedQuery> & WithCompany;

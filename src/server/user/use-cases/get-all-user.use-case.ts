@@ -8,7 +8,6 @@ export const getAllUserUseCase =
   async (query: GetAllUserQuery<S>) => {
     const data = await userRepo.getAll({
       ...query,
-      include: {},
     });
 
     return data;

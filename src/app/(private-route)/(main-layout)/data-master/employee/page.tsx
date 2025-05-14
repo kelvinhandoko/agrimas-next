@@ -9,8 +9,12 @@ export const metadata: Metadata = {
     "Select a company to proceed based on your role. Streamline navigation and access specific company data with ease.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-const page = () => {
-  return <EmployeePage />;
+
+interface PageProps {
+  searchParams: Promise<Record<string, string | undefined>>;
+}
+const page = ({ searchParams }: PageProps) => {
+  return <EmployeePage searchParams={searchParams} />;
 };
 
 export default page;

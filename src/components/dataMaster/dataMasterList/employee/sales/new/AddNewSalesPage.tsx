@@ -1,6 +1,9 @@
 "use client";
 
-import { type SalesPayload, salesPayloadSchema } from "@/model/sales.model";
+import {
+  type SalesPersonPayload,
+  salesPersonPayloadSchema,
+} from "@/model/salesPerson.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,20 +28,20 @@ import { Input } from "@/components/ui/input";
 const AddNewSalesPage = () => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<SalesPayload>({
-    resolver: zodResolver(salesPayloadSchema),
+  const form = useForm<SalesPersonPayload>({
+    resolver: zodResolver(salesPersonPayloadSchema),
     defaultValues: {
       name: "",
     },
   });
 
-  const { mutateAsync: createSales } = api.sales.create.useMutation();
-  const onSubmit: SubmitHandler<SalesPayload> = async (data) => {
+  const { mutateAsync: createSales } = api.salesPerson.create.useMutation();
+  const onSubmit: SubmitHandler<SalesPersonPayload> = async (data) => {
     try {
       toast.promise(async () => createSales(data), {
         loading: "Memproses...",
         success: async () => {
-          await utils.sales.findAll.invalidate();
+          await utils.salesPerson.findAll.invalidate();
           setIsLoading(false);
           form.reset();
           return "Berhasil tambah sales";

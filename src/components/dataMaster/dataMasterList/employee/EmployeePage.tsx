@@ -1,4 +1,5 @@
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/server";
 import { Box } from "@radix-ui/themes";
 
 import BackButton from "@/components/BackButton";
@@ -7,7 +8,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SalesDataTable from "./sales/SalesDataTable";
 import UserDataTable from "./user/UserDataTable";
 
-const EmployeePage = () => {
+interface PageProps {
+  searchParams: Promise<Record<string, string | undefined>>;
+}
+
+const EmployeePage = async ({ searchParams }: PageProps) => {
+  const limit = Number((await searchParams)?.limit ?? 10);
+  const page = Number((await searchParams)?.page ?? 1);
+  await Promise.all([
+    api.salesPerson.findAll.prefetch({ limit, page }),
+    api.user.getAll.prefetch({ limit, page }),
+  ]);
   return (
     <Box>
       <Box className="mb-8">

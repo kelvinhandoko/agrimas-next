@@ -59,6 +59,10 @@ export class UserRepository {
 
     let take = limit;
 
+    whereClause.userCompany = { every: { companyId } };
+
+    whereClause.role = { not: "OWNER" };
+
     if (infiniteScroll) {
       if (cursor) {
         cursorClause = { id: cursor };

@@ -26,19 +26,22 @@ model Company {
   groupAccount GroupAccount[]
   account      Account[]
 
-  SubAcount       SubAccount[]
-  Journal         Journal[]
-  suppliers       Supplier[]
-  customers       Customer[]
-  ErrorLog        ErrorLog[]
-  deleted         DateTime?
-  Sales           Sales[]
+  SubAcount SubAccount[]
+  Journal   Journal[]
+  suppliers Supplier[]
+  customers Customer[]
+  ErrorLog  ErrorLog[]
+  deleted   DateTime?
+
   Product         Product[]
   InitialProduct  InitialProduct[]
   DefaultAccount  DefaultAccount[]
   purchases       Purchase[]
   receiveItems    ReceiveItem[]
   PurchaseInvoice PurchaseInvoice[]
+  PaymentMethod   PaymentMethod[]
+  SalesInvoice    SalesInvoice[]
+  SalesPerson     SalesPerson[]
 }
 
 model User {
@@ -162,44 +165,34 @@ model Supplier {
 }
 
 model Customer {
-  id        String    @id @default(cuid())
-  nama      String
-  alamat    String?
-  companyId String
-  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  deleted   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
+  id           String         @id @default(cuid())
+  nama         String
+  alamat       String?
+  companyId    String
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted      DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now()) @updatedAt
+  SalesInvoice SalesInvoice[]
 
   @@unique([nama, companyId])
 }
 
-model Sales {
-  id        String    @id @default(cuid())
-  name      String
-  companyId String
-  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  deleted   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@unique([name, companyId])
-}
-
 model Product {
-  id              String          @id @default(cuid())
-  name            String
-  companyId       String
-  company         Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  deleted         DateTime?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  supplier        Supplier        @relation(fields: [supplierId], references: [id])
-  supplierId      String
-  currentQuantity Int
-  averagePrice    Int
-  sellingPrice    Int             @default(0)
-  initialProduct  InitialProduct?
+  id                 String               @id @default(cuid())
+  name               String
+  companyId          String
+  company            Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted            DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  supplier           Supplier             @relation(fields: [supplierId], references: [id])
+  supplierId         String
+  currentQuantity    Int
+  averagePrice       Int
+  sellingPrice       Int                  @default(0)
+  initialProduct     InitialProduct?
+  SalesInvoiceDetail SalesInvoiceDetail[]
 }
 
 model InitialProduct {
@@ -314,11 +307,12 @@ model PurchaseInvoice {
 }
 
 model PaymentMethod {
-  id            String  @id @default(cuid())
-  name          String
-  accountNumber String?
-  amount        Int     @default(0)
-
+  id               String            @id @default(cuid())
+  name             String
+  accountNumber    String?
+  amount           Int               @default(0)
+  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId        String
   deleted          DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -339,6 +333,52 @@ model ErrorLog {
   user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   companyId  String?
   deleted    DateTime?
+}
+
+model SalesInvoice {
+  id            String      @id @default(cuid())
+  date          DateTime
+  ref           String
+  suratJalan    String?
+  dueDate       DateTime
+  customerId    String
+  note          String?
+  totalBefore   Int
+  tax           Int
+  discount      Int         @default(0)
+  totalAfter    Int
+  salesPersonId String
+  salesPerson   SalesPerson @relation(fields: [salesPersonId], references: [id], onDelete: Restrict)
+  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime    @default(now()) // Timestamp
+  company       Company     @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  companyId     String
+  deleted       DateTime?
+}
+
+model SalesInvoiceDetail {
+  id             String  @id @default(cuid())
+  salesInvoiceId String
+  productId      String
+  product        Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity       Int
+  price          Int
+  discount       Int
+  tax            Int
+  totalBefore    Int
+  totalAfter     Int
+}
+
+model SalesPerson {
+  id           String         @id @default(cuid())
+  name         String
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  companyId    String
+  deleted      DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  salesInvoice SalesInvoice[]
 }
 
 model DefaultAccount {

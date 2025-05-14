@@ -4,7 +4,7 @@ import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 
-import { type SalesRouterOutputs } from "@/server/sales/sales.router";
+import { type SalesPersonRouterOutputs } from "@/server/salesPerson/sales.router";
 
 import DeleteModal from "@/components/DeleteModal";
 
@@ -12,7 +12,8 @@ import DetailSalesModal from "./DetailSalesModal";
 
 // import DetailUserModal from "./DetailUserModal";
 
-const columnHelper = createColumnHelper<SalesRouterOutputs["findAll"][0][0]>();
+const columnHelper =
+  createColumnHelper<SalesPersonRouterOutputs["findAll"]["data"][0]>();
 
 interface SalesColumnProps {
   handleDeleteSales: (id: string) => Promise<void>;
@@ -47,4 +48,4 @@ export const salesColumn = ({ handleDeleteSales }: SalesColumnProps) =>
         );
       },
     },
-  ] as ColumnDef<SalesRouterOutputs["findAll"][0][0]>[];
+  ] as ColumnDef<SalesPersonRouterOutputs["findAll"]["data"][0]>[];
