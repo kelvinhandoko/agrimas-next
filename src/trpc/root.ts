@@ -11,6 +11,7 @@ import { productRouter } from "@/server/product/product.router";
 import { purchaseRouter } from "@/server/purchase/purchase.router";
 import { purchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
 import { receiveItemRouter } from "@/server/recieveItem/receive-item.router";
+import { salesInvoiceRouter } from "@/server/salesInvoice/sales-invoice.router";
 import { salesPersonRouter } from "@/server/salesPerson/sales-person.router";
 import { supplierRouter } from "@/server/supplier";
 import { userRouter } from "@/server/user/user.router";
@@ -30,6 +31,7 @@ export const appRouter = createTRPCRouter({
   customer: customerRouter,
   errorLog: errorLogRouter,
   salesPerson: salesPersonRouter,
+  salesInvoice: salesInvoiceRouter,
   user: userRouter,
   product: productRouter,
   purchase: purchaseRouter,

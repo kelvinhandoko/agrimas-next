@@ -17,6 +17,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { SearchInput } from "@/components/common/input/SearchInput";
+import { DataTablePagination } from "@/components/common/table/DataTablePagination";
 import { columnAlign } from "@/components/common/table/tableHelper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +26,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -40,6 +42,7 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   path?: string;
   buttonAddName?: string;
+  totalPage?: number;
   titleTable?: string;
   searchAble?: boolean;
   buttonNew?: boolean;
@@ -51,6 +54,7 @@ const DataTable = <TData, TValue>({
   data,
   className,
   hideColumn = [],
+  totalPage = 1,
   withNumber = false,
   canSelectRow = false,
   isLoading = false,
@@ -199,7 +203,9 @@ const DataTable = <TData, TValue>({
               </>
             )}
           </TableBody>
-          {/* {footer ? <>{footer}</> : null} */}
+          <TableFooter>
+            <DataTablePagination totalPage={totalPage} />
+          </TableFooter>
         </Table>
       </CardContent>
     </Card>

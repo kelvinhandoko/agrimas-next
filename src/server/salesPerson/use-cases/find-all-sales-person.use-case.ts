@@ -3,5 +3,5 @@ import { type SalesPersonRepository } from "@/server/salesPerson/sales-person.re
 
 export const findAllSalesPersonUseCase =
   (salesRepo: SalesPersonRepository) => async (q: PaginatedQuery) => {
-    return await salesRepo.findAll(q);
+    return await salesRepo.findAllPaginated(q);
   };

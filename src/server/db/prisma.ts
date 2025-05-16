@@ -18,6 +18,12 @@ const createPrismaClient = () =>
         },
         cursor: {
           limit: 10,
+          getCursor: ({ id }) => id as string,
+          parseCursor: (cursor) => {
+            return {
+              id: cursor,
+            };
+          },
         },
       }),
     )

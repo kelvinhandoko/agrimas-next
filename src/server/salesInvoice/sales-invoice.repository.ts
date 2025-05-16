@@ -19,7 +19,6 @@ export class SalesInvoiceRepository extends BaseRepository {
         $$;
       `);
 
-    // Get next value from the sequence
     const sequenceData = await this._db.$queryRawUnsafe<{ nextval: number }[]>(
       `SELECT nextval('sales_invoice_ref_seq')`,
     );
@@ -31,12 +30,11 @@ export class SalesInvoiceRepository extends BaseRepository {
   async create(payload: SalesInvoicePayload) {
     const { details, ...rest } = payload;
     const totalBefore = details.reduce(
-      (acc, curr) =>
-        acc + curr.price * curr.quantity + curr.tax - curr.discount,
+      (acc, curr) => acc + curr.price * curr.quantity - curr.discount,
       0,
     );
 
-    const totalAfter = totalBefore - payload.discount + payload.tax;
+    const totalAfter = totalBefore - payload.discount;
 
     return await this._db.salesInvoice.create({
       data: {

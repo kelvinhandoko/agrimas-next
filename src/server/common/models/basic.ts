@@ -25,6 +25,18 @@ export const basicQuery = z.object({
 
 export type BasicQuery = z.infer<typeof basicQuery> & WithCompany;
 
+export const getQuery = basicQuery.pick({
+  search: true,
+});
+
+export type GetQuery = z.infer<typeof getQuery> & WithCompany;
+
+export const cursorQuery = basicQuery.pick({
+  limit: true,
+  cursor: true,
+  search: true,
+});
+
 export const paginatedQuery = basicQuery.pick({
   page: true,
   limit: true,
@@ -32,3 +44,5 @@ export const paginatedQuery = basicQuery.pick({
 });
 
 export type PaginatedQuery = z.infer<typeof paginatedQuery> & WithCompany;
+
+export type CursorQuery = z.infer<typeof cursorQuery> & WithCompany;

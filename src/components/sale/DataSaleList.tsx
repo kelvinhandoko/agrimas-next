@@ -6,33 +6,22 @@ import {
   FiCreditCard,
   FiDollarSign,
   FiFileText,
-  FiShoppingCart,
-  FiTruck,
 } from "react-icons/fi";
 
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 const listMenu = [
   {
-    title: "Pesanan Penjualan",
-    icon: <FiShoppingCart size={"50px"} />,
-    path: paths.sale.saleOrder.root,
-  },
-  {
-    title: "Pengiriman Barang",
-    icon: <FiTruck size={"50px"} />,
-    path: paths.sale.saleShipping.root,
+    title: "Faktur Penjualan",
+    icon: <FiFileText size={"50px"} />,
+    path: paths.sale.saleFaktur.root,
   },
   {
     title: "Pengembalian Barang",
     icon: <FiCornerUpLeft size={"50px"} />,
     path: paths.sale.saleReturn.root,
   },
-  {
-    title: "Faktur Penjualan",
-    icon: <FiFileText size={"50px"} />,
-    path: paths.sale.saleFaktur.root,
-  },
+
   {
     title: "Piutang Usaha",
     icon: <FiDollarSign size={"50px"} />,

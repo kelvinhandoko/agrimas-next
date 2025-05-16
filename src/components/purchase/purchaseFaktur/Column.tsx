@@ -78,7 +78,6 @@ export const purchaseFakturColumn = () =>
             <DeleteModal
               id={row.original.noPurchaseFaktur}
               name={row.original.noPurchaseFaktur}
-              handleDelete={() => {}}
             />
           </Flex>
         );

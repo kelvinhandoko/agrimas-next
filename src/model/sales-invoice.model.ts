@@ -10,6 +10,7 @@ export const salesInvoicePayloadSchema = z.object({
   date: z.date({ required_error: "tanggal tidak boleh kosong" }),
   customerId: z.string({ required_error: "customer tidak boleh kosong" }),
   tax: z.number().nonnegative("pajak tidak boleh negatif").default(0),
+  note: z.string().nullish(),
   discount: z.number().nonnegative("diskon tidak boleh negatif").default(0),
   details: z.array(
     salesInvoiceDetailPayloadSchema.omit({ salesInvoiceId: true }),
