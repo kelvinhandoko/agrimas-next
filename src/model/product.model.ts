@@ -22,6 +22,7 @@ export const productPayloadSchema = z.object({
 export type ProductPayload = z.infer<typeof productPayloadSchema> & WithCompany;
 
 export const getAllProductQuerySchema = basicQuery.extend({
+  needQuantity: z.boolean().default(false),
   supplierId: z.string().optional().describe("id supplier"),
 });
 

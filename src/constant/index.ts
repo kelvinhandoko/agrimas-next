@@ -13,6 +13,7 @@ export const NUMERIC_PROPS: NumericFormatProps = {
   customInput: Input,
   prefix: "Rp. ",
   thousandSeparator: ".",
+  allowNegative: false,
   decimalSeparator: ",",
 };
 

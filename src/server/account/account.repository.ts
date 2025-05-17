@@ -98,12 +98,13 @@ export class AccountRepository extends BaseRepository {
     );
 
     const createData = payload.map(
-      ({ companyId, groupAccountId, name, posisi, reports }, index) => ({
+      ({ companyId, groupAccountId, name, posisi, reports, id }, index) => ({
         companyId,
         groupAccountId,
         name,
         reports,
         posisi,
+        id,
         code: codes[index]!,
       }),
     );
@@ -206,14 +207,13 @@ export class AccountRepository extends BaseRepository {
   }
 
   // Get account detail
-  async getDetail<S extends Prisma.AccountInclude>(
-    query: GetDetailAccountQuery<S>,
-  ) {
-    const { id, include } = query;
+  async getDetail(query: GetDetailAccountQuery) {
+    const { id } = query;
+
+    console.log(id);
 
     const account = await this._db.account.findFirst({
       where: { id },
-      include: include ?? (undefined as unknown as S),
     });
 
     if (!account) {

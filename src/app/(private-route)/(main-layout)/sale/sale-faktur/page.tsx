@@ -1,12 +1,22 @@
+import { HydrateClient, api } from "@/trpc/server";
 import React from "react";
 
 import { SalesInvoiceTable } from "@/components/sale/saleFaktur/table";
 
-const page = () => {
+interface PageProps {
+  searchParams: Promise<Record<string, string | undefined>>;
+}
+
+const page = async ({ searchParams }: PageProps) => {
+  const params = await searchParams;
+  const limit = Number(params.limit ?? 10);
+  const page = Number(params.page ?? 1);
+  const search = params.search ?? "";
+  await api.salesInvoice.get.prefetch({ limit, page, search });
   return (
-    <div>
+    <HydrateClient>
       <SalesInvoiceTable />
-    </div>
+    </HydrateClient>
   );
 };
 

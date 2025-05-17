@@ -5,6 +5,7 @@ import {
 import { type GetUniqueSupplierQuery } from "@/model/supplier.model";
 import { type Prisma } from "@prisma/client";
 
+import { type CursorQuery } from "@/server/common";
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class CustomerRepository extends BaseRepository {
@@ -78,6 +79,28 @@ export class CustomerRepository extends BaseRepository {
       },
       nextCursor,
     };
+  }
+
+  async getAllInfinite(query: CursorQuery) {
+    const { limit, cursor, search, companyId } = query;
+    const whereClause: Prisma.CustomerWhereInput = {};
+
+    whereClause.companyId = companyId;
+
+    if (search) {
+      whereClause.OR = [
+        {
+          nama: { contains: search, mode: "insensitive" },
+        },
+      ];
+    }
+    const [data, meta] = await this._db.customer
+      .paginate({
+        where: whereClause,
+        orderBy: { nama: "asc" },
+      })
+      .withCursor({ after: cursor, limit });
+    return { data, meta };
   }
 
   async getDetailById(id: string) {

@@ -189,6 +189,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         groupAccountId: "",
         name: "modal disetor lainnya",
         posisi: "CREDIT",
+        category: "EKUITAS",
         reports: ["NERACA", "PERUBAHAN_MODAL"],
       },
     ],

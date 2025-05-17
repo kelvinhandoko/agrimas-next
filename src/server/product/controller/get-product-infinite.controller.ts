@@ -4,7 +4,7 @@ import { companyProcedure } from "@/trpc/trpc";
 import { ProductRepository } from "@/server/product/product.repository";
 import { getInfiniteProductUseCase } from "@/server/product/use-cases/get-product-infinite.use-case";
 
-export const getAllProductController = companyProcedure
+export const getInfiniteProductController = companyProcedure
   .input(getAllProductQuerySchema)
   .query(async ({ ctx, input }) => {
     const productRepo = new ProductRepository(ctx.db);

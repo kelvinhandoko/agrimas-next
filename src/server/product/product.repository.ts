@@ -73,29 +73,60 @@ export class ProductRepository extends BaseRepository {
     });
   }
 
-  async findAll(query: GetAllProductQuery) {
-    const { companyId, limit, page, search, supplierId } = query;
+  private async _findAll(query: GetAllProductQuery) {
+    const { companyId, needQuantity, search, supplierId } = query;
     const whereClause: Prisma.ProductWhereInput = {};
 
     whereClause.companyId = companyId;
     if (search) {
-      whereClause.name = {
-        contains: search,
-      };
+      whereClause.OR = [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          supplier: {
+            nama: {
+              equals: search,
+              mode: "insensitive",
+            },
+          },
+        },
+      ];
+    }
+
+    if (needQuantity) {
+      whereClause.currentQuantity = needQuantity ? { gt: 0 } : undefined;
     }
 
     if (supplierId) {
       whereClause.supplierId = supplierId;
     }
 
-    return await this._db.product
-      .paginate({
-        where: whereClause,
-        orderBy: {
-          name: "asc",
-        },
-      })
-      .withPages({ limit, page });
+    return this._db.product.paginate({
+      where: whereClause,
+      orderBy: {
+        name: "asc",
+      },
+    });
+  }
+
+  async getPaginated(q: GetAllProductQuery) {
+    const { limit, page } = q;
+    const [data, meta] = await (
+      await this._findAll(q)
+    ).withPages({ limit, page });
+    return { data, meta };
+  }
+
+  async getInfinite(q: GetAllProductQuery) {
+    const { limit, cursor } = q;
+    const [data, meta] = await (
+      await this._findAll(q)
+    ).withCursor({ limit, after: cursor });
+    return { data, meta };
   }
 
   async findDetail(id: string) {

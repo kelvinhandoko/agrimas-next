@@ -183,7 +183,7 @@ export function AutoComplete<T>({
                   ) : (
                     <CommandList>
                       {!options.length ? (
-                        <CommandItem className="p-4 text-center">
+                        <CommandItem className="p-2 text-center">
                           data tidak ditemukan
                         </CommandItem>
                       ) : (
@@ -225,7 +225,9 @@ export function AutoComplete<T>({
                         className="flex h-6 w-full items-center justify-center"
                         ref={ref}
                       >
-                        {isFetching ? (
+                        {!options.length ? (
+                          ""
+                        ) : isFetching ? (
                           <Loader2 className="animate-spin" />
                         ) : (
                           <span className="text-xs text-muted-foreground">

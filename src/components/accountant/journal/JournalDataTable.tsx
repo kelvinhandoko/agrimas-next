@@ -34,8 +34,6 @@ const JournalDataTable = () => {
     return <LoadingIndicator />;
   }
 
-  console.log(data);
-
   return (
     <DataTable
       columns={journalColumn({ handleDeleteJournal })}

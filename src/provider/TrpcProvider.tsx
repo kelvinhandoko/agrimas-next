@@ -5,6 +5,7 @@ import { type AppRouter } from "@/trpc/root";
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
+import { LazyMotion, domAnimation } from "motion/react";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 import SuperJSON from "superjson";
@@ -64,7 +65,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <api.Provider client={trpcClient} queryClient={queryClient}>
-          {props.children}
+          <LazyMotion features={domAnimation}>{props.children}</LazyMotion>
         </api.Provider>
       </SessionProvider>
     </QueryClientProvider>

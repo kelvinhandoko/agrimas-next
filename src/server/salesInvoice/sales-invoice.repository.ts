@@ -30,11 +30,12 @@ export class SalesInvoiceRepository extends BaseRepository {
   async create(payload: SalesInvoicePayload) {
     const { details, ...rest } = payload;
     const totalBefore = details.reduce(
-      (acc, curr) => acc + curr.price * curr.quantity - curr.discount,
+      (acc, curr) =>
+        acc + curr.price * curr.quantity - curr.discount + curr.tax,
       0,
     );
 
-    const totalAfter = totalBefore - payload.discount;
+    const totalAfter = totalBefore - payload.discount + payload.tax;
 
     return await this._db.salesInvoice.create({
       data: {

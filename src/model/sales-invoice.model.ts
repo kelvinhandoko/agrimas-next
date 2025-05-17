@@ -5,10 +5,14 @@ import { type WithCompany } from "@/server/common";
 
 export const salesInvoicePayloadSchema = z.object({
   id: z.string().optional(),
-  salesPersonId: z.string({ required_error: "sales tidak boleh kosong" }),
+  salesPersonId: z
+    .string({ required_error: "sales tidak boleh kosong" })
+    .min(1, "sales tidak boleh kosong"),
   ref: z.string().nullish(),
   date: z.date({ required_error: "tanggal tidak boleh kosong" }),
-  customerId: z.string({ required_error: "customer tidak boleh kosong" }),
+  customerId: z
+    .string({ required_error: "customer tidak boleh kosong" })
+    .min(1, "customer tidak boleh kosong"),
   tax: z.number().nonnegative("pajak tidak boleh negatif").default(0),
   note: z.string().nullish(),
   discount: z.number().nonnegative("diskon tidak boleh negatif").default(0),

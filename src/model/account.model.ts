@@ -35,10 +35,7 @@ export const getDetailAccountQuerySchema = z.object({
   id: z.string(),
 });
 
-export type GetDetailAccountQuery<T> = z.infer<
-  typeof getDetailAccountQuerySchema
-> &
-  AccountInclude<T>;
+export type GetDetailAccountQuery = z.infer<typeof getDetailAccountQuerySchema>;
 
 export const updateBalancePayloadSchema = z.object({
   id: z.string(),

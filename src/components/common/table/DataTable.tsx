@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { SearchInput } from "@/components/common/input/SearchInput";
 import { DataTablePagination } from "@/components/common/table/DataTablePagination";
 import { columnAlign } from "@/components/common/table/tableHelper";
+import { TableRowAnimation } from "@/components/motion/variant";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -155,8 +156,12 @@ const DataTable = <TData, TValue>({
               <>
                 {table.getRowModel().rows.length ? (
                   <>
-                    {table.getRowModel().rows.map((row) => (
+                    {table.getRowModel().rows.map((row, index) => (
                       <TableRow
+                        animate="visible"
+                        initial="hidden"
+                        variants={TableRowAnimation}
+                        custom={index % 20}
                         key={row.id}
                         onClick={row.getToggleExpandedHandler()}
                         className={cn(

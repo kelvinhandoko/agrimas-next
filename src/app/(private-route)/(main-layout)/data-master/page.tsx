@@ -1,8 +1,6 @@
 import { HydrateClient } from "@/trpc/server";
 import { type Metadata } from "next";
 
-import { auth } from "@/server/services";
-
 import DataMasterList from "@/components/dataMaster/dataMasterList/DataMasterList";
 
 export const metadata: Metadata = {
@@ -12,9 +10,6 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 export default async function Home() {
-  const session = await auth();
-  console.log("session", session);
-
   return (
     <HydrateClient>
       <DataMasterList />

@@ -124,25 +124,25 @@ export const createSalesInvoiceController = companyProcedure
 
       const journalDetailsData: JournalDetailPayload[] = [
         {
-          accountId: akunPiutang.id,
+          accountId: akunPiutang.accountId,
           credit: 0,
-          debit: createdSalesInvoice.totalBefore,
+          debit: createdSalesInvoice.totalAfter,
           journalId: createdJournal.id,
         },
         {
-          accountId: akunPenjualan.id,
-          credit: createdSalesInvoice.totalBefore,
+          accountId: akunPenjualan.accountId,
+          credit: createdSalesInvoice.totalAfter,
           debit: 0,
           journalId: createdJournal.id,
         },
         {
-          accountId: akunHPP.id,
-          credit: totalCOGS,
-          debit: 0,
+          accountId: akunHPP.accountId,
+          credit: 0,
+          debit: totalCOGS,
           journalId: createdJournal.id,
         },
         {
-          accountId: akunPersediaan.id,
+          accountId: akunPersediaan.accountId,
           credit: totalCOGS,
           debit: 0,
           journalId: createdJournal.id,

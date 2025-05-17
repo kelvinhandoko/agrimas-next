@@ -52,7 +52,6 @@ const NewJournalPage = () => {
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     try {
-      console.log(data);
       toast.success("success tambah jurnal", {
         position: "top-right",
       });

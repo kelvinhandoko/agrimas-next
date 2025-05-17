@@ -11,6 +11,7 @@ export const createJournalDetailUseCase =
   }) =>
   async (payload: JournalDetailPayload) => {
     const { journalDetailRepo, accountRepo } = repos;
+
     const findAccount = await accountRepo.getDetail({
       id: payload.accountId,
     });

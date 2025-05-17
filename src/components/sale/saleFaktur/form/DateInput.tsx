@@ -1,8 +1,9 @@
 "use client";
 
+import { DATE_FORMAT } from "@/constant";
 import { type SalesInvoicePayload } from "@/model/sales-invoice.model";
-import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { DateTime } from "luxon";
 import { type FC } from "react";
 import { type UseFormReturn } from "react-hook-form";
 
@@ -46,9 +47,9 @@ const DateInput: FC<DateInputProps> = ({ form }) => {
                   )}
                 >
                   {field.value ? (
-                    format(field.value, "PPP")
+                    DateTime.fromJSDate(field.value).toFormat(DATE_FORMAT)
                   ) : (
-                    <span>Pick a date</span>
+                    <span>pilih tanggal</span>
                   )}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>

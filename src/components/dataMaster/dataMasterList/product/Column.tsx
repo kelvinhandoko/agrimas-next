@@ -11,7 +11,8 @@ import DeleteModal from "@/components/DeleteModal";
 
 import DetailProductModal from "./detailProductModal";
 
-const columnHelper = createColumnHelper<ProductRouterOutput["getAll"][0][0]>();
+const columnHelper =
+  createColumnHelper<ProductRouterOutput["getAll"]["data"][0]>();
 
 interface ProductColumnProps {
   handleDeleteProduct: (id: string) => Promise<void>;
@@ -63,4 +64,4 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
         </Flex>
       ),
     },
-  ] as ColumnDef<ProductRouterOutput["getAll"][0][0]>[];
+  ] as ColumnDef<ProductRouterOutput["getAll"]["data"][0]>[];
