@@ -338,42 +338,46 @@ model ErrorLog {
 }
 
 model SalesInvoice {
-  id            String         @id @default(cuid())
-  date          DateTime
-  ref           String
-  suratJalan    String?
-  dueDate       DateTime
-  customerId    String
-  note          String?
-  totalBefore   Int
-  tax           Int
-  discount      Int            @default(0)
-  totalAfter    Int
-  cogs          Int
-  salesPersonId String
-  salesPerson   SalesPerson    @relation(fields: [salesPersonId], references: [id], onDelete: Restrict)
-  updatedAt     DateTime       @updatedAt
-  createdAt     DateTime       @default(now()) // Timestamp
-  company       Company        @relation(fields: [companyId], references: [id], onDelete: Restrict)
-  customer      Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
-  companyId     String
-  deleted       DateTime?
-  SalesPayment  SalesPayment[]
+  id                 String                     @id @default(cuid())
+  date               DateTime
+  ref                String
+  suratJalan         String?
+  dueDate            DateTime
+  customerId         String
+  note               String?
+  totalBefore        Int
+  tax                Int
+  discount           Int                        @default(0)
+  totalAfter         Int
+  totalPayment       Int                        @default(0)
+  cogs               Int
+  salesPersonId      String
+  salesPerson        SalesPerson                @relation(fields: [salesPersonId], references: [id], onDelete: Restrict)
+  updatedAt          DateTime                   @updatedAt
+  createdAt          DateTime                   @default(now()) // Timestamp
+  company            Company                    @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  customer           Customer                   @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  companyId          String
+  deleted            DateTime?
+  SalesPayment       SalesPayment[]
+  salesInvoiceDetail SalesInvoiceDetail[]
+  status             TRANSACTION_PAYMENT_STATUS @default(UNPAID)
 }
 
 model SalesInvoiceDetail {
-  id             String    @id @default(cuid())
+  id             String       @id @default(cuid())
   salesInvoiceId String
+  salesInvoice   SalesInvoice @relation(fields: [salesInvoiceId], references: [id], onDelete: Restrict)
   productId      String
-  product        Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Restrict)
   quantity       Int
   price          Int
   discount       Int
   tax            Int
   totalBefore    Int
   totalAfter     Int
-  updatedAt      DateTime  @updatedAt
-  createdAt      DateTime  @default(now()) // Timestamp
+  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime     @default(now()) // Timestamp
   deleted        DateTime?
 }
 

@@ -1,3 +1,4 @@
+import { TIMEZONE } from "@/constant";
 import {
   type SalesInvoicePayload,
   type UpdateSalesInvoicePayload,
@@ -27,6 +28,7 @@ export class SalesInvoiceRepository extends BaseRepository {
     const datePart = DateTime.now().toFormat("yyyyMMdd");
     return `PI-${datePart}-${paddedSeq}`;
   }
+
   async create(payload: SalesInvoicePayload) {
     const { details, ...rest } = payload;
     const totalBefore = details.reduce(
@@ -60,10 +62,18 @@ export class SalesInvoiceRepository extends BaseRepository {
   }
 
   async get(q: PaginatedQuery) {
-    const { companyId, search, limit, page } = q;
+    const { companyId, search, limit, page, dateRange } = q;
     const whereClause: Prisma.SalesInvoiceWhereInput = {};
 
     whereClause.companyId = companyId;
+
+    if (dateRange) {
+      const { from, to } = dateRange;
+      whereClause.date = {
+        gte: DateTime.fromISO(from).setZone(TIMEZONE).startOf("day").toJSDate(),
+        lte: DateTime.fromISO(to).setZone(TIMEZONE).endOf("day").toJSDate(),
+      };
+    }
 
     if (search) {
       whereClause.OR = [
@@ -94,6 +104,27 @@ export class SalesInvoiceRepository extends BaseRepository {
       })
       .withPages({ limit, page });
     return { data, meta };
+  }
+
+  async getDetail(id: string) {
+    return await this._db.salesInvoice.findFirst({
+      where: { id },
+      include: {
+        customer: true,
+        SalesPayment: {
+          include: {
+            paymentMethod: true,
+          },
+          orderBy: {
+            date: "desc",
+          },
+        },
+        salesPerson: true,
+        salesInvoiceDetail: {
+          include: { product: true },
+        },
+      },
+    });
   }
 
   async delete(id: string) {

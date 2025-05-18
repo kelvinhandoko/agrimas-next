@@ -1,25 +1,33 @@
 "use client";
 
+import { DATE_FORMAT, NUMERIC_PROPS } from "@/constant";
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
 import { fallbackName } from "@/utils/fallback-name";
+import { splitText } from "@/utils/formatter/stringFormatter";
 import { Box, Grid, Text } from "@radix-ui/themes";
-import { useForm } from "react-hook-form";
+import { DateTime } from "luxon";
+import { NumericFormat } from "react-number-format";
 
 import BackButton from "@/components/BackButton";
+import PaymentCard from "@/components/sale/saleFaktur/detail/PaymentCard";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const DetailSaleFakturPage = ({ id }: { id: string }) => {
-  const form = useForm<any>({
-    // resolver: zodResolver(supplierPayloadSchema),
-    defaultValues: {
-      details: [],
-    },
-  });
+  const { data } = api.salesInvoice.getDetail.useQuery(id);
+
+  if (!data) return null;
   return (
     <Box>
       <Box className="mb-8">
@@ -30,25 +38,25 @@ const DetailSaleFakturPage = ({ id }: { id: string }) => {
           <Card className="px-6 py-4">
             <CardContent>
               <Box className="flex justify-end">
-                <Badge variant="success">Lunas</Badge>
+                <Badge variant="success">
+                  {splitText(data?.status as string)}
+                </Badge>
               </Box>
               <Box className="mt-4 flex items-center justify-between">
                 <Box className="flex items-center gap-x-3">
                   <Avatar className="h-[70px] w-[70px]">
-                    <AvatarFallback>{fallbackName("name")}</AvatarFallback>
+                    <AvatarFallback>
+                      {fallbackName(data.customer.nama)}
+                    </AvatarFallback>
                   </Avatar>
                   <Box>
                     <Text size={"5"} weight={"bold"}>
-                      {"name"}
+                      {data.customer.nama}
                     </Text>
-                    <Box>
-                      <Text>{"email@gmail.com"}</Text>
-                    </Box>
                   </Box>
                 </Box>
                 <Text size={"2"} align={"right"} className="w-[30%]">
-                  Tj. Sari, Kec. Medan Selayang, Kota Medan, Sumatera Utara
-                  20154
+                  {data.customer.alamat}
                 </Text>
               </Box>
               <Box className="mt-3 rounded-lg bg-[#624DE3] px-4 py-7 text-primary-foreground">
@@ -56,125 +64,136 @@ const DetailSaleFakturPage = ({ id }: { id: string }) => {
                   <Box>
                     <Text weight={"bold"}>No Penjualan</Text>
                     <Box>
-                      <Text size={"2"}>INV-2024-01012</Text>
+                      <Text size={"2"}>{data.ref}</Text>
                     </Box>
                     <Box>
                       <Text size={"2"}>
-                        Tanggal Penjualan: 10 Desember 2024
+                        Tanggal Penjualan:{" "}
+                        {DateTime.fromJSDate(data.date).toFormat(DATE_FORMAT)}
                       </Text>
                     </Box>
                     <Box>
                       <Text size={"2"}>
-                        Tanggal Jatuh Tempo: 10 Desember 2024
+                        Tanggal Jatuh Tempo:{" "}
+                        {DateTime.fromJSDate(data.dueDate).toFormat(
+                          DATE_FORMAT,
+                        )}
                       </Text>
                     </Box>
                   </Box>
                   <Box className="max-w-[40%] text-end">
-                    <Text weight={"bold"}>Customer</Text>
+                    <Text weight={"bold"}>Sales</Text>
                     <Box>
-                      <Text size={"2"}>Wiktoria</Text>
+                      <Text size={"2"}>{data.salesPerson.name}</Text>
                     </Box>
-                    <Text size={"2"} className="text-end">
-                      Tj. Sari, Kec. Medan Selayang, Kota Medan, Sumatera Utara
-                      20154
-                    </Text>
                   </Box>
                 </Box>
               </Box>
               <Box className="mt-5">
                 <Text weight={"bold"}>Detail Barang</Text>
-                <Grid
-                  columns={{ initial: "1", md: "5" }}
-                  gap="4"
-                  className="mt-3"
-                >
-                  <Label htmlFor="email">Nama Barang</Label>
-                  <Label htmlFor="email">Qty</Label>
-                  <Label htmlFor="email">Diskon</Label>
-                  <Label htmlFor="email">PPN</Label>
-                  <Label htmlFor="email">Total</Label>
-                </Grid>
-                {Array.from({ length: 3 }).map((v, i) => (
-                  <Grid
-                    columns={{ initial: "1", md: "5" }}
-                    gap="4"
-                    className="mt-3"
-                    key={i}
-                  >
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="text" id="email" readOnly />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="number" id="email" readOnly />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="number" id="email" readOnly />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="number" id="email" readOnly />
-                    </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Input type="number" id="email" readOnly />
-                    </div>
-                  </Grid>
-                ))}
-                <Box className="mt-8 flex flex-col items-end">
-                  <Grid
-                    columns={{ initial: "1", md: "2" }}
-                    gap="4"
-                    justify={"end"}
-                  >
-                    <Box></Box>
-                    <Box className="flex flex-col items-end justify-end gap-3">
-                      <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                        <Text className="text-right">Sub Total</Text>
-                        <Box></Box>
-                        <Input
-                          type="number"
-                          readOnly
-                          className="md:col-span-2"
-                        />
-                      </Grid>
-                      <Box className="flex">
-                        <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                          <Text className="text-right">PPN</Text>
-                          <Box className="flex items-center gap-3">
-                            <Input type="number" readOnly />
-                            <Text>%</Text>
-                          </Box>
-                          <Input
-                            type="number"
-                            readOnly
-                            className="md:col-span-2"
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[5ch]">No</TableHead>
+                      <TableHead>produk</TableHead>
+                      <TableHead className="w-[10ch]">quantity</TableHead>
+                      <TableHead className="w-[20ch]">harga</TableHead>
+                      <TableHead className="w-[20ch]">diskon</TableHead>
+                      <TableHead className="w-[20ch]">pajak</TableHead>
+                      <TableHead className="w-[25ch]">total</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.salesInvoiceDetail.map((detail, index) => (
+                      <TableRow key={detail.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{detail.product.name}</TableCell>
+                        <TableCell>{detail.quantity}</TableCell>
+                        <TableCell>
+                          <NumericFormat
+                            value={detail.price}
+                            {...NUMERIC_PROPS}
+                            displayType="text"
                           />
-                        </Grid>
-                      </Box>
-                      <Box className="flex">
-                        <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                          <Text className="text-right">Diskon</Text>
-                          <Box className="flex items-center gap-3">
-                            <Input type="number" readOnly />
-                            <Text>%</Text>
-                          </Box>
-                          <Input
-                            type="number"
-                            readOnly
-                            className="md:col-span-2"
+                        </TableCell>
+                        <TableCell>
+                          <NumericFormat
+                            value={detail.discount}
+                            {...NUMERIC_PROPS}
+                            displayType="text"
                           />
-                        </Grid>
-                      </Box>
-                      <Grid columns={{ initial: "1", md: "4" }} gap="4">
-                        <Text className="text-right">Total</Text>
-                        <Box></Box>
-                        <Input
-                          type="number"
-                          readOnly
-                          className="md:col-span-2"
+                        </TableCell>
+                        <TableCell>
+                          <NumericFormat
+                            value={detail.tax}
+                            {...NUMERIC_PROPS}
+                            displayType="text"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <NumericFormat
+                            value={detail.totalAfter}
+                            {...NUMERIC_PROPS}
+                            displayType="text"
+                          />
+                        </TableCell>
+                        <TableCell />
+                      </TableRow>
+                    ))}
+                  </TableBody>
+
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={5}></TableCell>
+                      <TableCell>Sub Total</TableCell>
+                      <TableCell>
+                        <NumericFormat
+                          value={data.totalBefore}
+                          {...NUMERIC_PROPS}
+                          displayType="text"
                         />
-                      </Grid>
-                    </Box>
-                  </Grid>
-                </Box>
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={5}></TableCell>
+                      <TableCell>Diskon</TableCell>
+                      <TableCell>
+                        <NumericFormat
+                          value={data.discount}
+                          {...NUMERIC_PROPS}
+                          displayType="text"
+                        />
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={5}></TableCell>
+                      <TableCell>Pajak</TableCell>
+                      <TableCell>
+                        <NumericFormat
+                          value={data.tax}
+                          {...NUMERIC_PROPS}
+                          displayType="text"
+                        />
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={5}></TableCell>
+                      <TableCell>Total</TableCell>
+                      <TableCell>
+                        <NumericFormat
+                          value={data.totalAfter}
+                          {...NUMERIC_PROPS}
+                          displayType="text"
+                        />
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
               </Box>
             </CardContent>
           </Card>
@@ -182,32 +201,17 @@ const DetailSaleFakturPage = ({ id }: { id: string }) => {
         <Grid className="h-max md:col-span-4">
           <Card className="h-fit px-6 py-4">
             <CardHeader>
-              <CardTitle>Detail Customer</CardTitle>
+              <CardTitle>Detail Pembayaran</CardTitle>
             </CardHeader>
             <hr />
             <CardContent>
-              <Box className="flex items-center gap-x-3">
-                <Avatar className="h-[70px] w-[70px]">
-                  <AvatarFallback>{fallbackName("name")}</AvatarFallback>
-                </Avatar>
-                <Box>
-                  <Text size={"5"} weight={"bold"}>
-                    {"name"}
-                  </Text>
-                  <Box>
-                    <Text>{"email@gmail.com"}</Text>
-                  </Box>
-                </Box>
-              </Box>
-              <hr className="my-3" />
-              <Text size={"2"}>
-                Tj. Sari, Kec. Medan Selayang, Kota Medan, Sumatera Utara 20154
-              </Text>
-              <Box>
-                <Button className="mt-3 w-full" size={"lg"}>
-                  Download Invoice
-                </Button>
-              </Box>
+              {data.SalesPayment.length ? (
+                data.SalesPayment.map((data, key) => (
+                  <PaymentCard data={data} key={key} />
+                ))
+              ) : (
+                <p>belum ada data</p>
+              )}
             </CardContent>
           </Card>
         </Grid>

@@ -5,6 +5,7 @@ import { NumericFormat } from "react-number-format";
 
 import { type SalesInvoiceRouterOutput } from "@/server/salesInvoice/sales-invoice.router";
 
+import SalesInvoiceRowAction from "@/components/sale/saleFaktur/table/RowAction";
 import { Badge } from "@/components/ui/badge";
 
 const SalesInvoiceColumn = () => {
@@ -12,7 +13,7 @@ const SalesInvoiceColumn = () => {
     createColumnHelper<SalesInvoiceRouterOutput["get"]["data"][number]>();
   const column = [
     columnHelper.accessor("date", {
-      header: "No Faktur",
+      header: "tanggal",
       cell: ({ getValue }) =>
         DateTime.fromJSDate(getValue()).toFormat(DATE_FORMAT),
     }),
@@ -79,6 +80,11 @@ const SalesInvoiceColumn = () => {
           />
         </Badge>
       ),
+    }),
+    columnHelper.display({
+      id: "action",
+      header: "action",
+      cell: (info) => <SalesInvoiceRowAction data={info.row.original} />,
     }),
   ] as ColumnDef<SalesInvoiceRouterOutput["get"]["data"][number]>[];
   return column;

@@ -1,8 +1,6 @@
 import { paths } from "@/paths/paths";
-import { formatPrice } from "@/utils/format-price";
 import { Flex } from "@radix-ui/themes";
-import { createColumnHelper } from "@tanstack/react-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { EyeIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
