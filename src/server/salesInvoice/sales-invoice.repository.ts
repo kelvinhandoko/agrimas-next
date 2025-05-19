@@ -6,7 +6,11 @@ import {
 import { type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 
-import { BaseRepository, type PaginatedQuery } from "@/server/common";
+import {
+  BaseRepository,
+  type CursorQuery,
+  type PaginatedQuery,
+} from "@/server/common";
 
 export class SalesInvoiceRepository extends BaseRepository {
   private async _generateRef(): Promise<string> {
@@ -51,12 +55,15 @@ export class SalesInvoiceRepository extends BaseRepository {
   }
 
   async update(payload: UpdateSalesInvoicePayload) {
-    const { id, date } = payload;
+    const { id, date, status, totalPayment } = payload;
+
     return await this._db.salesInvoice.update({
       where: { id },
       data: {
         date,
         dueDate: DateTime.fromJSDate(date).plus({ days: 30 }).toJSDate(),
+        totalPayment,
+        status,
       },
     });
   }
@@ -103,6 +110,52 @@ export class SalesInvoiceRepository extends BaseRepository {
         orderBy: { date: "desc" },
       })
       .withPages({ limit, page });
+    return { data, meta };
+  }
+
+  async getInfinite(q: CursorQuery) {
+    const { companyId, search, limit, cursor, dateRange } = q;
+    const whereClause: Prisma.SalesInvoiceWhereInput = {};
+
+    whereClause.companyId = companyId;
+
+    if (dateRange) {
+      const { from, to } = dateRange;
+      whereClause.date = {
+        gte: DateTime.fromISO(from).setZone(TIMEZONE).startOf("day").toJSDate(),
+        lte: DateTime.fromISO(to).setZone(TIMEZONE).endOf("day").toJSDate(),
+      };
+    }
+
+    if (search) {
+      whereClause.OR = [
+        {
+          ref: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          id: search,
+        },
+        {
+          customer: {
+            nama: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        },
+      ];
+    }
+
+    const [data, meta] = await this._db.salesInvoice
+      .paginate({
+        where: whereClause,
+        include: { customer: true, salesPerson: true },
+        orderBy: { date: "desc" },
+      })
+      .withCursor({ limit, after: cursor });
     return { data, meta };
   }
 

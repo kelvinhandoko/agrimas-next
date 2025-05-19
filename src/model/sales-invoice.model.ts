@@ -1,4 +1,5 @@
 import { salesInvoiceDetailPayloadSchema } from "@/model/sales-invoice-detail.model";
+import { TRANSACTION_PAYMENT_STATUS } from "@prisma/client";
 import { z } from "zod";
 
 import { type WithCompany } from "@/server/common";
@@ -24,10 +25,15 @@ export const salesInvoicePayloadSchema = z.object({
 export type SalesInvoicePayload = z.infer<typeof salesInvoicePayloadSchema> &
   WithCompany & { cogs: number };
 
-export const updateSalesInvoicePayloadSchema = salesInvoicePayloadSchema.pick({
-  id: true,
-  date: true,
-});
+export const updateSalesInvoicePayloadSchema = salesInvoicePayloadSchema
+  .pick({
+    date: true,
+  })
+  .extend({
+    id: z.string(),
+    totalPayment: z.number().positive().optional(),
+    status: z.nativeEnum(TRANSACTION_PAYMENT_STATUS).optional(),
+  });
 
 export type UpdateSalesInvoicePayload = z.infer<
   typeof updateSalesInvoicePayloadSchema
