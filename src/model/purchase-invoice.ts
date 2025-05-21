@@ -2,7 +2,7 @@ import { purchasePaymentPayloadSchema } from "@/model/purchase-payment.model";
 import { TRANSACTION_PAYMENT_STATUS } from "@prisma/client";
 import { z } from "zod";
 
-import { type WithCompany } from "@/server/common";
+import { type WithCompany, paginatedQuery } from "@/server/common";
 
 export const purchaseInvoicePayloadSchema = z.object({
   receiveItemId: z.string().describe("id surat jalan pembelian"),
@@ -28,3 +28,12 @@ export const updatePurchaseInvoiceStatusSchema = z.object({
 export type UpdatedPurchaseInvoiceStatusPayload = z.infer<
   typeof updatePurchaseInvoiceStatusSchema
 >;
+
+export const getPurchaseInvoiceeQuerySchema = paginatedQuery.extend({
+  supplierId: z.string().optional(),
+});
+
+export type GetPurchaseInvoiceeQuery = z.infer<
+  typeof getPurchaseInvoiceeQuerySchema
+> &
+  WithCompany;

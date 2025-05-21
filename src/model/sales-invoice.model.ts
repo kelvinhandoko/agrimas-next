@@ -2,7 +2,7 @@ import { salesInvoiceDetailPayloadSchema } from "@/model/sales-invoice-detail.mo
 import { TRANSACTION_PAYMENT_STATUS } from "@prisma/client";
 import { z } from "zod";
 
-import { type WithCompany } from "@/server/common";
+import { type WithCompany, paginatedQuery } from "@/server/common";
 
 export const salesInvoicePayloadSchema = z.object({
   id: z.string().optional(),
@@ -43,3 +43,10 @@ export const getDetailSalesInvoicePayloadSchema = z.object({
   by: z.enum(["id", "ref"]).default("id"),
   identifier: z.string(),
 });
+
+export const getSalesInvoiceQuerySchema = paginatedQuery.extend({
+  customerId: z.string().optional(),
+});
+
+export type GetSalesInvoiceQuery = z.infer<typeof getSalesInvoiceQuerySchema> &
+  WithCompany;

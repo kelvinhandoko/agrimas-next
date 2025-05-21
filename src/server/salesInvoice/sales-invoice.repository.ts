@@ -1,16 +1,13 @@
 import { TIMEZONE } from "@/constant";
 import {
+  type GetSalesInvoiceQuery,
   type SalesInvoicePayload,
   type UpdateSalesInvoicePayload,
 } from "@/model/sales-invoice.model";
 import { type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 
-import {
-  BaseRepository,
-  type CursorQuery,
-  type PaginatedQuery,
-} from "@/server/common";
+import { BaseRepository, type CursorQuery } from "@/server/common";
 
 export class SalesInvoiceRepository extends BaseRepository {
   private async _generateRef(): Promise<string> {
@@ -68,11 +65,15 @@ export class SalesInvoiceRepository extends BaseRepository {
     });
   }
 
-  async get(q: PaginatedQuery) {
-    const { companyId, search, limit, page, dateRange } = q;
+  async get(q: GetSalesInvoiceQuery) {
+    const { companyId, search, limit, page, dateRange, customerId } = q;
     const whereClause: Prisma.SalesInvoiceWhereInput = {};
 
     whereClause.companyId = companyId;
+
+    if (customerId) {
+      whereClause.customerId = customerId;
+    }
 
     if (dateRange) {
       const { from, to } = dateRange;
@@ -107,6 +108,7 @@ export class SalesInvoiceRepository extends BaseRepository {
     const [data, meta] = await this._db.salesInvoice
       .paginate({
         where: whereClause,
+        include: { customer: true },
         orderBy: { date: "desc" },
       })
       .withPages({ limit, page });

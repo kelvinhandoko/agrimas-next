@@ -1,7 +1,10 @@
+import { TIMEZONE } from "@/constant";
 import {
+  type GetPurchaseInvoiceeQuery,
   type PurchaseInvoicePayload,
   type UpdatedPurchaseInvoiceStatusPayload,
 } from "@/model/purchase-invoice";
+import { type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 
 import { BaseRepository } from "@/server/common";
@@ -60,5 +63,54 @@ export class PurchaseInvoiceRepository extends BaseRepository {
       where: { id },
       data: { paymentStatus },
     });
+  }
+  async get(q: GetPurchaseInvoiceeQuery) {
+    const { companyId, search, limit, page, dateRange, supplierId } = q;
+    const whereClause: Prisma.PurchaseInvoiceWhereInput = {};
+
+    whereClause.companyId = companyId;
+
+    if (supplierId) {
+      whereClause.receiveItem = {
+        purchase: {
+          supplierId,
+        },
+      };
+    }
+
+    if (dateRange) {
+      const { from, to } = dateRange;
+      whereClause.date = {
+        gte: DateTime.fromISO(from).setZone(TIMEZONE).startOf("day").toJSDate(),
+        lte: DateTime.fromISO(to).setZone(TIMEZONE).endOf("day").toJSDate(),
+      };
+    }
+
+    if (search) {
+      whereClause.OR = [
+        {
+          ref: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          id: search,
+        },
+      ];
+    }
+
+    const [data, meta] = await this._db.purchaseInvoice
+      .paginate({
+        where: whereClause,
+        include: {
+          receiveItem: {
+            include: { purchase: { include: { supplier: true } } },
+          },
+        },
+        orderBy: { date: "desc" },
+      })
+      .withPages({ limit, page });
+    return { data, meta };
   }
 }

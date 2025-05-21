@@ -12,6 +12,7 @@ import { productRouter } from "@/server/product/product.router";
 import { purchaseRouter } from "@/server/purchase/purchase.router";
 import { purchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
 import { receiveItemRouter } from "@/server/recieveItem/receive-item.router";
+import { reportRouter } from "@/server/report/report.router";
 import { salesInvoiceRouter } from "@/server/salesInvoice/sales-invoice.router";
 import { salesPaymentRouter } from "@/server/salesPayment/sales-payment.router";
 import { salesPersonRouter } from "@/server/salesPerson/sales-person.router";
@@ -41,6 +42,7 @@ export const appRouter = createTRPCRouter({
   receiveItem: receiveItemRouter,
   purchasePayment: purchasePaymentRouter,
   paymentMethod: paymentMethodRouter,
+  report: reportRouter,
 });
 
 // export type definition of API
