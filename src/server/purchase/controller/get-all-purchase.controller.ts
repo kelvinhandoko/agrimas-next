@@ -20,6 +20,8 @@ export const getAllPurchaseController = companyProcedure
         purchaseDetail: {
           select: {
             quantity: true,
+            productId: true,
+            id: true,
           },
         },
       },

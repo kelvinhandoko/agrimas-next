@@ -38,11 +38,11 @@ const listMenu = [
     icon: <FiDollarSign size={"50px"} />,
     path: paths.purchase.purchasePayable.root,
   },
-  {
-    title: "Pembayaran",
-    icon: <FiCreditCard size={"50px"} />,
-    path: paths.purchase.purchasePayment.root,
-  },
+  // {
+  //   title: "Pembayaran",
+  //   icon: <FiCreditCard size={"50px"} />,
+  //   path: paths.purchase.purchasePayment.root,
+  // },
 ];
 
 const DataPurchaseList = () => {

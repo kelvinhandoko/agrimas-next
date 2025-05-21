@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  PurchaseReceivedPayload,
-  purchaseReceivedPayloadSchema,
-} from "@/model/dummy/purchase-received.model";
+import { purchasePayloadSchema } from "@/model/purchase.model";
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Grid } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { CalendarIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -41,106 +39,84 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
-import PurchaseReturnRow from "./PurchaseReturnRow";
+import PurchaseFakturRow from "./PurchaseFakturRow";
 
-export const dummyPurchaseOrder = [
-  {
-    id: "PO-001",
-    supplier: "supplier-1",
-    items: [
-      {
-        productId: "P-001",
-        name: "Produk 1A",
-        quantity: 10,
-      },
-      {
-        productId: "P-002",
-        name: "Produk 2A",
-        quantity: 5,
-      },
-    ],
-  },
-  {
-    id: "PO-002",
-    supplier: "supplier-1",
-    items: [
-      {
-        productId: "P-002",
-        name: "Produk 2A",
-        quantity: 5,
-      },
-      {
-        productId: "P-003",
-        name: "Produk 3A",
-        quantity: 8,
-      },
-      {
-        productId: "P-004",
-        name: "Produk 4A",
-        quantity: 3,
-      },
-    ],
-  },
-];
-
-const AddNewPurchaseReturnPage = () => {
+const AddNewPurchaseFakturPage = () => {
   const defaultValues = {
-    id: "",
-    purchaseOrderId: "",
-    receivedDate: undefined,
+    purchaseFakturDate: undefined,
+    purchaseFakturNo: "",
+    ref: "",
     note: "",
+    discount: 0,
+    ppn: 0,
     supplierId: "",
-    detail: [{ id: "", productId: "", quantity: 1 }],
+    detail: [
+      {
+        purchaseId: "",
+        productId: "",
+        quantity: 1,
+        price: 0,
+        discount: 0,
+        ppn: 0,
+      },
+    ],
   };
-  const form = useForm<PurchaseReceivedPayload>({
-    resolver: zodResolver(purchaseReceivedPayloadSchema),
+
+  const { data: dataSuppliers, isLoading } = api.supplier.getAll.useQuery({});
+
+  const form = useForm({
+    resolver: zodResolver(purchasePayloadSchema),
     defaultValues,
   });
 
-  const { control } = form;
-
-  const onSubmit: SubmitHandler<PurchaseReceivedPayload> = async (data) => {
+  const {
+    watch,
+    control,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = form;
+  const onSubmit = async (data) => {
     try {
       console.log(data);
-      toast.success("Berhasil tambah penerimaan pembelian");
+      toast.success("Berhasil tambah pesanan pembelian");
     } catch (error) {
       console.log(error);
     }
   };
+  console.log("error", errors);
+
   return (
     <Box>
+      {/* <pre>{JSON.stringify(errors, undefined, 2)}</pre> */}
+      {/* <pre>{JSON.stringify(getValues(), undefined, 2)}</pre> */}
       <Box className="mb-8">
-        <BackButton path={paths.purchase.purchaseReturn.root} />
+        <BackButton path={paths.purchase.purchaseFaktur.root} />
       </Box>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          {/* no penerimaan */}
           <Grid columns={{ initial: "1", md: "2" }}>
             <FormField
               control={form.control}
-              name="id"
+              name="ref"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>No Pengembalian</FormLabel>
+                  <FormLabel>No Faktur</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="no pengembalian (opsional)"
-                      {...field}
-                    />
+                    <Input placeholder="no faktur (opsional)" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </Grid>
-          {/* no pesanan pembelian */}
           <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
             <FormField
               control={form.control}
-              name="purchaseOrderId"
+              name="supplierId"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>No Pesanan Pembelian</FormLabel>
+                  <FormLabel>No Referensi</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -153,10 +129,10 @@ const AddNewPurchaseReturnPage = () => {
                           )}
                         >
                           {field.value
-                            ? dummyPurchaseOrder?.find(
-                                (po) => po.id === field.value,
-                              )?.id
-                            : "Select po"}
+                            ? dataSuppliers?.data.find(
+                                (supplier) => supplier.id === field.value,
+                              )?.nama
+                            : "Select no referensi"}
                           <ChevronsUpDownIcon className="opacity-50" />
                         </Button>
                       </FormControl>
@@ -164,26 +140,26 @@ const AddNewPurchaseReturnPage = () => {
                     <PopoverContent className="w-full p-0">
                       <Command>
                         <CommandInput
-                          placeholder="Search po..."
+                          placeholder="Search no referensi..."
                           className="h-9"
                         />
                         <CommandList>
-                          <CommandEmpty>No PO found.</CommandEmpty>
+                          <CommandEmpty>No no referensi found.</CommandEmpty>
                           <CommandGroup>
-                            {dummyPurchaseOrder &&
-                              dummyPurchaseOrder?.map((po) => (
+                            {dataSuppliers &&
+                              dataSuppliers?.data.map((supplier) => (
                                 <CommandItem
-                                  value={po.id}
-                                  key={po.id}
+                                  value={supplier.id}
+                                  key={supplier.id}
                                   onSelect={() => {
-                                    form.setValue("purchaseOrderId", po.id);
+                                    form.setValue("supplierId", supplier.id);
                                   }}
                                 >
-                                  {po.id}
+                                  {supplier.nama}
                                   <CheckIcon
                                     className={cn(
                                       "ml-auto",
-                                      po.id === field.value
+                                      supplier.id === field.value
                                         ? "opacity-100"
                                         : "opacity-0",
                                     )}
@@ -200,28 +176,11 @@ const AddNewPurchaseReturnPage = () => {
               )}
             />
           </Grid>
-          {/* supplier */}
-          <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
-            <FormField
-              control={form.control}
-              name="supplierId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Supplier</FormLabel>
-                  <FormControl>
-                    <Input placeholder="supplier" {...field} readOnly />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </Grid>
-          {/* tanggal */}
           <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
             {/* Tanggal */}
             <FormField
               control={form.control}
-              name="receivedDate"
+              name="purchaseDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Tanggal</FormLabel>
@@ -269,7 +228,72 @@ const AddNewPurchaseReturnPage = () => {
               )}
             />
           </Grid>
-          {/* deskripsi */}
+          <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
+            <FormField
+              control={form.control}
+              name="supplierId"
+              render={({ field }) => (
+                <FormItem className="flex w-full flex-col">
+                  <FormLabel>Supplier</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value
+                            ? dataSuppliers?.data.find(
+                                (supplier) => supplier.id === field.value,
+                              )?.nama
+                            : "Select supplier"}
+                          <ChevronsUpDownIcon className="opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search supplier..."
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>No supplier found.</CommandEmpty>
+                          <CommandGroup>
+                            {dataSuppliers &&
+                              dataSuppliers?.data.map((supplier) => (
+                                <CommandItem
+                                  value={supplier.id}
+                                  key={supplier.id}
+                                  onSelect={() => {
+                                    form.setValue("supplierId", supplier.id);
+                                  }}
+                                >
+                                  {supplier.nama}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      supplier.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
           <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
             <FormField
               control={form.control}
@@ -291,7 +315,12 @@ const AddNewPurchaseReturnPage = () => {
             />
           </Grid>
           <hr className="my-7" />
-          <PurchaseReturnRow control={control} />
+          <PurchaseFakturRow
+            control={control}
+            setValue={setValue}
+            watch={watch}
+          />
+          {/* Submit Button */}
           <Box className="mt-4 flex items-center justify-end gap-2">
             <Button
               type="submit"
@@ -310,4 +339,4 @@ const AddNewPurchaseReturnPage = () => {
   );
 };
 
-export default AddNewPurchaseReturnPage;
+export default AddNewPurchaseFakturPage;

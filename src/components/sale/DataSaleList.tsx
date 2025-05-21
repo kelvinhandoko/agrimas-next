@@ -38,11 +38,11 @@ const listMenu = [
     icon: <FiDollarSign size={"50px"} />,
     path: paths.sale.saleReturn.root,
   },
-  {
-    title: "Pembayaran",
-    icon: <FiCreditCard size={"50px"} />,
-    path: paths.sale.salePayment.root,
-  },
+  // {
+  //   title: "Pembayaran",
+  //   icon: <FiCreditCard size={"50px"} />,
+  //   path: paths.sale.salePayment.root,
+  // },
 ];
 const DataSaleList = () => {
   return (

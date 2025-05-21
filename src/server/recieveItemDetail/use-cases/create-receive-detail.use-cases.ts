@@ -35,6 +35,7 @@ export const createReceiveItemDetailUseCase =
     }
 
     const newPurchaseReceive = findPurchaseDetail.totalReceive + quantity;
+
     if (newPurchaseReceive > findPurchaseDetail.quantity) {
       throw new TRPCError({
         code: "BAD_REQUEST",

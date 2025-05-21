@@ -1,10 +1,8 @@
 "use client";
 
-import { type PurchaseReceivedPayload } from "@/model/dummy/purchase-received.model";
 import { Box, Grid } from "@radix-ui/themes";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { ChangeEvent } from "react";
 import { Control, useFieldArray, useWatch } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -32,13 +30,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { dummyPurchaseOrder } from "./AddNewPurchaseReceivedPage";
+import { dummyPurchaseOrder } from "./AddNewPurchaseReturnPage";
 
-interface PurchaseReceivedRowProps {
-  control: Control<PurchaseReceivedPayload>;
-}
-
-const PurchaseReceivedRow = ({ control }: PurchaseReceivedRowProps) => {
+const PurchaseReturnRow = ({ control }) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "detail",
@@ -46,7 +40,7 @@ const PurchaseReceivedRow = ({ control }: PurchaseReceivedRowProps) => {
 
   const detail = useWatch({ control, name: "detail" }) || [];
 
-  const handleRemoveRow = (index: number) => {
+  const handleRemoveRow = (index) => {
     console.log(index);
     if (detail.length > 1) {
       remove(index);
@@ -170,4 +164,4 @@ const PurchaseReceivedRow = ({ control }: PurchaseReceivedRowProps) => {
   );
 };
 
-export default PurchaseReceivedRow;
+export default PurchaseReturnRow;
