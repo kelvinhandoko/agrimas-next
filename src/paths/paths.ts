@@ -60,10 +60,10 @@ export const paths = {
       root: "/sale/sale-faktur",
       detail: (id: string) => `/sale/sale-faktur/${id}/detail`,
     },
-    salePayment: {
-      root: "/sale/sale-payment",
-      detail: (id: string) => `/sale/sale-payment/${id}/detail`,
-    },
+    // salePayment: {
+    //   root: "/sale/sale-payment",
+    //   detail: (id: string) => `/sale/sale-payment/${id}/detail`,
+    // },
   },
   purchase: {
     root: "/purchase",
@@ -91,12 +91,12 @@ export const paths = {
       detail: (id: string) => `/purchase/purchase-faktur/${id}/detail`,
       edit: (id: string) => `/purchase/purchase-faktur/${id}/edit`,
     },
-    purchasePayment: {
-      root: "/purchase/purchase-payment",
-      new: "/purchase/purchase-payment/new",
-      detail: (id: string) => `/purchase/purchase-payment/${id}/detail`,
-      edit: (id: string) => `/purchase/purchase-payment/${id}/edit`,
-    },
+    // purchasePayment: {
+    //   root: "/purchase/purchase-payment",
+    //   new: "/purchase/purchase-payment/new",
+    //   detail: (id: string) => `/purchase/purchase-payment/${id}/detail`,
+    //   edit: (id: string) => `/purchase/purchase-payment/${id}/edit`,
+    // },
     purchasePayable: {
       root: "/purchase/purchase-payable",
       new: "/purchase/purchase-payable/new",

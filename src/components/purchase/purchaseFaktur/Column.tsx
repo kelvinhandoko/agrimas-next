@@ -64,13 +64,13 @@ export const purchaseFakturColumn = () =>
         return (
           <Flex justify="center" gapX="3">
             <Link
-              href={paths.purchase.purchaseReceived.detail("123")}
+              href={paths.purchase.purchaseFaktur.detail("123")}
               className="text-yellow-400"
             >
               <EyeIcon className="cursor-pointer text-[#624DE3]" />
             </Link>
             <Link
-              href={paths.purchase.purchaseReceived.edit("123")}
+              href={paths.purchase.purchaseFaktur.edit("123")}
               className="text-yellow-400"
             >
               <PencilIcon className="text-yellow-400" />

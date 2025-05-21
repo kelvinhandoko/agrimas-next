@@ -24,8 +24,8 @@ const columnHelper =
 
 export const purchaseOrderColumn = () =>
   [
-    columnHelper.accessor("ref", {
-      header: "No Faktur",
+    columnHelper.accessor("id", {
+      header: "No Pembelian",
       cell: ({ row, getValue }) => <div>{getValue()}</div>,
     }),
     columnHelper.accessor("purchaseDate", {
@@ -67,7 +67,7 @@ export const purchaseOrderColumn = () =>
         return (
           <Flex justify="center" gapX="3">
             <Link
-              href={paths.purchase.purchaseOrder.detail("123")}
+              href={paths.purchase.purchaseOrder.detail(row.original.id)}
               className="text-yellow-400"
             >
               <EyeIcon className="cursor-pointer text-[#624DE3]" />

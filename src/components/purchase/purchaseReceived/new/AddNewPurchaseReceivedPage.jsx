@@ -1,21 +1,21 @@
 "use client";
 
-import {
-  PurchaseReceivedPayload,
-  purchaseReceivedPayloadSchema,
-} from "@/model/dummy/purchase-received.model";
+import { recieveItemPayloadSchema } from "@/model/recieve-item.model";
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
+import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Grid } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { CalendarIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { DateTime } from "luxon";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { cn } from "@/lib/utils";
-
-import { WithCompany } from "@/server/common";
 
 import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
@@ -89,32 +89,75 @@ export const dummyPurchaseOrder = [
 const AddNewPurchaseReceivedPage = () => {
   const defaultValues = {
     id: "",
-    purchaseOrderId: "",
-    receivedDate: undefined,
+    purchaseId: "",
+    receiveDate: DateTime.now().toJSDate(),
     note: "",
     supplierId: "",
-    detail: [{ id: "", productId: "", quantity: 1 }],
+    details: [{ purchaseDetailId: "", productId: "", quantity: 1 }],
   };
-  const form = useForm<PurchaseReceivedPayload>({
-    resolver: zodResolver(purchaseReceivedPayloadSchema),
+  const form = useForm({
+    resolver: zodResolver(recieveItemPayloadSchema),
     defaultValues,
   });
 
-  const { control } = form;
+  const router = useRouter();
 
-  const onSubmit: SubmitHandler<PurchaseReceivedPayload> = async (data) => {
-    try {
-      console.log(data);
-      toast.success("Berhasil tambah penerimaan pembelian");
-    } catch (error) {
-      console.log(error);
-    }
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = form;
+
+  const { data: dataPurchaseOrders } = api.purchase.getAll.useQuery({});
+
+  const purchaseId = watch("purchaseId");
+
+  const { mutateAsync: createReceiveItem } =
+    api.receiveItem.create.useMutation();
+
+  const onSubmit = async (data) => {
+    console.log(data);
+
+    toast.promise(async () => await createReceiveItem(data), {
+      loading: "Loading...",
+      success: async (e) => {
+        router.replace(paths.purchase.purchaseReceived.root);
+        return `Berhasil menambahkan penerimaan barang`;
+      },
+      error: (error) => {
+        console.log(error);
+
+        return errorFormatter(error);
+      },
+    });
   };
+
+  const selectedPO = dataPurchaseOrders?.data.find(
+    (po) => po.id === purchaseId,
+  );
+  useEffect(() => {
+    if (selectedPO) {
+      form.setValue("supplierId", selectedPO.supplier.nama);
+      const mappedDetails = selectedPO.purchaseDetail.map((item) => ({
+        purchaseDetailId: item.id,
+        productId: item.productId,
+        quantity: item.quantity,
+      }));
+
+      form.setValue("details", mappedDetails);
+    } else {
+      form.setValue("supplierId", "");
+      form.setValue("details", [{}]);
+    }
+  }, [purchaseId, dataPurchaseOrders, form]);
+
   return (
     <Box>
       <Box className="mb-8">
         <BackButton path={paths.purchase.purchaseReceived.root} />
       </Box>
+      <pre>{JSON.stringify(selectedPO, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(dataPurchaseOrders, null, 2)}</pre> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {/* no penerimaan */}
@@ -137,7 +180,7 @@ const AddNewPurchaseReceivedPage = () => {
           <Grid columns={{ initial: "1", md: "2" }} className="mt-3">
             <FormField
               control={form.control}
-              name="purchaseOrderId"
+              name="purchaseId"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
                   <FormLabel>No Pesanan Pembelian</FormLabel>
@@ -153,7 +196,7 @@ const AddNewPurchaseReceivedPage = () => {
                           )}
                         >
                           {field.value
-                            ? dummyPurchaseOrder?.find(
+                            ? dataPurchaseOrders?.data.find(
                                 (po) => po.id === field.value,
                               )?.id
                             : "Select po"}
@@ -170,13 +213,13 @@ const AddNewPurchaseReceivedPage = () => {
                         <CommandList>
                           <CommandEmpty>No PO found.</CommandEmpty>
                           <CommandGroup>
-                            {dummyPurchaseOrder &&
-                              dummyPurchaseOrder?.map((po) => (
+                            {dataPurchaseOrders &&
+                              dataPurchaseOrders?.data.map((po) => (
                                 <CommandItem
                                   value={po.id}
                                   key={po.id}
                                   onSelect={() => {
-                                    form.setValue("purchaseOrderId", po.id);
+                                    form.setValue("purchaseId", po.id);
                                   }}
                                 >
                                   {po.id}
@@ -221,7 +264,7 @@ const AddNewPurchaseReceivedPage = () => {
             {/* Tanggal */}
             <FormField
               control={form.control}
-              name="receivedDate"
+              name="receiveDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Tanggal</FormLabel>
@@ -291,7 +334,10 @@ const AddNewPurchaseReceivedPage = () => {
             />
           </Grid>
           <hr className="my-7" />
-          <PurchaseReceivedRow control={control} />
+          <PurchaseReceivedRow
+            control={control}
+            purchaseDetail={selectedPO?.purchaseDetail}
+          />
           <Box className="mt-4 flex items-center justify-end gap-2">
             <Button
               type="submit"

@@ -15,6 +15,8 @@ const PurchaseOrderPage = () => {
   if (isLoading) {
     return <LoadingIndicator />;
   }
+
+  console.log(data);
   return (
     <Box>
       <Box className="mb-8">

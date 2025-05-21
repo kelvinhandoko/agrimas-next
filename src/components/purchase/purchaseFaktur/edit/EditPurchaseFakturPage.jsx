@@ -1,16 +1,13 @@
 "use client";
 
-import {
-  type PurchasePayload,
-  purchasePayloadSchema,
-} from "@/model/purchase.model";
+import { purchasePayloadSchema } from "@/model/purchase.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Grid } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { CalendarIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -42,9 +39,9 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
-import PurchaseFakturRow from "./PurchaseFakturRow";
+import EditPurchaseFakturRow from "./EditPurchaseFakturRow";
 
-const AddNewPurchaseFakturPage = () => {
+const EditPurchaseFakturPage = ({ id }) => {
   const defaultValues = {
     purchaseFakturDate: undefined,
     purchaseFakturNo: "",
@@ -67,7 +64,7 @@ const AddNewPurchaseFakturPage = () => {
 
   const { data: dataSuppliers, isLoading } = api.supplier.getAll.useQuery({});
 
-  const form = useForm<PurchasePayload>({
+  const form = useForm({
     resolver: zodResolver(purchasePayloadSchema),
     defaultValues,
   });
@@ -79,7 +76,7 @@ const AddNewPurchaseFakturPage = () => {
     setValue,
     getValues,
   } = form;
-  const onSubmit: SubmitHandler<PurchasePayload> = async (data) => {
+  const onSubmit = async (data) => {
     try {
       console.log(data);
       toast.success("Berhasil tambah pesanan pembelian");
@@ -318,7 +315,7 @@ const AddNewPurchaseFakturPage = () => {
             />
           </Grid>
           <hr className="my-7" />
-          <PurchaseFakturRow
+          <EditPurchaseFakturRow
             control={control}
             setValue={setValue}
             watch={watch}
@@ -342,4 +339,4 @@ const AddNewPurchaseFakturPage = () => {
   );
 };
 
-export default AddNewPurchaseFakturPage;
+export default EditPurchaseFakturPage;

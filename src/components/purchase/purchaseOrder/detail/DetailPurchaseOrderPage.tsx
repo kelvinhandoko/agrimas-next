@@ -1,4 +1,7 @@
+"use client";
+
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
 import { fallbackName } from "@/utils/fallback-name";
 import { Box, Grid, Text } from "@radix-ui/themes";
 
