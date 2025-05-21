@@ -81,6 +81,9 @@ const SalesInvoiceColumn = () => {
         </Badge>
       ),
     }),
+    columnHelper.accessor("status", {
+      cell: ({ getValue }) => <Badge>{getValue()}</Badge>,
+    }),
     columnHelper.display({
       id: "action",
       header: "action",

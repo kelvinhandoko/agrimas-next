@@ -110,12 +110,14 @@ const DataTable = <TData, TValue>({
       <CardContent>
         <div className="flex items-center justify-between py-4">
           {searchAble && <SearchInput placeholder={searchPlaceholder} />}
-          <Link href={path ?? ""}>
-            <Button>
-              <PlusIcon />
-              {buttonAddName}
-            </Button>
-          </Link>
+          {buttonNew && (
+            <Link href={path ?? ""}>
+              <Button>
+                <PlusIcon />
+                {buttonAddName}
+              </Button>
+            </Link>
+          )}
         </div>
         <Table>
           <TableHeader className="table-header-group">

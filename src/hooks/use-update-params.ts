@@ -22,5 +22,11 @@ export const useUpdateParams = () => {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  return { updateParams };
+  const deleteParams = (key: string) => {
+    const params = new URLSearchParams(searchParams as unknown as string);
+    params.delete(key);
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
+  return { updateParams, deleteParams };
 };

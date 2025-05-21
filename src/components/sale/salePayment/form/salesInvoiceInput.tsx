@@ -1,31 +1,22 @@
 "use client";
 
-import { type SalesPaymentPayload } from "@/model/sales-payment.model";
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";
-import React, { type FC, useState } from "react";
-import { type UseFormReturn } from "react-hook-form";
+import React, { useState } from "react";
 
 import { useDebounce } from "@/hooks/use-debounce";
+import { useUpdateParams } from "@/hooks/use-update-params";
 
 import { AutoComplete } from "@/components/common/input/AutoComplete";
 import { CardTitle } from "@/components/ui/card";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 
-interface SalesInvoiceInputProps {
-  form: UseFormReturn<SalesPaymentPayload>;
-}
-
-const SalesInvoiceInput: FC<SalesInvoiceInputProps> = ({ form }) => {
+const SalesInvoiceInput = () => {
   const searchparams = useSearchParams();
-  const [search, setSearch] = useState(searchparams.get("invoiceId") ?? "");
+  const invoiceId = searchparams.get("invoiceId") ?? "";
+  const [search, setSearch] = useState(invoiceId);
   const debounceSearch = useDebounce(search, 300);
+  const { updateParams } = useUpdateParams();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetching } =
     api.salesInvoice.getInfinite.useInfiniteQuery(
       {
@@ -38,37 +29,28 @@ const SalesInvoiceInput: FC<SalesInvoiceInputProps> = ({ form }) => {
   const salesInvoice = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
-    <FormField
-      control={form.control}
-      name="salesInvoiceId"
-      render={({ field }) => (
-        <FormItem className="flex flex-col items-start justify-start gap-2">
-          <FormLabel>faktur penjualan</FormLabel>
-          <FormControl>
-            <AutoComplete
-              options={salesInvoice}
-              hasMore={hasNextPage}
-              customLabel={({ ref, customer }) => (
-                <CardTitle>
-                  {ref} ({customer.nama})
-                </CardTitle>
-              )}
-              fetchMore={fetchNextPage}
-              valueKey="id"
-              onSelect={(val) => {
-                field.onChange(val);
-              }}
-              isFetching={isFetching}
-              onInputChange={(data) => setSearch(data)}
-              isLoading={isLoading}
-              placeholder="pilih faktur penjualan"
-              value={field.value}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+    <div className="flex items-center gap-2">
+      <Label>faktur penjualan :</Label>
+      <AutoComplete
+        options={salesInvoice}
+        hasMore={hasNextPage}
+        customLabel={({ ref, customer }) => (
+          <CardTitle>
+            {ref} ({customer.nama})
+          </CardTitle>
+        )}
+        fetchMore={fetchNextPage}
+        valueKey="id"
+        onSelect={(val) => {
+          updateParams("invoiceId", val as string);
+        }}
+        isFetching={isFetching}
+        onInputChange={(data) => setSearch(data)}
+        isLoading={isLoading}
+        placeholder="pilih faktur penjualan"
+        value={invoiceId}
+      />
+    </div>
   );
 };
 

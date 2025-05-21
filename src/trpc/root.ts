@@ -7,6 +7,7 @@ import { errorLogRouter } from "@/server/errorLog";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
 import { journalRouter } from "@/server/journal/journal.router";
 import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
+import { paymentMethodRouter } from "@/server/paymentMethod/payment-method.router";
 import { productRouter } from "@/server/product/product.router";
 import { purchaseRouter } from "@/server/purchase/purchase.router";
 import { purchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
@@ -39,6 +40,7 @@ export const appRouter = createTRPCRouter({
   purchase: purchaseRouter,
   receiveItem: receiveItemRouter,
   purchasePayment: purchasePaymentRouter,
+  paymentMethod: paymentMethodRouter,
 });
 
 // export type definition of API

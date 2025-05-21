@@ -21,6 +21,7 @@ const SalesPaymentTable = () => {
     <DataTable
       columns={salesInvoicePaymentColumn()}
       data={payments}
+      buttonNew={false}
       totalPage={data?.meta.pageCount ?? 1}
       withNumber={true}
       searchAble={false}
