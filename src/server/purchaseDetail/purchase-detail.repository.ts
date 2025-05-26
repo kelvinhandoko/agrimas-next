@@ -16,6 +16,7 @@ export class PurchaseDetailRepository extends BaseRepository {
         productId,
         quantity,
         price,
+        totalReceive: 0,
         totalBeforeDiscount: totalBefore,
         ppn: ppn ?? 0,
         netTotal,

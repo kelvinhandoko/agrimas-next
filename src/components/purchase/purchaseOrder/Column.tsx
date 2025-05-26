@@ -24,7 +24,7 @@ const columnHelper =
 
 export const purchaseOrderColumn = () =>
   [
-    columnHelper.accessor("id", {
+    columnHelper.accessor("ref", {
       header: "No Pembelian",
       cell: ({ row, getValue }) => <div>{getValue()}</div>,
     }),
@@ -78,11 +78,7 @@ export const purchaseOrderColumn = () =>
             >
               <PencilIcon className="text-yellow-400" />
             </Link>
-            <DeleteModal
-              id={row.original.id}
-              name={row.original.ref}
-              handleDelete={() => {}}
-            />
+            <DeleteModal id={row.original.id} name={row.original.ref} />
           </Flex>
         );
       },

@@ -1,6 +1,6 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
-import AddNewPurchaseReceivedPage from "@/components/purchase/purchaseReceived/new/AddNewPurchaseReceivedPage";
+import PurchaseReceivedForm from "@/components/purchase/purchaseReceived/form";
 
 export const metadata: Metadata = {
   title: "Agrimas - Purchase Order Page",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <AddNewPurchaseReceivedPage />;
+  return <PurchaseReceivedForm />;
 };
 
 export default page;

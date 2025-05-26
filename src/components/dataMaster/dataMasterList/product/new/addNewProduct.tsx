@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const AddNewProductPage = () => {
+const ProductForm = () => {
   const router = useRouter();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +47,7 @@ const AddNewProductPage = () => {
       sellingPrice: 0,
       quantity: 0,
       supplierId: "",
+      buyingPrice: 0,
     },
   });
 
@@ -119,6 +120,28 @@ const AddNewProductPage = () => {
                   <FormControl>
                     <NumericFormat
                       placeholder="Harga jual produk"
+                      name={field.name}
+                      value={field.value === 0 ? "" : field.value}
+                      onValueChange={({ floatValue }) =>
+                        field.onChange(floatValue)
+                      }
+                      {...NUMERIC_PROPS}
+                      displayType="input"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="buyingPrice"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormLabel>Harga Beli Produk</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      placeholder="Harga Beli produk"
                       name={field.name}
                       value={field.value === 0 ? "" : field.value}
                       onValueChange={({ floatValue }) =>
@@ -220,4 +243,4 @@ const AddNewProductPage = () => {
   );
 };
 
-export default AddNewProductPage;
+export default ProductForm;

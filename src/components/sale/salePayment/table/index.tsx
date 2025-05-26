@@ -7,7 +7,7 @@ import { salesInvoicePaymentColumn } from "@/components/sale/salePayment/table/c
 
 const SalesPaymentTable = () => {
   const searchparams = useSearchParams();
-  const invoiceId = searchparams.get("invoiceId") ?? "";
+  const invoiceId = searchparams.get("salesInvoiceId") ?? "";
   const { data, isLoading } = api.salesPayment.get.useQuery(
     {
       salesInvoiceId: invoiceId,

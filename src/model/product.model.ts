@@ -17,6 +17,9 @@ export const productPayloadSchema = z.object({
   sellingPrice: z
     .number()
     .nonnegative("harga jual tidak boleh lebih kecil dari 0"),
+  buyingPrice: z
+    .number()
+    .nonnegative("harga beli tidak boleh lebih kecil dari 0"),
 });
 
 export type ProductPayload = z.infer<typeof productPayloadSchema> & WithCompany;

@@ -1,7 +1,9 @@
 import {
+  type CursoredSupplierQuery,
   type GetAllSupplierQuery,
   type GetDetailSupplierByIdQuery,
   type GetUniqueSupplierQuery,
+  type PaginatedSupplierQuery,
   type SupplierPayload,
 } from "@/model/supplier.model";
 import { type Prisma } from "@prisma/client";
@@ -28,78 +30,47 @@ export class SupplierRepository extends BaseRepository {
     });
   }
 
-  async getAll<S extends Prisma.GroupAccountInclude>(
-    query: GetAllSupplierQuery<S>,
-  ) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
-      companyId,
-      include,
-    } = query;
+  private async _getQuery(q: GetAllSupplierQuery) {
+    const { companyId, search } = q;
     const whereClause: Prisma.SupplierWhereInput = {};
-
-    let cursorClause = undefined;
-
-    whereClause.companyId = companyId;
-
-    // state skip clause klo tidak infinite scroll
-    let skipClause: number | undefined = (page - 1) * limit;
-
-    let take = limit;
-
-    if (infiniteScroll) {
-      if (cursor) {
-        cursorClause = { id: cursor };
-      }
-      take = limit + 1;
-      skipClause = undefined;
-    }
     if (search) {
-      const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
       whereClause.OR = [
         {
           nama: { contains: search },
         },
       ];
     }
-
-    const total = await this._db.supplier.count({ where: whereClause });
-    const data = await this._db.supplier.findMany({
+    whereClause.companyId = companyId;
+    return this._db.supplier.paginate({
       where: whereClause,
-      take: take,
-      cursor: cursorClause,
-      skip: skipClause,
-      include: include ?? (undefined as unknown as S),
+      orderBy: { nama: "asc" },
     });
-
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (!takeAll && data.length > limit) {
-      const nextItem = data.pop();
-      nextCursor = nextItem?.id;
-    }
-    return {
-      data,
-      meta: {
-        totalData: total,
-      },
-      nextCursor,
-    };
   }
 
-  async getDetailById<S extends Prisma.GroupAccountInclude>(
-    query: GetDetailSupplierByIdQuery<S>,
-  ) {
+  async get(q: PaginatedSupplierQuery) {
+    const { limit, page } = q;
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withPages({ limit, page });
+    return { data, meta };
+  }
+
+  async getInfinite(q: CursoredSupplierQuery) {
+    const { limit, cursor } = q;
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withCursor({ limit, after: cursor });
+    return { data, meta };
+  }
+
+  async getDetailById(query: GetDetailSupplierByIdQuery) {
     const getData = await this._db.supplier.findUnique({
       where: {
         id: query.id,
       },
-      include: query.include,
+      include: {
+        products: true,
+      },
     });
 
     return getData;

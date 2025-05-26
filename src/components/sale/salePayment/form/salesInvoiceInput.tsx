@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 
 const SalesInvoiceInput = () => {
   const searchparams = useSearchParams();
-  const invoiceId = searchparams.get("invoiceId") ?? "";
+  const invoiceId = searchparams.get("salesInvoiceId") ?? "";
   const [search, setSearch] = useState(invoiceId);
   const debounceSearch = useDebounce(search, 300);
   const { updateParams } = useUpdateParams();
@@ -42,7 +42,7 @@ const SalesInvoiceInput = () => {
         fetchMore={fetchNextPage}
         valueKey="id"
         onSelect={(val) => {
-          updateParams("invoiceId", val as string);
+          updateParams("salesInvoiceId", val as string);
         }}
         isFetching={isFetching}
         onInputChange={(data) => setSearch(data)}

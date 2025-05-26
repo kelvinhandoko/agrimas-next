@@ -59,6 +59,7 @@ export const paths = {
     saleFaktur: {
       root: "/sale/sale-faktur",
       detail: (id: string) => `/sale/sale-faktur/${id}/detail`,
+      payment: "/sale/sale-payment",
     },
     // salePayment: {
     //   root: "/sale/sale-payment",
@@ -123,5 +124,6 @@ export const paths = {
   },
   finance: {
     root: "/finance",
+    paymentMethod: "/payment-method",
   },
 };

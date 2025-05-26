@@ -4,11 +4,12 @@ import {
   salesPaymentPayload,
 } from "@/model/sales-payment.model";
 import { api } from "@/trpc/react";
+import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Check, CreditCard, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -17,13 +18,7 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -45,7 +40,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const SalesPaymentForm = () => {
+const today = new Date();
+
+interface SalesPaymentFormProps {
+  sisaTagihan: number;
+}
+
+const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
+  console.log(sisaTagihan);
   const searchParams = useSearchParams();
   const salesInvoiceId = searchParams.get("salesInvoiceId") ?? "";
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,7 +74,7 @@ const SalesPaymentForm = () => {
         amount: 0,
         paymentMethodId: "",
         salesInvoiceId,
-        date: new Date(),
+        date: today,
       });
       setIsSubmitting(false);
     },
@@ -82,17 +84,44 @@ const SalesPaymentForm = () => {
     },
   });
 
-  const onSubmit = (data: SalesPaymentPayload) => {
+  const onSubmit = async (data: SalesPaymentPayload) => {
     setIsSubmitting(true);
-    createPayment.mutate(data);
+
+    toast.promise(createPayment.mutateAsync(data), {
+      loading: "Recording payment...",
+      success: () => {
+        form.reset({
+          amount: 0,
+          paymentMethodId: "",
+          salesInvoiceId,
+          date: today,
+        });
+        return "Payment recorded successfully";
+      },
+      error: errorFormatter,
+    });
+
+    setIsSubmitting(false);
   };
 
+  useEffect(() => {
+    if (salesInvoiceId) {
+      form.setValue("salesInvoiceId", salesInvoiceId);
+    }
+  }, [salesInvoiceId]);
+
+  if (sisaTagihan <= 0)
+    return (
+      <div className="flex h-72 w-full items-center justify-center">
+        <CardTitle>tagihan sudah lunas</CardTitle>
+      </div>
+    );
   return (
-    <Card className="w-1/2">
+    <Card className="flex w-1/3 flex-col">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
-          Record Payment
+          form pembayaran
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -104,7 +133,7 @@ const SalesPaymentForm = () => {
               name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Payment Date</FormLabel>
+                  <FormLabel>tanggal pembayaran</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -118,7 +147,7 @@ const SalesPaymentForm = () => {
                           {field.value ? (
                             format(field.value, "PPP")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>pilih tanggal</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -146,14 +175,14 @@ const SalesPaymentForm = () => {
               name="paymentMethodId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Payment Method</FormLabel>
+                  <FormLabel>Metode Pembayaran</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select payment method" />
+                        <SelectValue placeholder="pilih metode pembayaran" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -180,7 +209,7 @@ const SalesPaymentForm = () => {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Payment Amount</FormLabel>
+                  <FormLabel>jumlah</FormLabel>
                   <FormControl>
                     <NumericFormat
                       value={field.value}
@@ -194,28 +223,18 @@ const SalesPaymentForm = () => {
                 </FormItem>
               )}
             />
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="ml-auto w-full gap-2"
+            >
+              {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+              {!isSubmitting && <Check className="h-4 w-4" />}
+              tambah
+            </Button>
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={() => form.reset()}
-          disabled={isSubmitting}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          onClick={form.handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-          className="gap-2"
-        >
-          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-          {!isSubmitting && <Check className="h-4 w-4" />}
-          Record Payment
-        </Button>
-      </CardFooter>
     </Card>
   );
 };

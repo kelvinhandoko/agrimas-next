@@ -192,8 +192,10 @@ model Product {
   currentQuantity    Int
   averagePrice       Int
   sellingPrice       Int                  @default(0)
+  buyingPrice        Int                  @default(0)
   initialProduct     InitialProduct?
   SalesInvoiceDetail SalesInvoiceDetail[]
+  purchaseDetails    PurchaseDetail[]
 }
 
 model InitialProduct {
@@ -226,6 +228,7 @@ model Purchase {
   status              TRANSACTION_STATUS @default(DIPROSES)
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
+  dueDate             DateTime           @default(now())
   ReceiveItem         ReceiveItem[]
   purchaseDetail      PurchaseDetail[]
 }
@@ -234,6 +237,7 @@ model PurchaseDetail {
   id                  String              @id @default(cuid())
   purchaseId          String
   productId           String
+  product             Product             @relation(fields: [productId], references: [id])
   quantity            Int
   price               Int
   discount            Int
@@ -274,6 +278,7 @@ model ReceiveItem {
   company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId         String
   totalAmount       Int                 @default(0)
+  ref               String
   purchaseInvoice   PurchaseInvoice[]
   receiveItemDetail ReceiveItemDetail[]
 }
