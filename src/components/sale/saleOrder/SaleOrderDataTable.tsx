@@ -1,14 +1,10 @@
 "use client";
 
 import { paths } from "@/paths/paths";
-import { api } from "@/trpc/react";
-import { useSearchParams } from "next/navigation";
-import { toast } from "sonner";
 
-import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
-import { SaleOrder, SaleOrderColumn } from "./Column";
+import { type SaleOrder, SaleOrderColumn } from "./Column";
 
 const saleOrderData: SaleOrder[] = [
   {

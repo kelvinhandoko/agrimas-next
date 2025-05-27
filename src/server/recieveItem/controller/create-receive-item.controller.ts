@@ -13,7 +13,8 @@ import { TransactionService } from "@/server/services";
 export const createReceiveItemController = companyProcedure
   .input(recieveItemPayloadSchema)
   .mutation(async ({ ctx, input }) => {
-    const { purchaseId, receiveDate, note, details } = input;
+    const { purchaseId, receiveDate, note, details, ref, discount, tax } =
+      input;
     const transactionService = new TransactionService(ctx.db);
     return await transactionService.startTransaction(async (trx) => {
       const purchaseRepo = new PurchaseRepository(trx);
@@ -30,6 +31,9 @@ export const createReceiveItemController = companyProcedure
         receiveDate,
         note,
         details,
+        ref,
+        discount,
+        tax,
       });
 
       await Promise.all(
