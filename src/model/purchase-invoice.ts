@@ -1,4 +1,5 @@
 import { purchasePaymentPayloadSchema } from "@/model/purchase-payment.model";
+import { receiveItemDetailPayloadSchema } from "@/model/receive-item-detail.model";
 import { TRANSACTION_PAYMENT_STATUS } from "@prisma/client";
 import { z } from "zod";
 
@@ -8,9 +9,15 @@ export const purchaseInvoicePayloadSchema = z.object({
   receiveItemId: z.string().describe("id surat jalan pembelian"),
   date: z.date().describe("tanggal faktur pembelian"),
   ref: z.string().optional().describe("referensi"),
+  discount: z.number().default(0).describe("diskon"),
+  tax: z.number().default(0).describe("pajak"),
+  note: z.string().optional().describe("catatan"),
   payment: purchasePaymentPayloadSchema
     .optional()
     .describe("pembayaran faktur pembelian (optional)"),
+  details: z.array(
+    receiveItemDetailPayloadSchema.omit({ receiveItemId: true }),
+  ),
 });
 
 export type PurchaseInvoicePayload = z.infer<

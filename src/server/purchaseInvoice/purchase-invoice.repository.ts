@@ -32,13 +32,45 @@ export class PurchaseInvoiceRepository extends BaseRepository {
   }
 
   async create(payload: PurchaseInvoicePayload) {
-    const { companyId, date, receiveItemId, ref } = payload;
+    const {
+      companyId,
+      date,
+      receiveItemId,
+      ref,
+      note,
+      details,
+      discount,
+      tax,
+    } = payload;
+    const totals = details.reduce(
+      (acc, curr) => {
+        acc.totalBefore += curr.price * curr.quantity;
+        acc.totalTax += curr.tax;
+        acc.totalDiscount += curr.discount;
+        return acc;
+      },
+      { totalBefore: 0, totalTax: 0, totalDiscount: 0 },
+    );
+
+    totals.totalTax += tax;
+    totals.totalDiscount += discount;
+
+    const totalAfter =
+      totals.totalBefore - totals.totalDiscount + totals.totalTax;
+
+    const { totalBefore, totalDiscount, totalTax } = totals;
+
     return this._db.purchaseInvoice.create({
       data: {
         companyId,
         ref: ref?.length ? ref : await this._generateRef(),
         date,
         receiveId: receiveItemId,
+        note,
+        totalBefore,
+        totalAfter,
+        totalTax,
+        totalDiscount,
       },
       include: {
         receiveItem: {

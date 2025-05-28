@@ -310,6 +310,11 @@ model PurchaseInvoice {
   purchasePayments PurchasePayment[]
   totalPayment     Int                        @default(0)
   ref              String?
+  note             String?
+  totalBefore      Int                        @default(0)
+  totalAfter       Int                        @default(0)
+  totalTax         Int                        @default(0)
+  totalDiscount    Int                        @default(0)
 }
 
 model PaymentMethod {

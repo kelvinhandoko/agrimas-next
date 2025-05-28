@@ -11,13 +11,18 @@ import { DateTime } from "luxon";
 import { BaseRepository } from "@/server/common";
 
 export class ReceiveItemRepository extends BaseRepository {
-  async create(payload: Omit<ReceiveItemPayload, "details">) {
+  async create(payload: ReceiveItemPayload) {
     const { companyId, purchaseId, receiveDate, note, ref } = payload;
+    const totalAmount = payload.details.reduce(
+      (acc, curr) => acc + curr.quantity * curr.price,
+      0,
+    );
     return await this._db.receiveItem.create({
       data: {
         companyId,
         receiveDate,
         note,
+        totalAmount,
         ref: ref?.length
           ? ref
           : await this._createRef(companyId, "purchase_receive", "sj"),
@@ -71,7 +76,11 @@ export class ReceiveItemRepository extends BaseRepository {
       where: whereClause,
       include: {
         purchase: { include: { supplier: true } },
-        receiveItemDetail: true,
+        receiveItemDetail: {
+          include: {
+            purchaseDetail: { include: { product: true, purchase: true } },
+          },
+        },
       },
       orderBy: { receiveDate: "desc" },
     });
