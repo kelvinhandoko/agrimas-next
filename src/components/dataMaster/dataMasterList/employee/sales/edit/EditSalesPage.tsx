@@ -47,8 +47,6 @@ const EditSalesPage = ({ id }: { id: string }) => {
   // update sales mutation
   const { mutateAsync: updateSales } = api.salesPerson.update.useMutation();
   const onSubmit: SubmitHandler<SalesPersonPayload> = async (data) => {
-    console.log(data);
-
     try {
       toast.promise(async () => updateSales(data), {
         loading: "Memproses...",

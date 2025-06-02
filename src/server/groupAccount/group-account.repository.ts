@@ -1,5 +1,7 @@
 import {
-  type GetAllGroupAccountQuery,
+  type GetCursorGroupAccountQuery,
+  type GetGroupAccountQuery,
+  type GetPaginatedGroupAccountQuery,
   type GroupAccountPayload,
 } from "@/model/group-account.model";
 import { AccountClassOrder } from "@/utils/accountClassHelper";
@@ -9,23 +11,19 @@ import { TRPCError } from "@trpc/server";
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class GroupAccountRepository extends BaseRepository {
-  private async _generateCode(accountClass: AccountClass) {
-    const findData = await this._db.groupAccount.findMany({
-      where: { accountClass },
-    });
-
-    const currentTotal = findData.length;
-    return `${AccountClassOrder[accountClass]}.${currentTotal + 1}`;
+  private async _generateCode(accountClass: AccountClass, companyId: string) {
+    return `${AccountClassOrder[accountClass]}.${(await this._createRef(companyId, accountClass, "")).seq}`;
   }
 
   async create(payload: GroupAccountPayload) {
     try {
       const code =
-        payload.code ?? (await this._generateCode(payload.accountClass));
+        payload.code ??
+        (await this._generateCode(payload.accountClass, payload.companyId));
       return await this._db.groupAccount.create({
-        data: { ...payload, code, companyId: payload.companyId! },
+        data: { ...payload, code },
       });
-    } catch (e) {
+    } catch {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "server error",
@@ -40,43 +38,60 @@ export class GroupAccountRepository extends BaseRepository {
     });
   }
 
-  async getAll<S extends Prisma.GroupAccountInclude>(
-    query: GetAllGroupAccountQuery<S>,
-  ) {
-    const { infiniteScroll, limit, cursor, search, companyId, include, page } =
-      query;
-
-    // Where Clause
-    const whereClause: Prisma.GroupAccountWhereInput = {
-      companyId,
-    };
-
+  private async _getQuery(q: GetGroupAccountQuery) {
+    const { companyId, search } = q;
+    const whereClause: Prisma.GroupAccountWhereInput = {};
     if (search) {
-      whereClause.OR = [{ code: { contains: search } }];
+      whereClause.OR = [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          account: {
+            some: {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+      ];
     }
+    whereClause.companyId = companyId;
+    return this._db.groupAccount.paginate({
+      where: whereClause,
+      include: {
+        account: true,
+      },
+      orderBy: { code: "asc" },
+    });
+  }
+  async get(q: GetPaginatedGroupAccountQuery) {
+    const { page, limit } = q;
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withPages({
+      limit,
+      page,
+    });
+    return {
+      data,
+      meta,
+    };
+  }
 
-    if (cursor && infiniteScroll) {
-      const [data, meta] = await this._db.groupAccount.paginate().withCursor({
-        limit,
-        after: cursor || undefined,
-      });
-      return {
-        data,
-        meta,
-        nextCursor: meta.endCursor,
-      };
-    }
-
-    const [data, meta] = await this._db.groupAccount
-      .paginate({
-        where: whereClause,
-        include,
-      })
-      .withPages({
-        limit,
-        page,
-      });
-
+  async getInfinite(q: GetCursorGroupAccountQuery) {
+    const { cursor, limit } = q;
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withCursor({
+      limit,
+      after: cursor,
+    });
     return {
       data,
       meta,

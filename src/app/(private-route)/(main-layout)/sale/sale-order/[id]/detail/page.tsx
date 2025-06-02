@@ -8,8 +8,15 @@ export const metadata: Metadata = {
     "Select a company to proceed based on your role. Streamline navigation and access specific company data with ease.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-const page = ({ params }: { params: { id: string } }) => {
-  return <DetailSaleOrderPage id={params.id} />;
+
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+const page = async ({ params }: PageProps) => {
+  const id = (await params).id;
+  return <DetailSaleOrderPage id={id} />;
 };
 
 export default page;

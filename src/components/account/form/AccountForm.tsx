@@ -9,7 +9,6 @@ import { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import GroupAccountInput from "@/components/account/form/GroupAccountInput";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -41,7 +40,7 @@ const AccountForm: FC<AccountFormProps> = ({ onClose, data }) => {
     defaultValues: {
       name: "",
       posisi: "DEBIT",
-      report: [],
+      reports: [],
     },
   });
 
@@ -55,7 +54,7 @@ const AccountForm: FC<AccountFormProps> = ({ onClose, data }) => {
         loading: "prosessing",
         success: async () => {
           onClose();
-          await utils.account.getAll.invalidate();
+          await utils.account.get.invalidate();
           return "berhasil membuat akun baru";
         },
         error: (e) => {
@@ -83,7 +82,7 @@ const AccountForm: FC<AccountFormProps> = ({ onClose, data }) => {
         }}
         className="space-y-8"
       >
-        <GroupAccountInput form={form} />
+        {/* <GroupAccountInput form={form} /> */}
         <FormField
           control={form.control}
           name="name"
@@ -131,7 +130,7 @@ const AccountForm: FC<AccountFormProps> = ({ onClose, data }) => {
         />
         <FormField
           control={form.control}
-          name="report"
+          name="reports"
           render={() => (
             <FormItem>
               <div className="mb-4">
@@ -142,7 +141,7 @@ const AccountForm: FC<AccountFormProps> = ({ onClose, data }) => {
                   <FormField
                     key={report}
                     control={form.control}
-                    name="report"
+                    name="reports"
                     render={({ field }) => {
                       return (
                         <FormItem

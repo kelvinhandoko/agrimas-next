@@ -25,7 +25,7 @@ export class ReceiveItemRepository extends BaseRepository {
         totalAmount,
         ref: ref?.length
           ? ref
-          : await this._createRef(companyId, "purchase_receive", "sj"),
+          : (await this._createRef(companyId, "purchase_receive", "sj")).ref,
         purchaseId,
       },
     });

@@ -1,7 +1,9 @@
 import {
   type AccountPayload,
-  type GetAllAccountQuery,
+  type CursoredAccountQuery,
+  type GetAccountQuery,
   type GetDetailAccountQuery,
+  type PaginatedAccountQuery,
   type UpdateBalancePayload,
 } from "@/model/account.model";
 import { type Prisma } from "@prisma/client";
@@ -141,76 +143,51 @@ export class AccountRepository extends BaseRepository {
     });
   }
 
-  async getAllInfinite<S extends Prisma.AccountInclude>(
-    query: GetAllAccountQuery<S>,
-  ) {
-    const { companyId, search, limit, cursor, include } = query;
-
-    const whereClause: Prisma.AccountWhereInput = { companyId };
+  private async _getQuery(query: GetAccountQuery) {
+    const { companyId, search } = query;
+    const whereClause: Prisma.AccountWhereInput = {};
     if (search) {
       whereClause.OR = [
-        { code: { contains: search } },
-        { name: { contains: search } },
+        {
+          name: {
+            contains: search,
+          },
+          code: {
+            contains: search,
+          },
+        },
       ];
     }
+    whereClause.companyId = companyId;
+    return this._db.account.paginate({
+      where: whereClause,
+      include: {
+        groupAccount: true,
+      },
+      orderBy: {
+        code: "asc",
+      },
+    });
+  }
 
-    const take = limit + 1; // ambil satu lebih banyak untuk tahu ada next page
-    const cursorClause = cursor ?? undefined;
-
-    const [data, meta] = await this._db.account
-      .paginate({
-        where: whereClause,
-        include: include ?? (undefined as unknown as S),
-      })
-      .withCursor({ after: cursorClause, limit: take });
-
+  async getPaginated(query: PaginatedAccountQuery) {
+    const { page, limit } = query;
+    const [data, meta] = await (
+      await this._getQuery(query)
+    ).withPages({ page, limit });
     return { data, meta };
   }
 
-  async getAllWithPage<S extends Prisma.AccountInclude>(
-    query: GetAllAccountQuery<S>,
-  ) {
-    const { companyId, search, limit, page, include } = query;
-
-    const whereClause: Prisma.AccountWhereInput = { companyId };
-    if (search) {
-      whereClause.OR = [
-        { code: { contains: search } },
-        { name: { contains: search } },
-      ];
-    }
-
-    const skip = (page - 1) * limit;
-    const take = limit;
-
-    const data = await this._db.account.findMany({
-      where: whereClause,
-      include: include ?? (undefined as unknown as S),
-      skip,
-      take,
-      orderBy: { createdAt: "desc" },
-    });
-
-    const total = await this._db.account.count({
-      where: whereClause,
-    });
-
-    return {
-      data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPage: Math.ceil(total / limit),
-      },
-    };
+  async getCursored(query: CursoredAccountQuery) {
+    const { cursor, limit } = query;
+    const [data, meta] = await (
+      await this._getQuery(query)
+    ).withCursor({ after: cursor, limit });
+    return { data, meta };
   }
 
-  // Get account detail
   async getDetail(query: GetDetailAccountQuery) {
     const { id } = query;
-
-    console.log(id);
 
     const account = await this._db.account.findFirst({
       where: { id },

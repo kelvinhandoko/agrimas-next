@@ -9,8 +9,15 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const page = ({ params }: { params: { id: string } }) => {
-  return <DetailPurcaseReturnPage id={params.id} />;
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+const page = async ({ params }: PageProps) => {
+  const id = (await params).id;
+  return <DetailPurcaseReturnPage id={id} />;
 };
 
 export default page;
