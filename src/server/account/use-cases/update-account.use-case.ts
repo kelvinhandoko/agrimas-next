@@ -1,7 +1,7 @@
-import { AccountPayload } from "@/model";
+import { type AccountPayload } from "@/model";
 import { TRPCError } from "@trpc/server";
 
-import { AccountRepository } from "@/server/account/account.repository";
+import { type AccountRepository } from "@/server/account/account.repository";
 
 export const updateAccountUseCase =
   (repo: AccountRepository) => async (payload: AccountPayload) => {

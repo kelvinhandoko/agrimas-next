@@ -1,12 +1,12 @@
 import {
   type AccountPayload,
-  CursoredAccountQuery,
-  GetAccountQuery,
+  type CursoredAccountQuery,
+  type GetAccountQuery,
   type GetDetailAccountQuery,
-  PaginatedAccountQuery,
+  type PaginatedAccountQuery,
   type UpdateBalancePayload,
 } from "@/model/account.model";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";

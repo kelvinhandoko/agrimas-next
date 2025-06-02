@@ -1,11 +1,9 @@
 import { type GroupAccountPayload } from "@/model/group-account.model";
 
-import { db } from "@/server/db/prisma";
-import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
+import { type GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
 
-export class UpdateGroupAccountUseCase {
-  async execute(payload: GroupAccountPayload) {
-    const groupAccountRepo = new GroupAccountRepository(db);
+export const updateGroupAccountUseCase =
+  (groupAccountRepo: GroupAccountRepository) =>
+  async (payload: GroupAccountPayload) => {
     return await groupAccountRepo.update(payload);
-  }
-}
+  };

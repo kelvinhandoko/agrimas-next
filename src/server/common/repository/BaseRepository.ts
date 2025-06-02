@@ -9,7 +9,7 @@ export class BaseRepository {
     companyId: string,
     refName: string,
     refCode: string,
-  ): Promise<string> {
+  ) {
     await this._db.$executeRawUnsafe(`
           DO $$
           BEGIN
@@ -26,6 +26,9 @@ export class BaseRepository {
 
     const paddedSeq = String(sequenceData[0]?.nextval ?? 1).padStart(3, "0");
     const datePart = DateTime.now().toFormat("yyyyMMdd");
-    return `${refCode}-${datePart}-${paddedSeq}`;
+    return {
+      ref: `${refCode}-${datePart}-${paddedSeq}`,
+      seq: paddedSeq,
+    };
   }
 }
