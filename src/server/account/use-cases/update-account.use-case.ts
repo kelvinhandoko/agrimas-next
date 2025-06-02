@@ -1,27 +1,16 @@
-import { type AccountPayload } from "@/model/account.model";
+import { AccountPayload } from "@/model";
 import { TRPCError } from "@trpc/server";
 
 import { AccountRepository } from "@/server/account/account.repository";
-import { db } from "@/server/db/prisma";
-import { TransactionService } from "@/server/services/transaction.service";
 
-export class UpdateAccountUseCase {
-  async execute(payload: AccountPayload) {
-    const transactionService = new TransactionService(db);
-    return await transactionService.startTransaction(async (tx) => {
-      const accountRepo = new AccountRepository(tx);
-      const data = await accountRepo.getDetail({
-        id: payload.id!,
+export const updateAccountUseCase =
+  (repo: AccountRepository) => async (payload: AccountPayload) => {
+    const findAccount = await repo.getDetail({ id: payload.id! });
+    if (!findAccount)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Akun tidak ditemukan",
       });
-
-      if (!data) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "akun tidak ditemukan",
-        });
-      }
-
-      return data;
-    });
-  }
-}
+    const account = await repo.update(payload);
+    return account;
+  };

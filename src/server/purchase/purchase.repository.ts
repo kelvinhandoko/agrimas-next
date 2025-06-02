@@ -151,4 +151,20 @@ export class PurchaseRepository extends BaseRepository {
     ).withCursor({ limit, after: cursor });
     return { data, meta };
   }
+
+  async getDetail(id: string) {
+    return await this._db.purchase.findUnique({
+      where: { id },
+      include: {
+        purchaseDetail: {
+          include: {
+            product: true,
+            receiveItemDetail: { include: { receiveItem: true } },
+          },
+        },
+        supplier: true,
+        ReceiveItem: true,
+      },
+    });
+  }
 }
