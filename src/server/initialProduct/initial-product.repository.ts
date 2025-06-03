@@ -7,9 +7,9 @@ export class InitialProductRepository extends BaseRepository {
     const { companyId, price, quantity, productId } = payload;
     return await this._db.initialProduct.create({
       data: {
-        price,
+        price: price!,
         companyId,
-        quantity,
+        quantity: quantity!,
         productId,
       },
     });

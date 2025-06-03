@@ -82,6 +82,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         reports: ["NERACA"],
       },
     ],
+    companyId: "",
   },
   {
     accountClass: "ASSET",
@@ -113,6 +114,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         reports: ["NERACA"],
       },
     ],
+    companyId: "",
   },
   {
     accountClass: "LIABILITY",
@@ -181,6 +183,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         reports: ["NERACA"],
       },
     ],
+    companyId: "",
   },
   {
     accountClass: "EQUITY",
@@ -206,6 +209,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         reports: ["NERACA", "PERUBAHAN_MODAL"],
       },
     ],
+    companyId: "",
   },
   {
     accountClass: "REVENUE",
@@ -264,6 +268,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         reports: ["LABA_RUGI"],
       },
     ],
+    companyId: "",
   },
   {
     accountClass: "EXPENSE",
@@ -449,5 +454,6 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         reports: ["LABA_RUGI"],
       },
     ],
+    companyId: "",
   },
 ];

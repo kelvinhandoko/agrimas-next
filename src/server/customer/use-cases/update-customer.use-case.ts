@@ -6,9 +6,7 @@ import { type CustomerRepository } from "@/server/customer/customer.repository";
 export const updateCustomerUseCase =
   (customerRepo: CustomerRepository) => async (payload: CustomerPayload) => {
     const { alamat, companyId, nama, id } = payload;
-    const findCustomer = await customerRepo.getDetailById({
-      id: id!,
-    });
+    const findCustomer = await customerRepo.getDetailById(id!);
 
     if (!findCustomer) {
       throw new TRPCError({
