@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
-import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
 import { productColumn } from "./Column";
@@ -35,9 +34,7 @@ const ProductPage = () => {
       console.error("Error deleting product:", error);
     }
   };
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
+
   return (
     <Box>
       <Box className="mb-8">
@@ -47,6 +44,9 @@ const ProductPage = () => {
         columns={productColumn({ handleDeleteProduct })}
         data={data?.data ?? []}
         searchAble
+        totalData={data?.meta.totalCount}
+        isLoading={isLoading}
+        totalPage={data?.meta.pageCount}
         path={paths.dataMaster.product.new}
         buttonAddName="Tambah Product"
         titleTable="Data Product"

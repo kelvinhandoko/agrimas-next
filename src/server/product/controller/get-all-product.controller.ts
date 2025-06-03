@@ -2,13 +2,13 @@ import { getAllProductQuerySchema } from "@/model/product.model";
 import { companyProcedure } from "@/trpc/trpc";
 
 import { ProductRepository } from "@/server/product/product.repository";
-import { getInfiniteProductUseCase } from "@/server/product/use-cases/get-product-infinite.use-case";
+import { getAllProductUseCase } from "@/server/product/use-cases/get-all-product.use-case";
 
 export const getAllProductController = companyProcedure
   .input(getAllProductQuerySchema)
   .query(async ({ ctx, input }) => {
     const productRepo = new ProductRepository(ctx.db);
-    return await getInfiniteProductUseCase(productRepo)({
+    return await getAllProductUseCase(productRepo)({
       ...input,
       companyId: ctx.session.user.companyId,
     });

@@ -1,12 +1,7 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
 import Link from "next/link";
-import {
-  FiCornerUpLeft,
-  FiCreditCard,
-  FiDollarSign,
-  FiFileText,
-} from "react-icons/fi";
+import { FiCornerUpLeft, FiDollarSign, FiFileText } from "react-icons/fi";
 
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 

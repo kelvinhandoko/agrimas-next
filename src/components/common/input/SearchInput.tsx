@@ -50,7 +50,7 @@ export const SearchInput: FC<IProps> = ({
 
   return (
     <Suspense>
-      <div className={cn("h relative w-full md:w-1/3", className)}>
+      <div className={cn("h relative w-full", className)}>
         <Input
           className={cn(
             "w-full overflow-clip bg-primary-foreground placeholder:capitalize",
