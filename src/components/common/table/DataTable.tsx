@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { PlusIcon } from "lucide-react";
+import { Loader2, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -40,9 +40,11 @@ interface DataTableProps<TData, TValue> {
   hideColumn?: (keyof TData | (string & {}))[];
   withNumber?: boolean;
   canSelectRow?: boolean;
+
   totalData?: number;
   isLoading?: boolean;
   path?: string;
+  onAddNew?: () => void;
   buttonAddName?: string;
   totalPage?: number;
   titleTable?: string;
@@ -58,6 +60,7 @@ const DataTable = <TData, TValue>({
   hideColumn = [],
   totalPage = 1,
   withNumber = false,
+  onAddNew,
   canSelectRow = false,
   isLoading = false,
   path,
@@ -113,9 +116,13 @@ const DataTable = <TData, TValue>({
         <div className="mb-6">
           <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-2xl font-bold tracking-tight text-gray-900 text-transparent md:text-3xl">
             {titleTable ?? "Data Table"}{" "}
-            <span className="text-muted-foreground">
-              {totalData && totalData}
-            </span>
+            {isLoading ? (
+              <Loader2 className="inline-block h-6 w-6 animate-spin text-primary" />
+            ) : (
+              <span className="text-muted-foreground">
+                {totalData && totalData}
+              </span>
+            )}
           </h2>
         </div>
 
@@ -123,23 +130,31 @@ const DataTable = <TData, TValue>({
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           {searchAble && (
             <div className="relative w-full sm:w-80">
-              <SearchInput
-                placeholder={searchPlaceholder}
-                className="h-11 w-full rounded-xl border-gray-200 bg-white pl-4 pr-4 shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-              />
+              <SearchInput placeholder={searchPlaceholder} />
             </div>
           )}
 
-          {buttonNew && (
-            <Link href={path ?? ""} className="w-full sm:w-auto">
-              <Button className="h-11 w-full transform rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl sm:w-auto">
+          {buttonNew &&
+            (onAddNew ? (
+              <Button
+                onClick={onAddNew}
+                className="h-11 w-full transform rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl sm:w-auto"
+              >
                 <PlusIcon className="mr-2 h-4 w-4" />
                 <span className="font-semibold">
                   {buttonAddName ?? "tambah"}
                 </span>
               </Button>
-            </Link>
-          )}
+            ) : (
+              <Link href={path ?? ""} className="w-full sm:w-auto">
+                <Button className="h-11 w-full transform rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl sm:w-auto">
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  <span className="font-semibold">
+                    {buttonAddName ?? "tambah"}
+                  </span>
+                </Button>
+              </Link>
+            ))}
         </div>
       </div>
 
@@ -243,7 +258,7 @@ const DataTable = <TData, TValue>({
                               {row.getVisibleCells().map((cell) => (
                                 <TableCell
                                   className={cn(
-                                    "border-r border-gray-100/60 px-6 py-4 text-gray-700 transition-colors duration-200 last:border-r-0 group-hover:text-gray-900",
+                                    "border-r border-gray-100/60 px-6 py-4 transition-colors duration-200 last:border-r-0 group-hover:text-gray-900",
                                     columnAlign(cell.column.columnDef.meta),
                                   )}
                                   key={cell.id}

@@ -1,6 +1,6 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
-import PurchaseFakturPage from "@/components/purchase/purchaseFaktur/PurchaseFakturPage";
+import PurchaseInvoiceTable from "@/components/purchase/purchaseFaktur/table";
 
 export const metadata: Metadata = {
   title: "Agrimas - Purchase Faktur Page",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <PurchaseFakturPage />;
+  return <PurchaseInvoiceTable />;
 };
 
 export default page;
