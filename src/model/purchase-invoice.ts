@@ -3,7 +3,12 @@ import { receiveItemDetailPayloadSchema } from "@/model/receive-item-detail.mode
 import { TRANSACTION_PAYMENT_STATUS } from "@prisma/client";
 import { z } from "zod";
 
-import { type WithCompany, paginatedQuery } from "@/server/common";
+import {
+  type WithCompany,
+  cursorQuery,
+  getQuery,
+  paginatedQuery,
+} from "@/server/common";
 
 export const purchaseInvoicePayloadSchema = z.object({
   receiveItemId: z.string().describe("id surat jalan pembelian"),
@@ -36,11 +41,29 @@ export type UpdatedPurchaseInvoiceStatusPayload = z.infer<
   typeof updatePurchaseInvoiceStatusSchema
 >;
 
-export const getPurchaseInvoiceeQuerySchema = paginatedQuery.extend({
-  supplierId: z.string().optional(),
+export const getPurchaseInvoiceQuerySchema = getQuery.extend({
+  supplierId: z.string().optional().describe("id supplier"),
 });
 
-export type GetPurchaseInvoiceeQuery = z.infer<
-  typeof getPurchaseInvoiceeQuerySchema
+export type GetPurchaseInvoiceQuery = z.infer<
+  typeof getPurchaseInvoiceQuerySchema
+> &
+  WithCompany;
+
+export const paginatedPurchaseInvoiceQuerySchema = paginatedQuery.merge(
+  getPurchaseInvoiceQuerySchema,
+);
+
+export type PaginatedPurchaseInvoiceQuery = z.infer<
+  typeof paginatedPurchaseInvoiceQuerySchema
+> &
+  WithCompany;
+
+export const cursorPurchaseInvoiceQuerySchema = cursorQuery.merge(
+  getPurchaseInvoiceQuerySchema,
+);
+
+export type CursorPurchaseInvoiceQuery = z.infer<
+  typeof cursorPurchaseInvoiceQuerySchema
 > &
   WithCompany;
