@@ -86,7 +86,24 @@ export class PurchaseInvoiceRepository extends BaseRepository {
     const { id } = query;
     return this._db.purchaseInvoice.findFirst({
       where: { id },
-      include: { receiveItem: { select: { totalAmount: true } } },
+      include: {
+        receiveItem: {
+          include: {
+            receiveItemDetail: {
+              include: {
+                purchaseDetail: {
+                  include: {
+                    product: true,
+                    purchase: { include: { supplier: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        purchasePayments: { include: { paymentMethod: true } },
+      },
     });
   }
   async updateStatus(payload: UpdatedPurchaseInvoiceStatusPayload) {

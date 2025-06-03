@@ -105,4 +105,19 @@ export class ReceiveItemRepository extends BaseRepository {
     });
     return { data, meta };
   }
+
+  async getDetail(id: string) {
+    return await this._db.receiveItem.findUnique({
+      where: { id },
+      include: {
+        purchase: { include: { supplier: true } },
+        purchaseInvoice: {
+          include: { purchasePayments: { include: { paymentMethod: true } } },
+        },
+        receiveItemDetail: {
+          include: { purchaseDetail: { include: { product: true } } },
+        },
+      },
+    });
+  }
 }

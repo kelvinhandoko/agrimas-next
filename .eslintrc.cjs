@@ -4,7 +4,7 @@ const config = {
   parserOptions: {
     project: true,
   },
-  ignorePatterns: [".eslintrc.cjs", "prettier.config.js"],
+  ignorePatterns: [".eslintrc.cjs", "prettier.config.js", "next.config.js"],
   plugins: ["@typescript-eslint", "eslint-plugin-unused-imports"],
   extends: [
     "next/core-web-vitals",
