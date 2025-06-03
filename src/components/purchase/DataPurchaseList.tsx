@@ -3,7 +3,6 @@ import { Grid } from "@radix-ui/themes";
 import Link from "next/link";
 import {
   FiCornerUpLeft,
-  FiCreditCard,
   FiDollarSign,
   FiFileText,
   FiPackage,
@@ -38,11 +37,6 @@ const listMenu = [
     icon: <FiDollarSign size={"50px"} />,
     path: paths.purchase.purchasePayable.root,
   },
-  // {
-  //   title: "Pembayaran",
-  //   icon: <FiCreditCard size={"50px"} />,
-  //   path: paths.purchase.purchasePayment.root,
-  // },
 ];
 
 const DataPurchaseList = () => {

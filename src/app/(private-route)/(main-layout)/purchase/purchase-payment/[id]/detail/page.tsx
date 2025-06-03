@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 
-import DetailPurchasePayment from "@/components/purchase/purchasePayment/detail/DetailPurchasePayment";
-
 export const metadata: Metadata = {
   title: "Agrimas - Detail Purchase Payment Page",
   description:
@@ -15,7 +13,7 @@ interface PageProps {
 }
 const page = async ({ params }: PageProps) => {
   const id = (await params).id;
-  return <DetailPurchasePayment id={id} />;
+  return <h1>hai</h1>;
 };
 
 export default page;

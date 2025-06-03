@@ -1,7 +1,5 @@
 import { Metadata } from "next";
 
-import AddNewPurchasePaymentPage from "@/components/purchase/purchasePayment/new/AddNewPurchasePaymentPage";
-
 export const metadata: Metadata = {
   title: "Agrimas - New Purchase Payment Page",
   description:
@@ -9,7 +7,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <AddNewPurchasePaymentPage />;
+  return <h1>hai</h1>;
 };
 
 export default page;
