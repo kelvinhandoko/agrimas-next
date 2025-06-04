@@ -1,35 +1,56 @@
 "use client";
 
+import { DATE_FORMAT, NUMERIC_PROPS } from "@/constant";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { DateTime } from "luxon";
+import { NumericFormat } from "react-number-format";
 
-import { type AccountRouterOutputs } from "@/server/account";
+import { type JournalRouterOutputs } from "@/server/journal/journal.router";
 
-const ChartOfAccountColumn = () => {
+const JournalColumn = () => {
   const columnHelper =
-    createColumnHelper<AccountRouterOutputs["get"]["data"][number]>();
+    createColumnHelper<JournalRouterOutputs["get"]["data"][number]>();
   const columns = [
-    columnHelper.accessor("code", {
-      header: "Kode",
+    columnHelper.accessor("date", {
+      header: "tanggal",
+      cell: (info) =>
+        DateTime.fromJSDate(info.getValue()).toFormat(DATE_FORMAT),
+    }),
+    columnHelper.accessor("ref", {
+      cell: (info) => info.getValue() || "-",
+    }),
+    columnHelper.accessor("description", {
+      header: "deskripsi",
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("name", {
-      header: "Nama",
-      cell: (info) => info.getValue(),
+    columnHelper.display({
+      header: "debet",
+      id: "debet",
+      cell: ({ row }) => (
+        <NumericFormat
+          value={row.original.JournalDetail.reduce(
+            (acc, curr) => acc + curr.debit,
+            0,
+          )}
+          {...NUMERIC_PROPS}
+        />
+      ),
     }),
-    columnHelper.accessor("groupAccount.name", {
-      header: "Kelompok Akun",
-      cell: (info) => info.getValue(),
+    columnHelper.display({
+      header: "kredit",
+      id: "kredit",
+      cell: ({ row }) => (
+        <NumericFormat
+          value={row.original.JournalDetail.reduce(
+            (acc, curr) => acc + curr.credit,
+            0,
+          )}
+          {...NUMERIC_PROPS}
+        />
+      ),
     }),
-    columnHelper.accessor("posisi", {
-      header: "Posisi",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("reports", {
-      header: "Laporan",
-      cell: (info) => info.getValue().join(", "),
-    }),
-  ] as ColumnDef<AccountRouterOutputs["get"]["data"][number]>[];
+  ] as ColumnDef<JournalRouterOutputs["get"]["data"][number]>[];
   return columns;
 };
 
-export default ChartOfAccountColumn;
+export default JournalColumn;

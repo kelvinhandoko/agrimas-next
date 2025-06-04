@@ -31,14 +31,16 @@ export const getJournalQuerySchema = getQuery.extend({
 export type GetAllJournalQuery = z.infer<typeof getJournalQuerySchema> &
   WithCompany;
 
-export const paginatedJournalQuerySchema = getQuery.merge(paginatedQuery);
+export const paginatedJournalQuerySchema =
+  getJournalQuerySchema.merge(paginatedQuery);
 
 export type PaginatedJournalQuery = z.infer<
   typeof paginatedJournalQuerySchema
 > &
   WithCompany;
 
-export const cursorJournalQuerySchema = getQuery.merge(cursorQuery);
+export const cursorJournalQuerySchema =
+  getJournalQuerySchema.merge(cursorQuery);
 
 export type CursorJournalQuery = z.infer<typeof cursorJournalQuerySchema> &
   WithCompany;

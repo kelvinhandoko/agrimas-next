@@ -114,7 +114,7 @@ const DataTable = <TData, TValue>({
       <div className="mb-6 md:mb-8">
         {/* Title Section */}
         <div className="mb-6">
-          <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-2xl font-bold tracking-tight text-gray-900 text-transparent md:text-3xl">
+          <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-2xl font-bold capitalize tracking-tight text-gray-900 text-transparent md:text-2xl">
             {titleTable ?? "Data Table"}{" "}
             {isLoading ? (
               <Loader2 className="inline-block h-6 w-6 animate-spin text-primary" />
