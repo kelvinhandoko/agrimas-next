@@ -35,7 +35,7 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
       <Box className="mb-8">
         <BackButton path={paths.purchase.purchaseOrder.root} />
       </Box>
-      <pre>{JSON.stringify(data, undefined, 2)}</pre>
+      {/* <pre>{JSON.stringify(data, undefined, 2)}</pre> */}
       <Grid columns={{ initial: "1", md: "12" }} gapX={"5"}>
         <Grid className="md:col-span-8">
           <Card className="px-6 py-4">
@@ -153,12 +153,11 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                         <TableCell colSpan={5}></TableCell>
                         <TableCell>Sub Total</TableCell>
                         <TableCell>
-                          {/* <NumericFormat
-                            value={data.netTotal}
+                          <NumericFormat
+                            value={data?.totalBeforeDiscount}
                             {...NUMERIC_PROPS}
                             displayType="text"
-                          /> */}
-                          0
+                          />
                         </TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -166,11 +165,11 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                         <TableCell colSpan={5}></TableCell>
                         <TableCell>Diskon</TableCell>
                         <TableCell>
-                          {/* <NumericFormat
-                            value={data.discount}
+                          <NumericFormat
+                            value={data?.discount}
                             {...NUMERIC_PROPS}
                             displayType="text"
-                          /> */}
+                          />
                         </TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -178,11 +177,11 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                         <TableCell colSpan={5}></TableCell>
                         <TableCell>Pajak</TableCell>
                         <TableCell>
-                          {/* <NumericFormat
-                            value={data.tax}
+                          <NumericFormat
+                            value={data?.ppn}
                             {...NUMERIC_PROPS}
                             displayType="text"
-                          /> */}
+                          />
                         </TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -190,11 +189,11 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                         <TableCell colSpan={5}></TableCell>
                         <TableCell>Total</TableCell>
                         <TableCell>
-                          {/* <NumericFormat
-                            value={data.totalAfter}
+                          <NumericFormat
+                            value={data?.netTotal}
                             {...NUMERIC_PROPS}
                             displayType="text"
-                          /> */}
+                          />
                         </TableCell>
                         <TableCell></TableCell>
                       </TableRow>
@@ -221,19 +220,12 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                     {"name"}
                   </Text>
                   <Box>
-                    <Text>{"email@gmail.com"}</Text>
+                    <Text>{data?.supplier.nama}</Text>
                   </Box>
                 </Box>
               </Box>
               <hr className="my-3" />
-              <Text size={"2"}>
-                Tj. Sari, Kec. Medan Selayang, Kota Medan, Sumatera Utara 20154
-              </Text>
-              <Box>
-                <Button className="mt-3 w-full" size={"lg"}>
-                  Download Invoice
-                </Button>
-              </Box>
+              <Text size={"2"}>{data?.supplier.alamat}</Text>
             </CardContent>
           </Card>
         </Grid>
