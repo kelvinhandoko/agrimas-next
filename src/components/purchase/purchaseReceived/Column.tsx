@@ -1,62 +1,57 @@
+import { DATE_FORMAT, NUMERIC_PROPS } from "@/constant";
 import { paths } from "@/paths/paths";
-import { formatPrice } from "@/utils/format-price";
 import { Flex } from "@radix-ui/themes";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { EyeIcon, PencilIcon } from "lucide-react";
+import { DateTime } from "luxon";
 import Link from "next/link";
+import { NumericFormat } from "react-number-format";
 
-import DeleteModal from "@/components/DeleteModal";
+import { type ReceiveItemRouter } from "@/server/recieveItem/receive-item.router";
 
-export type PurchaseReceived = {
-  noPurchaseReceived: string;
-  noPurchaseOrder: string;
-  date: string;
-  supplier: string;
-  totalItem: number;
-  totalPrice: number;
-};
+import { CardTitle } from "@/components/ui/card";
 
-const columnHelper = createColumnHelper<PurchaseReceived>();
+const columnHelper = createColumnHelper<ReceiveItemRouter["get"]["data"][0]>();
 
 export const purchaseReceivedColumn = () =>
   [
-    columnHelper.accessor("noPurchaseReceived", {
+    columnHelper.accessor("ref", {
       header: "No Penerimaan",
-      cell: ({ row }) => <div>{row.original.noPurchaseReceived}</div>,
+      cell: ({ getValue }) => <CardTitle>{getValue()}</CardTitle>,
     }),
-    columnHelper.accessor("noPurchaseOrder", {
+    columnHelper.accessor("purchase.ref", {
       header: "No Pembelian",
-      cell: ({ row }) => <div>{row.original.noPurchaseOrder}</div>,
+      cell: ({ getValue }) => <CardTitle>{getValue()}</CardTitle>,
     }),
-    columnHelper.accessor("date", {
+    columnHelper.accessor("receiveDate", {
       id: "date",
       header: "Date",
-      cell: ({ row }) => {
-        return <div>{row.original.date}</div>;
-      },
+      cell: ({ getValue }) =>
+        DateTime.fromJSDate(getValue()).toFormat(DATE_FORMAT),
     }),
 
-    columnHelper.accessor("supplier", {
+    columnHelper.accessor("purchase.supplier.nama", {
       id: "supplier",
       header: "Supplier",
-      cell: ({ row }) => {
-        return <div>{row.original.supplier}</div>;
-      },
+      cell: ({ getValue }) => <CardTitle>{getValue()}</CardTitle>,
     }),
-    columnHelper.accessor("totalItem", {
+    columnHelper.accessor("receiveItemDetail", {
       id: "totalItem",
       header: "Total Barang",
-      cell: ({ row }) => {
-        return <div>{row.original.totalItem}</div>;
-      },
+      cell: ({ getValue }) =>
+        getValue().reduce((acc, curr) => acc + curr.quantity, 0),
     }),
-    columnHelper.accessor("totalPrice", {
+    columnHelper.accessor("totalAmount", {
       id: "totalPrice",
       header: "Total Harga",
-      cell: ({ row }) => {
-        return <div>{row.original.totalPrice}</div>;
-      },
+      cell: ({ getValue }) => (
+        <NumericFormat
+          value={getValue()}
+          {...NUMERIC_PROPS}
+          displayType="text"
+        />
+      ),
     }),
     {
       id: "actions",
@@ -76,13 +71,8 @@ export const purchaseReceivedColumn = () =>
             >
               <PencilIcon className="text-yellow-400" />
             </Link>
-            <DeleteModal
-              id={row.original.noPurchaseReceived} // Atau ID yang benar
-              name={row.original.noPurchaseOrder} // Properti yang benar
-              handleDelete={() => {}}
-            />
           </Flex>
         );
       },
     },
-  ] as ColumnDef<PurchaseReceived>[];
+  ] as ColumnDef<ReceiveItemRouter["get"]["data"][0]>[];

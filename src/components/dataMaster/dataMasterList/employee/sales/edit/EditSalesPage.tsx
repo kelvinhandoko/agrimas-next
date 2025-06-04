@@ -1,6 +1,9 @@
 "use client";
 
-import { type SalesPayload, salesPayloadSchema } from "@/model/sales.model";
+import {
+  SalesPersonPayload,
+  salesPersonPayloadSchema,
+} from "@/model/salesPerson.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,8 +28,8 @@ import { Input } from "@/components/ui/input";
 const EditSalesPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-  const form = useForm<SalesPayload>({
-    resolver: zodResolver(salesPayloadSchema),
+  const form = useForm<SalesPersonPayload>({
+    resolver: zodResolver(salesPersonPayloadSchema),
     defaultValues: {
       id: id,
       name: "",
@@ -35,18 +38,20 @@ const EditSalesPage = ({ id }: { id: string }) => {
 
   // get detail sales query
   const { data: salesDetail, isLoading: isLoadingSalesDetail } =
-    api.sales.findDetail.useQuery(id);
+    api.salesPerson.findDetail.useQuery({
+      by: "id",
+      identifier: id,
+      companyId: "",
+    });
 
   // update sales mutation
-  const { mutateAsync: updateSales } = api.sales.update.useMutation();
-  const onSubmit: SubmitHandler<SalesPayload> = async (data) => {
-    console.log(data);
-
+  const { mutateAsync: updateSales } = api.salesPerson.update.useMutation();
+  const onSubmit: SubmitHandler<SalesPersonPayload> = async (data) => {
     try {
       toast.promise(async () => updateSales(data), {
         loading: "Memproses...",
         success: async () => {
-          await utils.sales.findAll.invalidate();
+          await utils.salesPerson.findAll.invalidate();
           setIsLoading(false);
           form.reset();
           return "Berhasil update sales";

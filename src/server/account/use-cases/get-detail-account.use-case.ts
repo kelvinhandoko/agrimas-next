@@ -1,11 +1,9 @@
 import { type GetDetailAccountQuery } from "@/model/account.model";
 
-import { AccountRepository } from "@/server/account/account.repository";
-import { db } from "@/server/db/prisma";
+import { type AccountRepository } from "@/server/account/account.repository";
 
-export class GetDetailAccountUseCase {
-  async execute<S>(query: GetDetailAccountQuery<S>) {
-    const accountRepo = new AccountRepository(db);
-    return await accountRepo.getDetail(query);
-  }
-}
+export const getDetailAccountUseCase =
+  (repo: AccountRepository) => async (q: GetDetailAccountQuery) => {
+    const data = await repo.getDetail(q);
+    return data;
+  };

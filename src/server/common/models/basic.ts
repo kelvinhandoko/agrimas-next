@@ -28,6 +28,7 @@ export type BasicQuery = z.infer<typeof basicQuery> & WithCompany;
 
 export const getQuery = basicQuery.pick({
   search: true,
+  dateRange: true,
 });
 
 export type GetQuery = z.infer<typeof getQuery> & WithCompany;

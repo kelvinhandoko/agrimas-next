@@ -1,7 +1,7 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
+import { DollarSign } from "lucide-react";
 import Link from "next/link";
-import { BiArchive, BiBook } from "react-icons/bi";
 import { FiBook } from "react-icons/fi";
 import { LuBookText } from "react-icons/lu";
 
@@ -13,15 +13,15 @@ const listMenu = [
   //   icon: <BiArchive size={"50px"} />,
   //   path: paths.dataMaster.product.root,
   // },
-  // {
-  //   title: "Hutang Supplier",
-  //   icon: <BiBook size={"50px"} />,
-  //   path: paths.dataMaster.supplier.root,
-  // },
+  {
+    title: "metode pembayaran",
+    icon: <DollarSign size={"50px"} />,
+    path: paths.finance.paymentMethod,
+  },
   {
     title: "Pelunasan Piutang",
     icon: <FiBook size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.sale.saleFaktur.payment,
   },
   {
     title: "Pelunasan Hutang",

@@ -9,8 +9,9 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const page = ({ params }: { params: { id: string } }) => {
-  return <EditSalesPage id={params.id} />;
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const id = (await params).id;
+  return <EditSalesPage id={id} />;
 };
 
 export default page;

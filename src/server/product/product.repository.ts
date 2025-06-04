@@ -46,12 +46,20 @@ export class ProductRepository extends BaseRepository {
   }
 
   async create(payload: ProductPayload) {
-    const { companyId, name, price, quantity, supplierId, sellingPrice } =
-      payload;
+    const {
+      companyId,
+      name,
+      price,
+      quantity,
+      supplierId,
+      sellingPrice,
+      buyingPrice,
+    } = payload;
     return await this._db.product.create({
       data: {
         averagePrice: price ?? 0,
         sellingPrice,
+        buyingPrice,
         companyId,
         name,
         currentQuantity: quantity ?? 0,
@@ -61,11 +69,13 @@ export class ProductRepository extends BaseRepository {
   }
 
   async update(payload: ProductPayload) {
-    const { companyId, name, supplierId, id, sellingPrice } = payload;
+    const { companyId, name, supplierId, id, sellingPrice, buyingPrice } =
+      payload;
     return await this._db.product.update({
       where: { id },
       data: {
         companyId,
+        buyingPrice,
         sellingPrice,
         name,
         supplierId,
@@ -132,6 +142,7 @@ export class ProductRepository extends BaseRepository {
   async findDetail(id: string) {
     return await this._db.product.findUnique({
       where: { id },
+      include: { initialProduct: true, supplier: true },
     });
   }
 

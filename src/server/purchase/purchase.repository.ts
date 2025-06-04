@@ -1,18 +1,36 @@
+import { TIMEZONE } from "@/constant";
 import {
+  type CursorPurchaseQuery,
   type GetAllPurchaseQuery,
+  type PaginatedPurchaseQuery,
   type PurchaseDetailQuery,
   type PurchasePayload,
   type UpdatePurchaseStatusPayload,
 } from "@/model/purchase.model";
-import { discountHandler } from "@/utils/discountHandler";
 import { type Prisma } from "@prisma/client";
-import { nanoid } from "nanoid";
+import { DateTime } from "luxon";
 
 import { BaseRepository } from "@/server/common";
 
 export class PurchaseRepository extends BaseRepository {
-  async _createUniqueRef() {
-    return nanoid(10);
+  private async _generateRef(companyId: string): Promise<string> {
+    await this._db.$executeRawUnsafe(`
+        DO $$
+        BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_class WHERE relname = '${companyId}_purchase_ref_seq') THEN
+            CREATE SEQUENCE ${companyId}_purchase_ref_seq START 1;
+          END IF;
+        END
+        $$;
+      `);
+
+    const sequenceData = await this._db.$queryRawUnsafe<{ nextval: number }[]>(
+      `SELECT nextval('${companyId}_purchase_ref_seq')`,
+    );
+
+    const paddedSeq = String(sequenceData[0]?.nextval ?? 1).padStart(3, "0");
+    const datePart = DateTime.now().toFormat("yyyyMMdd");
+    return `PO-${datePart}-${paddedSeq}`;
   }
 
   async findUniqueRef(ref: string) {
@@ -34,27 +52,27 @@ export class PurchaseRepository extends BaseRepository {
       ref,
       companyId,
       ppn,
+      dueDate,
     } = payload;
     const totalBeforeDiscount = detail.reduce((prev, curr) => {
       const itemTotal =
-        discountHandler(curr.price, curr.discount ?? 0) * curr.quantity;
+        curr.price - (curr.discount ?? 0) * curr.quantity + curr.ppn;
       return prev + itemTotal;
     }, 0);
 
-    const discountedTotal = discountHandler(totalBeforeDiscount, discount);
-    const ppnPercent = (ppn ?? 0) / 100;
-    const totalTax = discountedTotal * ppnPercent;
-    const netTotal = discountedTotal + totalTax;
+    const discountedTotal = totalBeforeDiscount - discount;
+    const netTotal = discountedTotal + ppn;
     return await this._db.purchase.create({
       data: {
         purchaseDate,
         supplierId,
         discount,
         note,
-        ref: ref?.length ? ref : await this._createUniqueRef(),
+        ref: ref?.length ? ref : await this._generateRef(companyId),
         totalBeforeDiscount,
-        ppn: totalTax,
+        ppn,
         companyId,
+        dueDate,
         status: "DIPROSES",
         netTotal,
       },
@@ -79,10 +97,8 @@ export class PurchaseRepository extends BaseRepository {
     });
   }
 
-  async findMany<T extends Prisma.PurchaseInclude>(
-    query: GetAllPurchaseQuery<T>,
-  ) {
-    const { include, limit, page, search } = query;
+  private async _getQuery(query: GetAllPurchaseQuery) {
+    const { search, companyId, dateRange } = query;
     const whereClause: Prisma.PurchaseWhereInput = {};
     if (search) {
       whereClause.OR = [
@@ -97,16 +113,58 @@ export class PurchaseRepository extends BaseRepository {
       ];
     }
 
-    const [data, meta] = await this._db.purchase
-      .paginate({
-        where: whereClause,
-        include: include ?? (undefined as unknown as T),
-      })
-      .withPages({
-        limit,
-        page,
-        includePageCount: true,
-      });
+    whereClause.companyId = companyId;
+
+    if (dateRange) {
+      const { from, to } = dateRange;
+      whereClause.purchaseDate = {
+        gte: DateTime.fromISO(from).setZone(TIMEZONE).startOf("day").toJSDate(),
+        lte: DateTime.fromISO(to).setZone(TIMEZONE).endOf("day").toJSDate(),
+      };
+    }
+
+    return this._db.purchase.paginate({
+      where: whereClause,
+      include: {
+        purchaseDetail: {
+          include: {
+            product: true,
+            receiveItemDetail: { include: { receiveItem: true } },
+          },
+        },
+        supplier: true,
+        ReceiveItem: true,
+      },
+    });
+  }
+  async get(q: PaginatedPurchaseQuery) {
+    const { limit, page, ...rest } = q;
+    const [data, meta] = await (
+      await this._getQuery(rest)
+    ).withPages({ limit, page });
     return { data, meta };
+  }
+  async getInfinite(q: CursorPurchaseQuery) {
+    const { limit, cursor, ...rest } = q;
+    const [data, meta] = await (
+      await this._getQuery(rest)
+    ).withCursor({ limit, after: cursor });
+    return { data, meta };
+  }
+
+  async getDetail(id: string) {
+    return await this._db.purchase.findUnique({
+      where: { id },
+      include: {
+        purchaseDetail: {
+          include: {
+            product: true,
+            receiveItemDetail: { include: { receiveItem: true } },
+          },
+        },
+        supplier: true,
+        ReceiveItem: true,
+      },
+    });
   }
 }

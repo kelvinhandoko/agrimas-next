@@ -1,35 +1,20 @@
-import {
-  accountPayloadSchema,
-  getAllAccountQuerySchema,
-} from "@/model/account.model";
-import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
+import { createTRPCRouter } from "@/trpc/trpc";
+import { type inferRouterOutputs } from "@trpc/server";
 
-import { AccountRepository } from "@/server/account/account.repository";
-import {
-  GetAllAccountUseCase,
-  createAccountUseCase,
-} from "@/server/account/use-cases";
+import { createAccountController } from "@/server/account/controller/create-account.controller";
+import { deleteAccountController } from "@/server/account/controller/delete-account.controller";
+import { getCursorAccountController } from "@/server/account/controller/get-cursor-account.controller";
+import { getDetailAccountController } from "@/server/account/controller/get-detail-account.controller";
+import { getPaginatedAccountController } from "@/server/account/controller/get-paginated-account.controller";
+import { updateAccountController } from "@/server/account/controller/update-account.controller";
 
 export const accountRouter = createTRPCRouter({
-  create: companyProcedure
-    .input(accountPayloadSchema.omit({ companyId: true }))
-    .mutation(async ({ input, ctx }) => {
-      const accountRepo = new AccountRepository(ctx.db);
-
-      const createAccount = createAccountUseCase(accountRepo);
-      return createAccount({
-        ...input,
-        companyId: ctx.session.user.companyId,
-      });
-    }),
-  getAll: companyProcedure
-    .input(getAllAccountQuerySchema)
-    .query(async ({ input, ctx }) => {
-      const getAllAccountUseCase = new GetAllAccountUseCase();
-      return getAllAccountUseCase.execute({
-        ...input,
-        include: { groupAccount: true },
-        companyId: ctx.session.user.companyId,
-      });
-    }),
+  get: getPaginatedAccountController,
+  getInfinite: getCursorAccountController,
+  getDetail: getDetailAccountController,
+  delete: deleteAccountController,
+  create: createAccountController,
+  update: updateAccountController,
 });
+
+export type AccountRouterOutputs = inferRouterOutputs<typeof accountRouter>;

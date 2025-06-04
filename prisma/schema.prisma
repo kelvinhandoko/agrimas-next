@@ -4,6 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
+  binaryTargets   = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -192,8 +193,10 @@ model Product {
   currentQuantity    Int
   averagePrice       Int
   sellingPrice       Int                  @default(0)
+  buyingPrice        Int                  @default(0)
   initialProduct     InitialProduct?
   SalesInvoiceDetail SalesInvoiceDetail[]
+  purchaseDetails    PurchaseDetail[]
 }
 
 model InitialProduct {
@@ -226,6 +229,7 @@ model Purchase {
   status              TRANSACTION_STATUS @default(DIPROSES)
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
+  dueDate             DateTime           @default(now())
   ReceiveItem         ReceiveItem[]
   purchaseDetail      PurchaseDetail[]
 }
@@ -234,6 +238,7 @@ model PurchaseDetail {
   id                  String              @id @default(cuid())
   purchaseId          String
   productId           String
+  product             Product             @relation(fields: [productId], references: [id])
   quantity            Int
   price               Int
   discount            Int
@@ -274,6 +279,7 @@ model ReceiveItem {
   company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId         String
   totalAmount       Int                 @default(0)
+  ref               String
   purchaseInvoice   PurchaseInvoice[]
   receiveItemDetail ReceiveItemDetail[]
 }
@@ -305,6 +311,11 @@ model PurchaseInvoice {
   purchasePayments PurchasePayment[]
   totalPayment     Int                        @default(0)
   ref              String?
+  note             String?
+  totalBefore      Int                        @default(0)
+  totalAfter       Int                        @default(0)
+  totalTax         Int                        @default(0)
+  totalDiscount    Int                        @default(0)
 }
 
 model PaymentMethod {
@@ -474,6 +485,8 @@ enum TRANSACTION_CATEGORY {
   PIUTANG_USAHA
   HUTANG_USAHA
   HPP
+  PPN_MASUKAN
+  PPN_KELUARAN
 }
 
 enum TRANSACTION_PAYMENT_STATUS {

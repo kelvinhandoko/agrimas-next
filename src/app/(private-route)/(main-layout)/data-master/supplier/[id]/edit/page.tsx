@@ -1,7 +1,13 @@
 import EditSupplierPage from "@/components/dataMaster/dataMasterList/supplier/edit/editSupplierPage";
 
-const page = ({ params }: { params: { id: string } }) => {
-  return <EditSupplierPage id={params.id} />;
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+const page = async ({ params }: PageProps) => {
+  const id = (await params).id;
+  return <EditSupplierPage id={id} />;
 };
 
 export default page;

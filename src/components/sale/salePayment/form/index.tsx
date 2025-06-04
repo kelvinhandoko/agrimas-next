@@ -23,7 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SalesPaymentFormPage = () => {
   const searchParams = useSearchParams();
-  const invoiceId = searchParams.get("invoiceId") ?? "";
+  const invoiceId = searchParams.get("salesInvoiceId") ?? "";
   const { data, isLoading } = api.salesInvoice.getDetail.useQuery(invoiceId, {
     enabled: !!invoiceId,
   });
@@ -149,7 +149,9 @@ const SalesPaymentFormPage = () => {
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
         <TabsContent value="form">
-          <SalesPaymentForm />
+          <SalesPaymentForm
+            sisaTagihan={(data?.totalAfter ?? 0) - (data?.totalPayment ?? 0)}
+          />
         </TabsContent>
         <TabsContent value="history">
           <SalesPaymentTable />

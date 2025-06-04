@@ -1,11 +1,12 @@
-import { Laporan, NormalPosition, type Prisma } from "@prisma/client";
+import { Laporan, NormalPosition } from "@prisma/client";
 import { z } from "zod";
 
-import { type WithCompany, basicQuery } from "@/server/common/models/basic";
-
-type AccountInclude<T> = {
-  include?: Prisma.Subset<T, Prisma.AccountInclude>;
-};
+import {
+  type WithCompany,
+  cursorQuery,
+  getQuery,
+  paginatedQuery,
+} from "@/server/common/models/basic";
 
 export const accountPayloadSchema = z.object({
   name: z
@@ -25,10 +26,25 @@ export const accountPayloadSchema = z.object({
 
 export type AccountPayload = z.infer<typeof accountPayloadSchema>;
 
-export const getAllAccountQuerySchema = basicQuery;
+export const getAccountQuerySchema = getQuery;
 
-export type GetAllAccountQuery<T> = z.infer<typeof getAllAccountQuerySchema> &
-  AccountInclude<T> &
+export type GetAccountQuery = z.infer<typeof getAccountQuerySchema> &
+  WithCompany;
+
+export const getPaginatedAccountQuerySchema = paginatedQuery.merge(
+  getAccountQuerySchema,
+);
+
+export type PaginatedAccountQuery = z.infer<
+  typeof getPaginatedAccountQuerySchema
+> &
+  WithCompany;
+
+export const cursoredAccountQuerySchema = cursorQuery.merge(
+  getAccountQuerySchema,
+);
+
+export type CursoredAccountQuery = z.infer<typeof cursoredAccountQuerySchema> &
   WithCompany;
 
 export const getDetailAccountQuerySchema = z.object({

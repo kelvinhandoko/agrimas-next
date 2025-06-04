@@ -1,6 +1,7 @@
 import { TIMEZONE } from "@/constant";
 import {
-  type GetPurchaseInvoiceeQuery,
+  type GetPurchaseInvoiceQuery,
+  type PaginatedPurchaseInvoiceQuery,
   type PurchaseInvoicePayload,
   type UpdatedPurchaseInvoiceStatusPayload,
 } from "@/model/purchase-invoice";
@@ -32,13 +33,45 @@ export class PurchaseInvoiceRepository extends BaseRepository {
   }
 
   async create(payload: PurchaseInvoicePayload) {
-    const { companyId, date, receiveItemId, ref } = payload;
+    const {
+      companyId,
+      date,
+      receiveItemId,
+      ref,
+      note,
+      details,
+      discount,
+      tax,
+    } = payload;
+    const totals = details.reduce(
+      (acc, curr) => {
+        acc.totalBefore += curr.price * curr.quantity;
+        acc.totalTax += curr.tax;
+        acc.totalDiscount += curr.discount;
+        return acc;
+      },
+      { totalBefore: 0, totalTax: 0, totalDiscount: 0 },
+    );
+
+    totals.totalTax += tax;
+    totals.totalDiscount += discount;
+
+    const totalAfter =
+      totals.totalBefore - totals.totalDiscount + totals.totalTax;
+
+    const { totalBefore, totalDiscount, totalTax } = totals;
+
     return this._db.purchaseInvoice.create({
       data: {
         companyId,
         ref: ref?.length ? ref : await this._generateRef(),
         date,
         receiveId: receiveItemId,
+        note,
+        totalBefore,
+        totalAfter,
+        totalTax,
+        totalDiscount,
       },
       include: {
         receiveItem: {
@@ -50,22 +83,8 @@ export class PurchaseInvoiceRepository extends BaseRepository {
     });
   }
 
-  async findDetail(query: { id: string }) {
-    const { id } = query;
-    return this._db.purchaseInvoice.findFirst({
-      where: { id },
-      include: { receiveItem: { select: { totalAmount: true } } },
-    });
-  }
-  async updateStatus(payload: UpdatedPurchaseInvoiceStatusPayload) {
-    const { id, paymentStatus } = payload;
-    return await this._db.purchaseInvoice.update({
-      where: { id },
-      data: { paymentStatus },
-    });
-  }
-  async get(q: GetPurchaseInvoiceeQuery) {
-    const { companyId, search, limit, page, dateRange, supplierId } = q;
+  private async _getQuery(q: GetPurchaseInvoiceQuery) {
+    const { companyId, search, dateRange, supplierId } = q;
     const whereClause: Prisma.PurchaseInvoiceWhereInput = {};
 
     whereClause.companyId = companyId;
@@ -99,18 +118,56 @@ export class PurchaseInvoiceRepository extends BaseRepository {
         },
       ];
     }
+    return this._db.purchaseInvoice.paginate({
+      where: whereClause,
+      include: {
+        receiveItem: {
+          include: { purchase: { include: { supplier: true } } },
+        },
+      },
+      orderBy: { date: "desc" },
+    });
+  }
 
-    const [data, meta] = await this._db.purchaseInvoice
-      .paginate({
-        where: whereClause,
-        include: {
-          receiveItem: {
-            include: { purchase: { include: { supplier: true } } },
+  async findDetail(query: { id: string }) {
+    const { id } = query;
+    return this._db.purchaseInvoice.findFirst({
+      where: { id },
+      include: {
+        receiveItem: {
+          include: {
+            receiveItemDetail: {
+              include: {
+                purchaseDetail: {
+                  include: {
+                    product: true,
+                    purchase: { include: { supplier: true } },
+                  },
+                },
+              },
+            },
           },
         },
-        orderBy: { date: "desc" },
-      })
-      .withPages({ limit, page });
+
+        purchasePayments: { include: { paymentMethod: true } },
+      },
+    });
+  }
+  async updateStatus(payload: UpdatedPurchaseInvoiceStatusPayload) {
+    const { id, paymentStatus } = payload;
+    return await this._db.purchaseInvoice.update({
+      where: { id },
+      data: { paymentStatus },
+    });
+  }
+  async get(q: PaginatedPurchaseInvoiceQuery) {
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withPages({
+      limit: q.limit,
+      page: q.page,
+    });
+
     return { data, meta };
   }
 }
