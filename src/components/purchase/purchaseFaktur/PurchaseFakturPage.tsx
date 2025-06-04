@@ -1,12 +1,14 @@
 "use client";
 
 import { paths } from "@/paths/paths";
+import { api } from "@/trpc/react";
 import { Box } from "@radix-ui/themes";
+import { useSearchParams } from "next/navigation";
 
 import BackButton from "@/components/BackButton";
 import DataTable from "@/components/common/table/DataTable";
 
-import { purchaseFakturColumn } from "./Column";
+import PurchaseInvoiceColumn from "./Column";
 
 const dummyData = [
   {
@@ -26,18 +28,27 @@ const dummyData = [
 ];
 
 const PurchaseFakturPage = () => {
-  //   const { data, isLoading } = api.supplier.getAll.useQuery({});
-  //   if (isLoading) {
-  //     return <LoadingIndicator />;
-  //   }
+  const searchparams = useSearchParams();
+  const page = Number(searchparams.get("page") ?? 1);
+  const limit = Number(searchparams.get("limit") ?? 10);
+  const search = searchparams.get("search") ?? "";
+  const { data, isLoading } = api.purchaseInvoice.get.useQuery({
+    page,
+    limit,
+    search,
+  });
+
+  console.log(data);
+
   return (
     <Box>
       <Box className="mb-8">
         <BackButton path={paths.purchase.root} />
       </Box>
+      {/* <pre>{JSON.stringify(data, undefined, 2)}</pre> */}
       <DataTable
-        columns={purchaseFakturColumn()}
-        data={dummyData || []}
+        columns={PurchaseInvoiceColumn()}
+        data={data?.data || []}
         path={paths.purchase.purchaseFaktur.new}
         searchAble
         searchPlaceholder="cari no faktur pembelian"

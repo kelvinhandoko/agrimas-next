@@ -1,86 +1,86 @@
+import { DATE_FORMAT, NUMERIC_PROPS } from "@/constant";
 import { paths } from "@/paths/paths";
 import { Flex } from "@radix-ui/themes";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { EyeIcon, PencilIcon } from "lucide-react";
+import { DateTime } from "luxon";
 import Link from "next/link";
+import { NumericFormat } from "react-number-format";
+
+import { type PurchaseInvoiceRouter } from "@/server/purchaseInvoice/purchase-invoice.router";
 
 import DeleteModal from "@/components/DeleteModal";
 import { Badge } from "@/components/ui/badge";
 
-type PurchaseFaktur = {
-  noPurchaseFaktur: string;
-  noPurchaseOrder: string;
-  date: string;
-  supplier: string;
-  status: string;
+import PurchaseInvoiceRowAction from "./RowAction";
+
+const PurchaseInvoiceColumn = () => {
+  const columnHelper =
+    createColumnHelper<PurchaseInvoiceRouter["get"]["data"][number]>();
+  const column = [
+    columnHelper.accessor("date", {
+      header: "tanggal",
+      cell: ({ getValue }) =>
+        DateTime.fromJSDate(getValue()).toFormat(DATE_FORMAT),
+    }),
+    columnHelper.accessor("ref", {
+      header: "No Faktur",
+      cell: ({ getValue }) => getValue(),
+    }),
+    columnHelper.accessor("receiveItem.purchase.supplier.nama", {
+      header: "Supplier",
+      cell: ({ getValue }) => getValue(),
+    }),
+    columnHelper.accessor("totalBefore", {
+      header: "total (sblm diskon)",
+      cell: ({ getValue }) => (
+        <NumericFormat
+          value={getValue()}
+          {...NUMERIC_PROPS}
+          displayType="text"
+        />
+      ),
+    }),
+    columnHelper.accessor("totalDiscount", {
+      header: "total diskon",
+      cell: ({ getValue }) => (
+        <NumericFormat
+          value={getValue()}
+          {...NUMERIC_PROPS}
+          displayType="text"
+        />
+      ),
+    }),
+    columnHelper.accessor("totalTax", {
+      header: "total pajak",
+      cell: ({ getValue }) => (
+        <NumericFormat
+          value={getValue()}
+          {...NUMERIC_PROPS}
+          displayType="text"
+        />
+      ),
+    }),
+    columnHelper.accessor("totalAfter", {
+      header: "total akhir",
+      cell: ({ getValue }) => (
+        <NumericFormat
+          value={getValue()}
+          {...NUMERIC_PROPS}
+          displayType="text"
+        />
+      ),
+    }),
+    columnHelper.accessor("paymentStatus", {
+      cell: ({ getValue }) => <Badge>{getValue()}</Badge>,
+    }),
+    columnHelper.display({
+      id: "action",
+      header: "action",
+      cell: (info) => <PurchaseInvoiceRowAction data={info.row.original} />,
+    }),
+  ] as ColumnDef<PurchaseInvoiceRouter["get"]["data"][number]>[];
+  return column;
 };
 
-const columnHelper = createColumnHelper<PurchaseFaktur>();
-
-export const purchaseFakturColumn = () =>
-  [
-    columnHelper.accessor("noPurchaseFaktur", {
-      header: "No Faktur",
-      cell: ({ row }) => <div>{row.original.noPurchaseFaktur}</div>,
-    }),
-    columnHelper.accessor("noPurchaseOrder", {
-      header: "No Pembelian",
-      cell: ({ row }) => <div>{row.original.noPurchaseOrder}</div>,
-    }),
-    columnHelper.accessor("date", {
-      id: "date",
-      header: "Date",
-      cell: ({ row }) => {
-        return <div>{row.original.date}</div>;
-      },
-    }),
-
-    columnHelper.accessor("supplier", {
-      id: "supplier",
-      header: "Supplier",
-      cell: ({ row }) => {
-        return <div>{row.original.supplier}</div>;
-      },
-    }),
-    columnHelper.accessor("status", {
-      id: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        return (
-          <div>
-            <Badge
-              variant={row.original.status === "paid" ? "success" : "error"}
-            >
-              {row.original.status === "paid" ? "Lunas" : "Belum Lunas"}
-            </Badge>
-          </div>
-        );
-      },
-    }),
-    {
-      id: "actions",
-      header: () => <div className="text-center">Aksi</div>,
-      cell: ({ row }) => {
-        return (
-          <Flex justify="center" gapX="3">
-            <Link
-              href={paths.purchase.purchaseFaktur.detail("123")}
-              className="text-yellow-400"
-            >
-              <EyeIcon className="cursor-pointer text-[#624DE3]" />
-            </Link>
-            <Link
-              href={paths.purchase.purchaseFaktur.edit("123")}
-              className="text-yellow-400"
-            >
-              <PencilIcon className="text-yellow-400" />
-            </Link>
-            <DeleteModal
-              id={row.original.noPurchaseFaktur}
-              name={row.original.noPurchaseFaktur}
-            />
-          </Flex>
-        );
-      },
-    },
-  ] as ColumnDef<PurchaseFaktur>[];
+export default PurchaseInvoiceColumn;

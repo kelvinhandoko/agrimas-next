@@ -164,6 +164,7 @@ export class PurchaseRepository extends BaseRepository {
         },
         supplier: true,
         ReceiveItem: true,
+        company: true,
       },
     });
   }
