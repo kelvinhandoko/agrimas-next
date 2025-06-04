@@ -1,12 +1,14 @@
 "use client";
 
+import { dummyStocksData } from "@/data/dummyStocksData";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -43,41 +45,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const ReportPurchasePage = () => {
-  const form = useForm<any>({
+import StockTable from "./StockTable";
+
+const StockPage = () => {
+  const form = useForm({
     // resolver: zodResolver(FormSchema),
     defaultValues: {
-      supplier: "",
+      barang_id: "",
       tgl_awal: "",
       tgl_akhir: "",
     },
   });
 
-  const onSubmit: SubmitHandler<any> = async (data) => {
-    try {
-      toast.promise(
-        async () => {
-          return {};
-        },
-        {
-          loading: "Memproses...",
-          success: async () => {
-            return "Berhasil filter laporan pembelian";
-          },
-          error: (error) => {
-            if (error instanceof Error) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
-        },
-      );
-    } catch (error) {
-      console.error("Login error:", error);
-    }
+  const [barangId, setBarangId] = useState("all");
+
+  const onSubmit = async (data) => {
+    setBarangId(data.barang_id);
+    toast.success("Berhasil filter stok");
   };
-  const { data: dataSupplierReportSale, isLoading: isLoadingGet } =
-    api.supplier.getAll.useQuery({});
+  const { data, isLoading: isLoadingGet } = api.supplier.getAll.useQuery({});
+
+  const filteredData = barangId === "all" ? dummyStocksData : dummyStocksData;
   if (isLoadingGet) {
     return <LoadingIndicator />;
   }
@@ -89,7 +77,7 @@ const ReportPurchasePage = () => {
       <Card className="px-4 py-7">
         <CardContent>
           <Text size={"5"} weight={"bold"}>
-            Laporan Pembelian
+            Laporan Stok Barang
           </Text>
           <Box className="grid grid-cols-12 items-end">
             <Box className="col-span-10">
@@ -187,6 +175,7 @@ const ReportPurchasePage = () => {
                                   mode="single"
                                   selected={field.value}
                                   onSelect={field.onChange}
+                                  initialFocus
                                   className="flex h-full w-full"
                                   classNames={{
                                     months:
@@ -206,30 +195,29 @@ const ReportPurchasePage = () => {
                       />
                       <FormField
                         control={form.control}
-                        name="supplier"
+                        name="barang"
                         render={({ field }) => (
                           <FormItem className="mr-4 w-full">
-                            <FormLabel>Supplier</FormLabel>
+                            <FormLabel>Stok Barang</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Pilih supplier" />
+                                  <SelectValue placeholder="Pilih barang" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="m@example.com">
                                   Keseluruhan
                                 </SelectItem>
-                                {dataSupplierReportSale?.data.map(
-                                  (supplier, index) => (
-                                    <SelectItem value={supplier.id} key={index}>
-                                      {supplier.nama}
-                                    </SelectItem>
-                                  ),
-                                )}
+                                <SelectItem value="m@google.com">
+                                  Barang A
+                                </SelectItem>
+                                <SelectItem value="m@support.com">
+                                  Barang B
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -271,10 +259,13 @@ const ReportPurchasePage = () => {
               </DropdownMenu>
             </Box>
           </Box>
+          <Box className="mt-20">
+            <StockTable dataReportStock={filteredData} isLoading={false} />
+          </Box>
         </CardContent>
       </Card>
     </Box>
   );
 };
 
-export default ReportPurchasePage;
+export default StockPage;
