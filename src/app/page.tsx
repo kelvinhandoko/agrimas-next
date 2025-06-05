@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 const page = () => {
   redirect(paths.dataMaster.root);
+  return <h1>hai</h1>;
 };
 
 export default page;
