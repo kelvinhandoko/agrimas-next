@@ -35,6 +35,7 @@ model Company {
   SubAcount       SubAccount[]
   suppliers       Supplier[]
   UserCompany     User_Company[]
+  PurchasePayment PurchasePayment[]
 }
 
 model User {
@@ -258,6 +259,8 @@ model PurchasePayment {
   paymentMethodId   String
   paymentMethod     PaymentMethod   @relation(fields: [paymentMethodId], references: [id])
   purchaseInvoice   PurchaseInvoice @relation(fields: [purchaseInvoiceId], references: [id])
+  companyId         String
+  company           Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model ReceiveItem {

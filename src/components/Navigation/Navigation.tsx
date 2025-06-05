@@ -30,11 +30,11 @@ const menuItems = [
     path: paths.purchase.root,
     subPaths: [paths.purchase.purchaseOrder.root],
   },
-  {
-    title: "Akuntansi",
-    path: paths.accountant.root,
-    subPaths: [paths.accountant.chartOfAccount],
-  },
+  // {
+  //   title: "Akuntansi",
+  //   path: paths.accountant.root,
+  //   subPaths: [paths.accountant.chartOfAccount],
+  // },
   {
     title: "Laporan",
     path: paths.report.root,

@@ -13,7 +13,6 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  output: "standalone",
   images: {
     domains: ["images.unsplash.com"], // Tambahkan domain di sini
   },

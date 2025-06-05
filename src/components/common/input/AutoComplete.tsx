@@ -96,7 +96,7 @@ export function AutoComplete<T>({
             )}
           >
             <div
-              className={cn("", {
+              className={cn("flex flex-1 items-center", {
                 "text-muted-foreground": !value,
                 "flex flex-1 items-center gap-2 text-start": !customLabel,
               })}

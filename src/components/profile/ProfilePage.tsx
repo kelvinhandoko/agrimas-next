@@ -32,8 +32,6 @@ const ProfilePage = () => {
     },
   });
 
-  const { mutateAsync: createSupplier } = api.supplier.create.useMutation();
-
   const onSubmit: SubmitHandler<any> = async (data) => {
     setIsLoading(true);
     try {

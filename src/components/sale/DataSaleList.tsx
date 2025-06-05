@@ -10,17 +10,17 @@ const listMenu = [
     icon: <FiFileText size={"50px"} />,
     path: paths.sale.saleFaktur.root,
   },
-  {
-    title: "Pengembalian Barang",
-    icon: <FiCornerUpLeft size={"50px"} />,
-    path: paths.sale.saleReturn.root,
-  },
+  // {
+  //   title: "Pengembalian Barang",
+  //   icon: <FiCornerUpLeft size={"50px"} />,
+  //   path: paths.sale.saleReturn.root,
+  // },
 
-  {
-    title: "Piutang Usaha",
-    icon: <FiDollarSign size={"50px"} />,
-    path: paths.sale.saleReturn.root,
-  },
+  // {
+  //   title: "Piutang Usaha",
+  //   icon: <FiDollarSign size={"50px"} />,
+  //   path: paths.sale.saleReturn.root,
+  // },
   // {
   //   title: "Pembayaran",
   //   icon: <FiCreditCard size={"50px"} />,

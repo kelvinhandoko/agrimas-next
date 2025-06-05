@@ -1,5 +1,6 @@
 import { TIMEZONE } from "@/constant";
 import {
+  CursorPurchaseInvoiceQuery,
   type GetPurchaseInvoiceQuery,
   type PaginatedPurchaseInvoiceQuery,
   type PurchaseInvoicePayload,
@@ -166,6 +167,17 @@ export class PurchaseInvoiceRepository extends BaseRepository {
     ).withPages({
       limit: q.limit,
       page: q.page,
+    });
+
+    return { data, meta };
+  }
+
+  async getInfinite(q: CursorPurchaseInvoiceQuery) {
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withCursor({
+      limit: q.limit,
+      after: q.cursor,
     });
 
     return { data, meta };
