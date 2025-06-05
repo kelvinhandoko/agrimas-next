@@ -7,6 +7,6 @@ export const getUserCompaniesController = protectedProcedure.query(
   async ({ ctx }) => {
     const companyRepo = new CompanyRepository(ctx.db);
     const getUserCompanies = getUserCompaniesUseCase(companyRepo);
-    return getUserCompanies(ctx.session.user.id!);
+    return getUserCompanies(ctx.session.user.id);
   },
 );
