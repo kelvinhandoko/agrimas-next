@@ -8,11 +8,6 @@ await import("./src/env.js");
 const config = {
   serverExternalPackages: ["@node-rs/argon2"],
 
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
   images: {
     domains: ["images.unsplash.com"], // Tambahkan domain di sini
   },

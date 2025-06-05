@@ -1,6 +1,3 @@
-import { HydrateClient, api } from "@/trpc/server";
-import React from "react";
-
 import { SalesInvoiceTable } from "@/components/sale/saleFaktur/table";
 
 interface PageProps {

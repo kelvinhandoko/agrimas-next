@@ -2,7 +2,7 @@ import { paths } from "@/paths/paths";
 import { formatPrice } from "@/utils/format-price";
 import { Flex } from "@radix-ui/themes";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { EyeIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -100,7 +100,6 @@ export const purchasePayableColumn = () =>
             <DeleteModal
               id={row.original.noPurchaseFaktur}
               name={row.original.noPurchaseFaktur}
-              handleDelete={() => {}}
             />
           </Flex>
         );

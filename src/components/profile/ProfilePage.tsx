@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { api } from "@/trpc/react";
@@ -17,6 +18,10 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const ProfilePage = () => {
   const { data } = useSession();

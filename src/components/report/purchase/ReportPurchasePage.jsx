@@ -4,7 +4,7 @@ import { dummyPurchasesData } from "@/data/dummyPurchasesData";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Flex, Text } from "@radix-ui/themes";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";

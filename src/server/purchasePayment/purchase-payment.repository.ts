@@ -1,5 +1,5 @@
 import {
-  GetPurchasePaymentQuery,
+  type GetPurchasePaymentQuery,
   type PurchasePaymentPayload,
 } from "@/model/purchase-payment.model";
 

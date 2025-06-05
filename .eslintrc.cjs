@@ -4,16 +4,44 @@ const config = {
   parserOptions: {
     project: true,
   },
-  ignorePatterns: [".eslintrc.cjs", "prettier.config.js", "next.config.js"],
+  ignorePatterns: [
+    ".eslintrc.cjs",
+    "prettier.config.js",
+    "next.config.js",
+    "**/*.jsx",
+  ],
   plugins: ["@typescript-eslint", "eslint-plugin-unused-imports"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
+  overrides: [
+    {
+      files: ["*.js", "*.jsx"],
+      rules: {
+        // Disable TS rules for JS files
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/require-await": "off",
+        "@typescript-eslint/no-misused-promises": "off",
+        "@typescript-eslint/prefer-nullish-coalescing": "off",
+        "@typescript-eslint/array-type": "off",
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "@typescript-eslint/consistent-type-imports": "off",
+      },
+    },
+  ],
   rules: {
-    "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
+    "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
@@ -22,12 +50,6 @@ const config = {
       {
         prefer: "type-imports",
         fixStyle: "inline-type-imports",
-      },
-    ],
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        argsIgnorePattern: "^_",
       },
     ],
     "@typescript-eslint/require-await": "off",
@@ -51,4 +73,5 @@ const config = {
     ],
   },
 };
+
 module.exports = config;

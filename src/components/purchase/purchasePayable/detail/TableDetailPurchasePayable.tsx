@@ -3,7 +3,6 @@ import { formatPrice } from "@/utils/format-price";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,

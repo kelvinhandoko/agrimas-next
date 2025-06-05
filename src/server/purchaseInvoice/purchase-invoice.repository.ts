@@ -1,6 +1,6 @@
 import { TIMEZONE } from "@/constant";
 import {
-  CursorPurchaseInvoiceQuery,
+  type CursorPurchaseInvoiceQuery,
   type GetPurchaseInvoiceQuery,
   type PaginatedPurchaseInvoiceQuery,
   type PurchaseInvoicePayload,

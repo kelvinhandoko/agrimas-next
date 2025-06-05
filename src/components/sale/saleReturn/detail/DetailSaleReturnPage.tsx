@@ -2,7 +2,6 @@
 
 import { paths } from "@/paths/paths";
 import { fallbackName } from "@/utils/fallback-name";
-import { handleSimulationPromise } from "@/utils/promise-simulation";
 import { Box, Grid, Text } from "@radix-ui/themes";
 
 import BackButton from "@/components/BackButton";
@@ -14,11 +13,7 @@ import { Label } from "@/components/ui/label";
 
 const DetailSaleReturnPage = ({ id }: { id: string }) => {
   const handleDownloadInvoice = () => {
-    handleSimulationPromise({
-      loading: "Downloading",
-      success: "Invoice berhasil diunduh! (just simulation)",
-      error: "Gagal mengunduh invoice! (just simulation)",
-    });
+    console.log("hai");
   };
 
   return (

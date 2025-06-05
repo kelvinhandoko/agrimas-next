@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import DetailPurchaseFakturPage from "@/components/purchase/purchaseFaktur/detail/DetailPurchaseFakturPage";
 
@@ -16,7 +16,7 @@ interface PageProps {
 }
 const page = async ({ params }: PageProps) => {
   const id = (await params).id;
-  return <DetailPurchaseFakturPage id={id} />;
+  return <DetailPurchaseFakturPage />;
 };
 
 export default page;

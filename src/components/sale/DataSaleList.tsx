@@ -1,6 +1,6 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
-import { FiCornerUpLeft, FiDollarSign, FiFileText } from "react-icons/fi";
+import { FiFileText } from "react-icons/fi";
 
 import SectionCard from "@/components/SectionCard";
 
