@@ -12,6 +12,8 @@ import { type ReceiveItemRouter } from "@/server/recieveItem/receive-item.router
 
 import { CardTitle } from "@/components/ui/card";
 
+import ReceivedItemRowAction from "./RowAction";
+
 const columnHelper = createColumnHelper<ReceiveItemRouter["get"]["data"][0]>();
 
 export const purchaseReceivedColumn = () =>
@@ -53,26 +55,9 @@ export const purchaseReceivedColumn = () =>
         />
       ),
     }),
-    {
-      id: "actions",
-      header: () => <div className="text-center">Aksi</div>,
-      cell: ({ row }) => {
-        return (
-          <Flex justify="center" gapX="3">
-            <Link
-              href={paths.purchase.purchaseReceived.detail("123")}
-              className="text-yellow-400"
-            >
-              <EyeIcon className="cursor-pointer text-[#624DE3]" />
-            </Link>
-            <Link
-              href={paths.purchase.purchaseReceived.edit("123")}
-              className="text-yellow-400"
-            >
-              <PencilIcon className="text-yellow-400" />
-            </Link>
-          </Flex>
-        );
-      },
-    },
+    columnHelper.display({
+      id: "action",
+      header: "action",
+      cell: (info) => <ReceivedItemRowAction data={info.row.original} />,
+    }),
   ] as ColumnDef<ReceiveItemRouter["get"]["data"][0]>[];
