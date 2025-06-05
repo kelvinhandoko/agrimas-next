@@ -6,23 +6,53 @@ import {
 import { convertType } from "@/utils/journalTypeHelper";
 import { type JournalType, type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
+import { z } from "zod";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class JournalRepository extends BaseRepository {
-  private async _generateRef(type: JournalType) {
-    const findData = await this._db.journal.findMany({
-      where: {
-        ref: { startsWith: convertType(type) },
-      },
-    });
-    return `${convertType(type)}-${findData.length + 1}`;
+  private async _generateRef(type: JournalType, companyId: string) {
+    // Validate inputs
+    const safeCompanyId = z
+      .string()
+      .regex(/^[a-zA-Z0-9_]+$/)
+      .parse(companyId);
+    const safeType = z
+      .string()
+      .regex(/^[a-zA-Z0-9_]+$/)
+      .parse(convertType(type));
+
+    const sequenceName =
+      `journal_ref_${safeCompanyId}_${safeType}`.toLowerCase();
+    const prefix = `${safeType}-${safeCompanyId}`;
+
+    await this._db.$executeRawUnsafe(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_class WHERE relname = '${sequenceName}'
+        ) THEN
+          CREATE SEQUENCE ${sequenceName} START 1;
+        END IF;
+      END;
+      $$;
+    `);
+
+    const result = await this._db.$queryRawUnsafe<{ nextval: bigint }[]>(
+      `SELECT nextval('${sequenceName}')`,
+    );
+
+    const next = result[0]?.nextval.toString().padStart(3, "0");
+    return `${prefix}-${next}`;
   }
+
   async create(payload: Omit<JournalPayload, "details">) {
     return await this._db.journal.create({
       data: {
         ...payload,
-        ref: payload.ref ?? (await this._generateRef(payload.type)),
+        ref: payload.ref?.length
+          ? payload.ref
+          : await this._generateRef(payload.type, payload.companyId),
       },
     });
   }
@@ -66,8 +96,6 @@ export class JournalRepository extends BaseRepository {
     }
 
     if (search) {
-      const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
       whereClause.OR = [
         {
           ref: { contains: search },
@@ -88,8 +116,8 @@ export class JournalRepository extends BaseRepository {
       };
     }
 
-    const totalPromise = this._db.journal.count({ where: whereClause });
-    const dataPromise = this._db.journal.findMany({
+    const total = await this._db.journal.count({ where: whereClause });
+    const data = await this._db.journal.findMany({
       where: whereClause,
       take: take,
       cursor: cursorClause,
@@ -97,7 +125,6 @@ export class JournalRepository extends BaseRepository {
       include: include ?? (undefined as unknown as T),
     });
 
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
     let nextCursor: typeof cursor | undefined = undefined;
     if (!takeAll && data.length > limit) {
       const nextItem = data.pop();

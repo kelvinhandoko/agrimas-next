@@ -2,7 +2,6 @@
 
 import { paths } from "@/paths/paths";
 import { Text } from "@radix-ui/themes";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -11,7 +10,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -75,12 +73,19 @@ const NavigationMobile = ({ menuItems }: NavigationMobileProps) => {
           <div className="mt-6 text-left">
             <nav className="mt-2">
               <div className="text-sm font-semibold">Account</div>
-              <ul>
+              <ul className="space-y-1">
                 <li onClick={handleMenuClick}>
                   <ListItem
                     title="Profile"
                     path={paths.profile.root}
                     isActive={activePath === paths.profile.root}
+                  />
+                </li>
+                <li onClick={handleMenuClick}>
+                  <ListItem
+                    title="Change Password"
+                    path={paths.profile.changePassword}
+                    isActive={activePath === paths.profile.changePassword}
                   />
                 </li>
               </ul>

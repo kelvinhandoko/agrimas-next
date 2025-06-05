@@ -1,4 +1,4 @@
-import { defaultGroupAccountData } from "@/data/defaultAccountantData";
+import { defaultAccountData } from "@/data/defaultAccountantData";
 import { companyPayloadSchema } from "@/model";
 import { ownerProcedure } from "@/trpc/trpc";
 
@@ -6,9 +6,10 @@ import { AccountRepository } from "@/server/account";
 import { createAccountBatchUseCase } from "@/server/account/use-cases/create-account-batch.use-case";
 import { CompanyRepository } from "@/server/company/company.repository";
 import { CreateCompanyUseCase } from "@/server/company/use-cases";
-import { GroupAccountRepository } from "@/server/groupAccount";
+import { DefaultAccountRepository } from "@/server/defaultAccount/default-account.repository";
+import { createBulkDefaultAccountUseCase } from "@/server/defaultAccount/use-cases/create-bulk-default-account.use-case";
+import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
 import { createGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
-import { ReportRepository } from "@/server/report/report.repository";
 import { TransactionService } from "@/server/services";
 
 export const createCompanyController = ownerProcedure
@@ -20,7 +21,8 @@ export const createCompanyController = ownerProcedure
       const accountRepo = new AccountRepository(tx);
       const groupAccountRepo = new GroupAccountRepository(tx);
       const companyRepo = new CompanyRepository(tx);
-      const reportRepo = new ReportRepository(tx);
+      const defaultAccountRepo = new DefaultAccountRepository(tx);
+
       const createCompany = new CreateCompanyUseCase(companyRepo);
 
       const companyData = await createCompany.execute({
@@ -29,11 +31,18 @@ export const createCompanyController = ownerProcedure
       });
 
       const createGroupAccount = createGroupAccountUseCase(groupAccountRepo);
-      const createAccount = createAccountBatchUseCase(accountRepo, reportRepo);
+      const createAccount = createAccountBatchUseCase(accountRepo);
 
+      const createDefaultAccount =
+        createBulkDefaultAccountUseCase(defaultAccountRepo);
+      console.log({
+        defaultAccountData: defaultAccountData.map(({ accounts }) =>
+          accounts.map((account) => account.id),
+        ),
+      });
       // Use Promise.all to handle group account creation
       await Promise.all(
-        defaultGroupAccountData.map(async (groupAccount) => {
+        defaultAccountData.map(async (groupAccount) => {
           const { accounts, ...groupAccountRelated } = groupAccount;
 
           const groupAccountData = await createGroupAccount({
@@ -48,6 +57,19 @@ export const createCompanyController = ownerProcedure
             };
           });
           await createAccount(accountsWithGroupAccount);
+          const defaultData = accountsWithGroupAccount.filter(
+            (data) => Boolean(data.category) && data.id,
+          );
+
+          await createDefaultAccount(
+            defaultData.map((data) => {
+              return {
+                companyId: data.companyId,
+                category: data.category!,
+                accountId: data.id!,
+              };
+            }),
+          );
         }),
       );
 

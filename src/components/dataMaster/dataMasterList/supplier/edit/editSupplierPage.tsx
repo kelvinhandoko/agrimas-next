@@ -8,12 +8,14 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
+import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -54,6 +56,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
         },
         {
           loading: "Memproses...",
+          position: "top-right",
           success: async () => {
             await utils.supplier.getAll.invalidate();
             setIsLoading(false);
@@ -61,7 +64,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
           },
           error: (error) => {
             setIsLoading(false);
-            if (error instanceof Error) {
+            if (error instanceof TRPCClientError) {
               return error.message;
             }
             return "Terjadi kesalahan";
@@ -84,7 +87,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
     }
   }, [detailSupplier, form]);
   if (!detailSupplier) {
-    return <Box>loading...</Box>;
+    return <LoadingIndicator />;
   }
   return (
     <Box>

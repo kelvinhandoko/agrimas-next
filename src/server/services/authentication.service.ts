@@ -36,7 +36,7 @@ export const {
         }
 
         const checkPass = await verifyPassword(password, user.password);
-
+        console.log({ checkPass });
         if (!checkPass) {
           throw new AuthenticationError();
         }

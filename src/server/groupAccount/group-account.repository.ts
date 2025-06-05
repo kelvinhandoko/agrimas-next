@@ -1,5 +1,7 @@
 import {
-  type GetAllGroupAccountQuery,
+  type GetCursorGroupAccountQuery,
+  type GetGroupAccountQuery,
+  type GetPaginatedGroupAccountQuery,
   type GroupAccountPayload,
 } from "@/model/group-account.model";
 import { AccountClassOrder } from "@/utils/accountClassHelper";
@@ -9,23 +11,19 @@ import { TRPCError } from "@trpc/server";
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class GroupAccountRepository extends BaseRepository {
-  private async _generateCode(accountClass: AccountClass) {
-    const findData = await this._db.groupAccount.findMany({
-      where: { accountClass },
-    });
-
-    const currentTotal = findData.length;
-    return `${AccountClassOrder[accountClass]}.${currentTotal + 1}`;
+  private async _generateCode(accountClass: AccountClass, companyId: string) {
+    return `${AccountClassOrder[accountClass]}.${(await this._createRef(companyId, accountClass, "")).seq}`;
   }
 
   async create(payload: GroupAccountPayload) {
     try {
       const code =
-        payload.code ?? (await this._generateCode(payload.accountClass));
+        payload.code ??
+        (await this._generateCode(payload.accountClass, payload.companyId));
       return await this._db.groupAccount.create({
-        data: { ...payload, code, companyId: payload.companyId! },
+        data: { ...payload, code },
       });
-    } catch (e) {
+    } catch {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "server error",
@@ -40,68 +38,63 @@ export class GroupAccountRepository extends BaseRepository {
     });
   }
 
-  async getAll<S extends Prisma.GroupAccountInclude>(
-    query: GetAllGroupAccountQuery<S>,
-  ) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
-      companyId,
-      include,
-    } = query;
+  private async _getQuery(q: GetGroupAccountQuery) {
+    const { companyId, search } = q;
     const whereClause: Prisma.GroupAccountWhereInput = {};
-
-    let cursorClause = undefined;
-
-    whereClause.companyId = companyId;
-
-    // state skip clause klo tidak infinite scroll
-    let skipClause: number | undefined = (page - 1) * limit;
-
-    let take = limit;
-
-    if (infiniteScroll) {
-      if (cursor) {
-        cursorClause = { id: cursor };
-      }
-      take = limit + 1;
-      skipClause = undefined;
-    }
     if (search) {
-      const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
       whereClause.OR = [
         {
-          code: { contains: search },
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          account: {
+            some: {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
         },
       ];
     }
-
-    const totalPromise = this._db.groupAccount.count({ where: whereClause });
-    const dataPromise = this._db.groupAccount.findMany({
+    whereClause.companyId = companyId;
+    return this._db.groupAccount.paginate({
       where: whereClause,
-      take: take,
-      cursor: cursorClause,
-      skip: skipClause,
-      include: include ?? (undefined as unknown as S),
+      include: {
+        account: true,
+      },
+      orderBy: { code: "asc" },
     });
-
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (!takeAll && data.length > limit) {
-      const nextItem = data.pop();
-      nextCursor = nextItem?.id;
-    }
+  }
+  async get(q: GetPaginatedGroupAccountQuery) {
+    const { page, limit } = q;
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withPages({
+      limit,
+      page,
+    });
     return {
       data,
-      meta: {
-        totalData: total,
-      },
-      nextCursor,
+      meta,
+    };
+  }
+
+  async getInfinite(q: GetCursorGroupAccountQuery) {
+    const { cursor, limit } = q;
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withCursor({
+      limit,
+      after: cursor,
+    });
+    return {
+      data,
+      meta,
     };
   }
 }

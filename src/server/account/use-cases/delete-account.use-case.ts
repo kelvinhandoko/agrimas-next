@@ -1,9 +1,6 @@
-import { AccountRepository } from "@/server/account/account.repository";
-import { db } from "@/server/db/prisma";
+import { type AccountRepository } from "@/server/account/account.repository";
 
-export class DeleteAccountUseCase {
-  async execute(id: string) {
-    const accountRepo = new AccountRepository(db);
-    return await accountRepo.delete(id);
-  }
-}
+export const deleteAccountUseCase =
+  (repo: AccountRepository) => async (id: string) => {
+    return await repo.delete(id);
+  };

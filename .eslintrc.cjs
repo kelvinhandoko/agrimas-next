@@ -4,6 +4,7 @@ const config = {
   parserOptions: {
     project: true,
   },
+  ignorePatterns: [".eslintrc.cjs", "prettier.config.js", "next.config.js"],
   plugins: ["@typescript-eslint", "eslint-plugin-unused-imports"],
   extends: [
     "next/core-web-vitals",
@@ -12,6 +13,8 @@ const config = {
   ],
   rules: {
     "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [

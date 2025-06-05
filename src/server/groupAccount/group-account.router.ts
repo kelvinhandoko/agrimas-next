@@ -1,35 +1,16 @@
-import {
-  getAllGroupAccountQuerySchema,
-  groupAccountPayloadSchema,
-} from "@/model/group-account.model";
-import { companyProcedure, createTRPCRouter } from "@/trpc/trpc";
+import { createTRPCRouter } from "@/trpc/trpc";
 import { type inferRouterOutputs } from "@trpc/server";
 
-import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
-import { createGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
-import { GetAllGroupAccountUseCase } from "@/server/groupAccount/use-cases/get-all-group-account.use-case";
+import { createGroupAccountController } from "@/server/groupAccount/controller/create-group-account.controller";
+import { getGroupAccountController } from "@/server/groupAccount/controller/get-group-account.controller";
+import { getInfiniteGroupAccountController } from "@/server/groupAccount/controller/get-infinite-account.controller";
+import { updateGroupAccountController } from "@/server/groupAccount/controller/update-group-account.controller";
 
 export const groupAccountRouter = createTRPCRouter({
-  create: companyProcedure
-    .input(groupAccountPayloadSchema)
-    .mutation(async ({ ctx, input }) => {
-      const groupAccountRepo = new GroupAccountRepository(ctx.db);
-      const createGroupAccount = createGroupAccountUseCase(groupAccountRepo);
-      return await createGroupAccount({
-        ...input,
-        companyId: ctx.session.user.companyId,
-      });
-    }),
-
-  getAll: companyProcedure
-    .input(getAllGroupAccountQuerySchema)
-    .query(async ({ ctx, input }) => {
-      const getAllGroupAccountUseCase = new GetAllGroupAccountUseCase();
-      return await getAllGroupAccountUseCase.execute({
-        ...input,
-        companyId: ctx.session.user.companyId,
-      });
-    }),
+  create: createGroupAccountController,
+  getAll: getGroupAccountController,
+  update: updateGroupAccountController,
+  getInfinite: getInfiniteGroupAccountController,
 });
 
 export type GroupAccountRouterOutputs = inferRouterOutputs<

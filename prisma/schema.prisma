@@ -2,183 +2,501 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["relationJoins"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+  binaryTargets   = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
-    provider = "mysql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
 // Necessary for Next auth
 model Company {
-    id          String         @id @default(cuid())
-    name        String         @unique
-    address     String?
-    createdAt   DateTime       @default(now())
-    updatedAt   DateTime       @updatedAt
-    UserCompany User_Company[]
+  id           String         @id @default(cuid())
+  name         String         @unique
+  address      String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  UserCompany  User_Company[]
+  groupAccount GroupAccount[]
+  account      Account[]
 
-    groupAccount   GroupAccount[]
-    account        Account[]
-    Report_Account Report_Account[]
-    SubAcount      SubAccount[]
-    Journal        Journal[]
-    suppliers      Supplier[]
+  SubAcount SubAccount[]
+  Journal   Journal[]
+  suppliers Supplier[]
+  customers Customer[]
+  ErrorLog  ErrorLog[]
+  deleted   DateTime?
+
+  Product         Product[]
+  InitialProduct  InitialProduct[]
+  DefaultAccount  DefaultAccount[]
+  purchases       Purchase[]
+  receiveItems    ReceiveItem[]
+  PurchaseInvoice PurchaseInvoice[]
+  PaymentMethod   PaymentMethod[]
+  SalesInvoice    SalesInvoice[]
+  SalesPerson     SalesPerson[]
+  SalesPayment    SalesPayment[]
 }
 
 model User {
-    id          String         @id @default(cuid())
-    username    String
-    image       String?
-    password    String
-    userCompany User_Company[]
-    role        Role           @default(USER)
-    createdAt   DateTime       @default(now())
-    updatedAt   DateTime       @updatedAt
+  id          String         @id @default(cuid())
+  username    String
+  image       String?
+  password    String
+  userCompany User_Company[]
+  role        Role           @default(USER)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  ErrorLog    ErrorLog[]
+  deleted     DateTime?
 }
 
 model User_Company {
-    id        String   @id @default(cuid())
-    userId    String
-    companyId String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String    @id @default(cuid())
+  userId    String
+  companyId String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deleted   DateTime?
 }
 
 model GroupAccount {
-    id           String       @id @default(cuid())
-    name         String
-    code         String
-    accountClass AccountClass
-    companyId    String
-    company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt    DateTime     @default(now())
-    updatedAt    DateTime     @updatedAt
-    account      Account[]
+  id           String       @id @default(cuid())
+  name         String
+  code         String
+  accountClass AccountClass
+  companyId    String
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  account      Account[]
+  deleted      DateTime?
 
-    @@unique([code, companyId])
+  @@unique([code, companyId])
 }
 
 model Account {
-    id             String           @id @default(cuid())
-    posisi         NormalPosition
-    code           String
-    name           String
-    currentBalance Int              @default(0)
-    groupAccountId String
-    groupAccount   GroupAccount     @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
-    companyId      String
-    company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt      DateTime         @default(now())
-    updatedAt      DateTime         @updatedAt
-    report         Report_Account[]
-    subAccount     SubAccount[]
-    journalDetail  JournalDetail[]
+  id             String          @id @default(cuid())
+  posisi         NormalPosition
+  code           String
+  name           String
+  currentBalance Int             @default(0)
+  groupAccountId String
+  groupAccount   GroupAccount    @relation(fields: [groupAccountId], references: [id], onDelete: Cascade)
+  companyId      String
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  reports        Laporan[]
+  subAccount     SubAccount[]
+  journalDetail  JournalDetail[]
+  deleted        DateTime?
+  defaultAccount DefaultAccount?
 
-    @@unique([code, companyId])
+  @@unique([code, companyId])
 }
 
 model SubAccount {
-    id            String          @id @default(cuid())
-    code          String
-    name          String
-    accountId     String
-    account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-    companyId     String
-    company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    journalDetail JournalDetail[]
+  id            String          @id @default(cuid())
+  code          String
+  name          String
+  accountId     String
+  account       Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  companyId     String
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  journalDetail JournalDetail[]
+  deleted       DateTime?
 
-    @@unique([code, companyId])
-}
-
-model Report_Account {
-    id        String   @id @default(cuid())
-    report    Laporan
-    account   Account  @relation(fields: [accountId], references: [id])
-    companyId String
-    company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    accountId String
-
-    @@unique([companyId, report, accountId])
+  @@unique([code, companyId])
 }
 
 model Journal {
-    id            String          @id @default(cuid())
-    date          DateTime
-    ref           String
-    description   String?
-    type          JournalType
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    companyId     String
-    company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-    JournalDetail JournalDetail[]
+  id            String          @id @default(cuid())
+  date          DateTime
+  ref           String
+  description   String?
+  type          JournalType
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  companyId     String
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted       DateTime?
+  JournalDetail JournalDetail[]
 }
 
 model JournalDetail {
-    id           String      @id @default(cuid())
-    debit        Int
-    credit       Int
-    journalId    String
-    accountId    String
-    subAccountId String?
-    createdAt    DateTime    @default(now())
-    updatedAt    DateTime    @updatedAt
-    journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
-    account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
-    subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  id           String      @id @default(cuid())
+  debit        Int
+  credit       Int
+  journalId    String
+  accountId    String
+  subAccountId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  journal      Journal     @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  subAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+  deleted      DateTime?
 }
 
 model Supplier {
-    id        String  @id @default(cuid())
-    nama      String
-    alamat    String?
-    companyId String
-    company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id        String     @id @default(cuid())
+  nama      String
+  alamat    String?
+  companyId String
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted   DateTime?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  products  Product[]
+  purchases Purchase[]
 
-    @@unique([nama, companyId])
+  @@unique([nama, companyId])
+}
+
+model Customer {
+  id           String         @id @default(cuid())
+  nama         String
+  alamat       String?
+  companyId    String
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted      DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now()) @updatedAt
+  SalesInvoice SalesInvoice[]
+
+  @@unique([nama, companyId])
+}
+
+model Product {
+  id                 String               @id @default(cuid())
+  name               String
+  companyId          String
+  company            Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted            DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  supplier           Supplier             @relation(fields: [supplierId], references: [id])
+  supplierId         String
+  currentQuantity    Int
+  averagePrice       Int
+  sellingPrice       Int                  @default(0)
+  buyingPrice        Int                  @default(0)
+  initialProduct     InitialProduct?
+  SalesInvoiceDetail SalesInvoiceDetail[]
+  purchaseDetails    PurchaseDetail[]
+}
+
+model InitialProduct {
+  id        String    @id @default(cuid())
+  deleted   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  product   Product   @relation(fields: [productId], references: [id])
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  quantity  Int
+  price     Int
+  productId String    @unique
+}
+
+model Purchase {
+  id                  String             @id @default(cuid())
+  ref                 String
+  purchaseDate        DateTime
+  totalBeforeDiscount Int
+  netTotal            Int
+  note                String?
+  discount            Int
+  supplierId          String
+  supplier            Supplier           @relation(fields: [supplierId], references: [id])
+  ppn                 Int
+  companyId           String
+  company             Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  deleted             DateTime?
+  status              TRANSACTION_STATUS @default(DIPROSES)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  dueDate             DateTime           @default(now())
+  ReceiveItem         ReceiveItem[]
+  purchaseDetail      PurchaseDetail[]
+}
+
+model PurchaseDetail {
+  id                  String              @id @default(cuid())
+  purchaseId          String
+  productId           String
+  product             Product             @relation(fields: [productId], references: [id])
+  quantity            Int
+  price               Int
+  discount            Int
+  totalBeforeDiscount Int
+  ppn                 Int                 @default(0)
+  netTotal            Int
+  totalReceive        Int                 @default(0)
+  deleted             DateTime?
+  purchase            Purchase            @relation(fields: [purchaseId], references: [id])
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  receiveItemDetail   ReceiveItemDetail[]
+}
+
+model PurchasePayment {
+  id                String          @id @default(cuid())
+  paymentDate       DateTime
+  purchaseInvoiceId String
+  purchaseInvoice   PurchaseInvoice @relation(fields: [purchaseInvoiceId], references: [id])
+  amount            Int
+  note              String?
+  paymentMethod     PaymentMethod   @relation(fields: [paymentMethodId], references: [id])
+  deleted           DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  paymentMethodId   String
+}
+
+model ReceiveItem {
+  id                String              @id @default(cuid())
+  purchaseId        String
+  receiveDate       DateTime
+  purchase          Purchase            @relation(fields: [purchaseId], references: [id])
+  deleted           DateTime?
+  note              String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId         String
+  totalAmount       Int                 @default(0)
+  ref               String
+  purchaseInvoice   PurchaseInvoice[]
+  receiveItemDetail ReceiveItemDetail[]
+}
+
+model ReceiveItemDetail {
+  id               String         @id @default(cuid())
+  receiveId        String
+  receiveItem      ReceiveItem    @relation(fields: [receiveId], references: [id])
+  productId        String
+  quantity         Int
+  deleted          DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  purchaseDetailId String
+  purchaseDetail   PurchaseDetail @relation(fields: [purchaseDetailId], references: [id])
+}
+
+model PurchaseInvoice {
+  id               String                     @id @default(cuid())
+  date             DateTime
+  createdAt        DateTime                   @default(now())
+  updatedAt        DateTime                   @updatedAt
+  deleted          DateTime?
+  receiveId        String
+  receiveItem      ReceiveItem                @relation(fields: [receiveId], references: [id])
+  company          Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId        String
+  paymentStatus    TRANSACTION_PAYMENT_STATUS @default(UNPAID)
+  purchasePayments PurchasePayment[]
+  totalPayment     Int                        @default(0)
+  ref              String?
+  note             String?
+  totalBefore      Int                        @default(0)
+  totalAfter       Int                        @default(0)
+  totalTax         Int                        @default(0)
+  totalDiscount    Int                        @default(0)
+}
+
+model PaymentMethod {
+  id               String            @id @default(cuid())
+  name             String
+  accountNumber    String?
+  amount           Int               @default(0)
+  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId        String
+  deleted          DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  purchasePayments PurchasePayment[]
+  SalesPayment     SalesPayment[]
+}
+
+model ErrorLog {
+  id         String    @id @default(cuid())
+  path       String
+  message    String
+  stackTrace Json?
+  statusCode String?
+  userId     String?
+  input      Json?
+  ipAddress  String?
+  createdAt  DateTime  @default(now()) // Timestamp
+  company    Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  companyId  String?
+  deleted    DateTime?
+}
+
+model SalesInvoice {
+  id                 String                     @id @default(cuid())
+  date               DateTime
+  ref                String
+  suratJalan         String?
+  dueDate            DateTime
+  customerId         String
+  note               String?
+  totalBefore        Int
+  tax                Int
+  discount           Int                        @default(0)
+  totalAfter         Int
+  totalPayment       Int                        @default(0)
+  cogs               Int
+  salesPersonId      String
+  salesPerson        SalesPerson                @relation(fields: [salesPersonId], references: [id], onDelete: Restrict)
+  updatedAt          DateTime                   @updatedAt
+  createdAt          DateTime                   @default(now()) // Timestamp
+  company            Company                    @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  customer           Customer                   @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  companyId          String
+  deleted            DateTime?
+  SalesPayment       SalesPayment[]
+  salesInvoiceDetail SalesInvoiceDetail[]
+  status             TRANSACTION_PAYMENT_STATUS @default(UNPAID)
+}
+
+model SalesInvoiceDetail {
+  id             String       @id @default(cuid())
+  salesInvoiceId String
+  salesInvoice   SalesInvoice @relation(fields: [salesInvoiceId], references: [id], onDelete: Restrict)
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity       Int
+  price          Int
+  discount       Int
+  tax            Int
+  totalBefore    Int
+  totalAfter     Int
+  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime     @default(now()) // Timestamp
+  deleted        DateTime?
+}
+
+model SalesPerson {
+  id           String         @id @default(cuid())
+  name         String
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  companyId    String
+  deleted      DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  salesInvoice SalesInvoice[]
+}
+
+model SalesPayment {
+  id              String        @id @default(cuid())
+  date            DateTime
+  salesInvoiceId  String
+  salesInvoice    SalesInvoice  @relation(fields: [salesInvoiceId], references: [id], onDelete: Restrict)
+  paymentMethodId String
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id], onDelete: Restrict)
+  amount          Int
+  deleted         DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  company         Company       @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  companyId       String
+}
+
+model DefaultAccount {
+  id        String               @id @default(cuid())
+  accountId String               @unique
+  account   Account              @relation(fields: [accountId], references: [id])
+  company   Company              @relation(fields: [companyId], references: [id])
+  companyId String
+  category  TRANSACTION_CATEGORY
+  deleted   DateTime?
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
 }
 
 enum JournalType {
-    GENERAL
-    ADJUSTING
-    REVERSING
-    CLOSING
+  GENERAL
+  ADJUSTING
+  REVERSING
+  CLOSING
 }
 
 enum AccountClass {
-    ASSET
-    LIABILITY
-    EQUITY
-    REVENUE
-    EXPENSE
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
 }
 
 enum NormalPosition {
-    DEBIT
-    CREDIT
+  DEBIT
+  CREDIT
 }
 
 enum Laporan {
-    NERACA
-    PERUBAHAN_MODAL
-    LABA_RUGI
+  NERACA
+  PERUBAHAN_MODAL
+  LABA_RUGI
 }
 
 enum Role {
-    OWNER
-    ADMIN
-    USER
+  OWNER
+  ADMIN
+  USER
+}
+
+enum TRANSACTION_STATUS {
+  SELESAI
+  DIANTAR_SEBAGIAN
+  DIPROSES
+}
+
+enum TRANSACTION_CATEGORY {
+  PERSEDIAAN
+  PENJUALAN
+  RETUR_PENJUALAN
+  PAJAK_DIBAYAR_DIMUKA
+  DISKON_PENJUALAN
+  PEMBAYARAN_PENJUALAN
+  PEMBELIAN
+  RETUR_PEMBELIAN
+  DISKON_PEMBELIAN
+  PEMBAYARAN_PEMBELIAN
+  PAJAK_PENGHASILAN
+  LABA_DITAHAN
+  EKUITAS
+  PIUTANG_USAHA
+  HUTANG_USAHA
+  HPP
+  PPN_MASUKAN
+  PPN_KELUARAN
+}
+
+enum TRANSACTION_PAYMENT_STATUS {
+  PAID
+  UNPAID
+  PARTIAL
+}
+
+enum PaymentStatus {
+  PAID
+  REFUND
+  HPP
 }
