@@ -1,6 +1,6 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
-import { Book, ReceiptTextIcon } from "lucide-react";
+import { Book, BookCopy, ReceiptTextIcon } from "lucide-react";
 import React from "react";
 
 import SectionCard from "@/components/SectionCard";
@@ -15,6 +15,11 @@ const listMenu = [
     title: "jurnal umum",
     icon: <ReceiptTextIcon size={"50px"} />,
     path: paths.accountant.journal,
+  },
+  {
+    title: "buku besar",
+    icon: <BookCopy size={"50px"} />,
+    path: paths.accountant.generalLedger,
   },
 ];
 

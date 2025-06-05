@@ -7,11 +7,6 @@ import { LuBookText } from "react-icons/lu";
 import SectionCard from "@/components/SectionCard";
 
 const listMenu = [
-  // {
-  //   title: "Piutang Customer",
-  //   icon: <BiArchive size={"50px"} />,
-  //   path: paths.dataMaster.product.root,
-  // },
   {
     title: "metode pembayaran",
     icon: <DollarSign size={"50px"} />,
@@ -25,7 +20,7 @@ const listMenu = [
   {
     title: "Pelunasan Hutang",
     icon: <LuBookText size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.purchase.purchasePayment.new,
   },
 ];
 const DataFinanceList = () => {

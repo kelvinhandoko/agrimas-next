@@ -2,6 +2,7 @@
 
 import { paths } from "@/paths/paths";
 import { Text } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -34,7 +35,7 @@ const NavigationMobile = ({ menuItems }: NavigationMobileProps) => {
   const pathname = usePathname();
   const [activePath, setActivePath] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const { data } = useSession();
   const handleMenuClick = () => {
     setIsDrawerOpen(false);
   };
@@ -55,18 +56,13 @@ const NavigationMobile = ({ menuItems }: NavigationMobileProps) => {
           <DrawerTitle>
             <div className="flex items-center space-x-3">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src="https://github.com/.png" />
+                <AvatarFallback>AG</AvatarFallback>
               </Avatar>
               <div className="text-left">
                 <Text size={"6"} className="text-sm">
-                  Name employee
+                  {data?.user.username}
                 </Text>
-                <div className="mt-1">
-                  <Text className="text-sm text-muted-foreground">
-                    email@gmail.com
-                  </Text>
-                </div>
               </div>
             </div>
           </DrawerTitle>

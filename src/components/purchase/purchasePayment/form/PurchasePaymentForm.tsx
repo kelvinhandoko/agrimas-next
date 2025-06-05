@@ -1,16 +1,17 @@
 import { NUMERIC_PROPS } from "@/constant";
 import {
-  type SalesPaymentPayload,
-  salesPaymentPayload,
-} from "@/model/sales-payment.model";
+  type PurchasePaymentPayload,
+  purchasePaymentPayloadSchema,
+} from "@/model/purchase-payment.model";
+import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Check, CreditCard, Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { type FC, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { CalendarIcon, CreditCard, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { type FC, useEffect } from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
@@ -42,73 +43,58 @@ import {
 
 const today = new Date();
 
-interface SalesPaymentFormProps {
+interface PurchasePaymentFormProps {
   sisaTagihan: number;
 }
 
-const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
-  console.log(sisaTagihan);
+const PurchasePaymentForm: FC<PurchasePaymentFormProps> = ({ sisaTagihan }) => {
+  const utils = api.useUtils();
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const salesInvoiceId = searchParams.get("salesInvoiceId") ?? "";
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const purchaseInvoiceId = searchParams.get("purchaseInvoiceId") ?? "";
 
   // // Fetch payment methods
   const { data: paymentMethods, isLoading: loadingPaymentMethods } =
     api.paymentMethod.getInfinite.useQuery({});
 
-  const form = useForm<SalesPaymentPayload>({
-    resolver: zodResolver(salesPaymentPayload),
+  const form = useForm<PurchasePaymentPayload>({
+    resolver: zodResolver(purchasePaymentPayloadSchema),
     defaultValues: {
       amount: 0,
       paymentMethodId: "",
-      salesInvoiceId,
-      date: new Date(),
+      purchaseInvoiceId,
+      paymentDate: today,
     },
   });
 
   // Create payment mutation
-  const createPayment = api.salesPayment.create.useMutation({
-    onSuccess: () => {
-      toast.success("Payment recorded successfully");
-      form.reset({
-        amount: 0,
-        paymentMethodId: "",
-        salesInvoiceId,
-        date: today,
-      });
-      setIsSubmitting(false);
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to record payment");
-      setIsSubmitting(false);
-    },
-  });
+  const { mutateAsync: createPayment, isPending } =
+    api.purchasePayment.create.useMutation();
 
-  const onSubmit = async (data: SalesPaymentPayload) => {
-    setIsSubmitting(true);
-
-    toast.promise(createPayment.mutateAsync(data), {
-      loading: "Recording payment...",
-      success: () => {
-        form.reset({
-          amount: 0,
-          paymentMethodId: "",
-          salesInvoiceId,
-          date: today,
-        });
-        return "Payment recorded successfully";
+  const onSubmit: SubmitHandler<PurchasePaymentPayload> = async (data) => {
+    toast.promise(createPayment(data), {
+      loading: "loading...",
+      success: async () => {
+        await utils.purchasePayment.get.invalidate();
+        router.replace(paths.finance.root);
+        return "pembayaran tersimpan";
       },
       error: errorFormatter,
     });
-
-    setIsSubmitting(false);
   };
 
   useEffect(() => {
-    if (salesInvoiceId) {
-      form.setValue("salesInvoiceId", salesInvoiceId);
+    if (purchaseInvoiceId) {
+      form.setValue("purchaseInvoiceId", purchaseInvoiceId);
     }
-  }, [salesInvoiceId]);
+  }, [purchaseInvoiceId]);
+
+  if (!purchaseInvoiceId)
+    return (
+      <div className="flex h-72 w-full items-center justify-center">
+        <CardTitle>-</CardTitle>
+      </div>
+    );
 
   if (sisaTagihan <= 0)
     return (
@@ -130,7 +116,7 @@ const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
             {/* Payment Date */}
             <FormField
               control={form.control}
-              name="date"
+              name="paymentDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>tanggal pembayaran</FormLabel>
@@ -225,11 +211,10 @@ const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
             />
             <Button
               type="submit"
-              disabled={isSubmitting}
+              isLoading={isPending}
+              disabled={isPending}
               className="ml-auto w-full gap-2"
             >
-              {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              {!isSubmitting && <Check className="h-4 w-4" />}
               tambah
             </Button>
           </form>
@@ -239,4 +224,4 @@ const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
   );
 };
 
-export default SalesPaymentForm;
+export default PurchasePaymentForm;

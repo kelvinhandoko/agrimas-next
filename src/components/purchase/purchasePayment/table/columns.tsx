@@ -3,13 +3,14 @@ import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { DateTime } from "luxon";
 import { NumericFormat } from "react-number-format";
 
+import { type PurchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
 import { type SalesPaymentRouterOutput } from "@/server/salesPayment/sales-payment.router";
 
-export const salesInvoicePaymentColumn = () => {
+export const purchaseInvoicePaymentColumn = () => {
   const columnHelper =
-    createColumnHelper<SalesPaymentRouterOutput["get"]["data"][number]>();
+    createColumnHelper<PurchasePaymentRouter["get"]["data"][number]>();
   return [
-    columnHelper.accessor("date", {
+    columnHelper.accessor("paymentDate", {
       header: "tanggal",
       cell: (info) =>
         DateTime.fromJSDate(info.getValue()).toFormat(DATE_FORMAT),

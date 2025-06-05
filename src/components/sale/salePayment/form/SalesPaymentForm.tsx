@@ -110,6 +110,13 @@ const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
     }
   }, [salesInvoiceId]);
 
+  if (!salesInvoiceId)
+    return (
+      <div className="flex h-72 w-full items-center justify-center">
+        <CardTitle>-</CardTitle>
+      </div>
+    );
+
   if (sisaTagihan <= 0)
     return (
       <div className="flex h-72 w-full items-center justify-center">

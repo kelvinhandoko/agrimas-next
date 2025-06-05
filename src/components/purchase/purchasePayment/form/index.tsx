@@ -15,13 +15,13 @@ import { DateTime } from "luxon";
 import { useSearchParams } from "next/navigation";
 import { NumericFormat } from "react-number-format";
 
-import SalesPaymentForm from "@/components/sale/salePayment/form/SalesPaymentForm";
-import SalesInvoiceInput from "@/components/sale/salePayment/form/salesInvoiceInput";
-import SalesPaymentTable from "@/components/sale/salePayment/table";
+import PurchasePaymentForm from "@/components/purchase/purchasePayment/form/PurchasePaymentForm";
+import PurchaseInvoiceInput from "@/components/purchase/purchasePayment/form/purchaseInvoiceInput";
+import PurchasePaymentTable from "@/components/purchase/purchasePayment/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const SalesPaymentFormPage = () => {
+const PurchasePaymentFormPage = () => {
   const searchParams = useSearchParams();
   const invoiceId = searchParams.get("salesInvoiceId") ?? "";
   const { data, isLoading } = api.salesInvoice.getDetail.useQuery(invoiceId, {
@@ -34,9 +34,9 @@ const SalesPaymentFormPage = () => {
         <div className="bg-primary/10 p-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-lg font-semibold">
-              Pembayaran Faktur Penjualan
+              Pembayaran Faktur Pembelian
             </h3>
-            <SalesInvoiceInput />
+            <PurchaseInvoiceInput />
           </div>
         </div>
 
@@ -149,16 +149,16 @@ const SalesPaymentFormPage = () => {
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
         <TabsContent value="form">
-          <SalesPaymentForm
+          <PurchasePaymentForm
             sisaTagihan={(data?.totalAfter ?? 0) - (data?.totalPayment ?? 0)}
           />
         </TabsContent>
         <TabsContent value="history">
-          <SalesPaymentTable />
+          <PurchasePaymentTable />
         </TabsContent>
       </Tabs>
     </div>
   );
 };
 
-export default SalesPaymentFormPage;
+export default PurchasePaymentFormPage;
