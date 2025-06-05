@@ -42,7 +42,7 @@ const JournalForm: FC<JournalFormProps> = ({ type = "CREATE" }) => {
         loading: "Loading...",
         success: async () => {
           router.push("/accountant/journal");
-          await utils.journal.get.invalidate();
+          await utils.journal.getAll.invalidate();
           return "berhasil membuat jurnal umum";
         },
         error: errorFormatter,

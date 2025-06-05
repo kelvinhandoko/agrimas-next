@@ -1,6 +1,5 @@
 "use client";
 
-import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";
 
