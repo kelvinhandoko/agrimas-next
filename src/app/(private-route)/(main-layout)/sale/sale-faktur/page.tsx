@@ -8,16 +8,7 @@ interface PageProps {
 }
 
 const page = async ({ searchParams }: PageProps) => {
-  const params = await searchParams;
-  const limit = Number(params.limit ?? 10);
-  const page = Number(params.page ?? 1);
-  const search = params.search ?? "";
-  await api.salesInvoice.get.prefetch({ limit, page, search });
-  return (
-    <HydrateClient>
-      <SalesInvoiceTable />
-    </HydrateClient>
-  );
+  return <SalesInvoiceTable />;
 };
 
 export default page;
