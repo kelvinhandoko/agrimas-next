@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Callout, Flex, Text } from "@radix-ui/themes";
 import { ArrowLeftIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 export default function ForgotPassword() {
+  const [isSendEmail, setIsSendEmail] = useState<boolean>(false);
   const formSchema = z.object({
     email: z.string().min(1, {
       message: "Email required",
@@ -37,6 +38,7 @@ export default function ForgotPassword() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    setIsSendEmail(true);
     console.log(values);
   }
   return (
@@ -57,12 +59,14 @@ export default function ForgotPassword() {
               No worries, we&apos;ll send your reset instruction
             </Text>
           </Flex>
-          <Callout.Root color="green" role="alert" my={"2"}>
-            <Callout.Icon>
-              <InfoIcon size={"12px"} />
-            </Callout.Icon>
-            <Callout.Text>Check your email</Callout.Text>
-          </Callout.Root>
+          {isSendEmail && (
+            <Callout.Root color="green" role="alert" my={"2"}>
+              <Callout.Icon>
+                <InfoIcon size={"12px"} />
+              </Callout.Icon>
+              <Callout.Text>Check your email</Callout.Text>
+            </Callout.Root>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField

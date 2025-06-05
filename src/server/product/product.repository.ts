@@ -4,7 +4,8 @@ import {
   type UpdateProductStats,
 } from "@/model/product.model";
 import { type Prisma } from "@prisma/client";
-import "prisma";
+
+// import "prisma";
 
 import { BaseRepository } from "@/server/common";
 

@@ -1,13 +1,17 @@
 "use client";
 
+import { dummySalesData } from "@/data/dummySaleData";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Flex, Text } from "@radix-ui/themes";
+import { PDFViewer, pdf } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as XLSX from "xlsx";
 
 import { cn } from "@/lib/utils";
 
@@ -43,40 +47,96 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const StockPage = () => {
-  const form = useForm<any>({
+import SaleReport from "./SaleReport";
+import SalesTable from "./SaleTable";
+
+const ReportSalePage = () => {
+  const form = useForm({
     // resolver: zodResolver(FormSchema),
     defaultValues: {
-      barang: "",
+      customer_id: "",
       tgl_awal: "",
       tgl_akhir: "",
     },
   });
 
-  const onSubmit: SubmitHandler<any> = async (data) => {
-    try {
-      toast.promise(
-        async () => {
-          return {};
-        },
-        {
-          loading: "Memproses...",
-          success: async () => {
-            return "Berhasil filter stock";
-          },
-          error: (error) => {
-            if (error instanceof Error) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
-        },
-      );
-    } catch (error) {
-      console.error("Login error:", error);
-    }
+  const [customerId, setCustomerId] = useState("all");
+
+  const onSubmit = async (data) => {
+    setCustomerId(data.customer_id);
+    toast.success("Berhasil filter hutang usaha");
   };
-  const { data, isLoading: isLoadingGet } = api.supplier.getAll.useQuery({});
+  const { data: dataCustomerReceiveable, isLoading: isLoadingGet } =
+    api.customer.getAll.useQuery({});
+
+  const filteredData = customerId === "all" ? dummySalesData : dummySalesData;
+
+  const handleDownloadPDF = async () => {
+    const blob = await pdf(<SaleReport data={filteredData} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const found =
+      customerId !== "all" &&
+      dummySalesData?.data.find((c) => c.id === customerId);
+
+    const nameFile =
+      customerId === "all"
+        ? "Laporan-Penjualan"
+        : `Laporan-Penjualan-${found.nama}`;
+    link.href = url;
+    link.download = `${nameFile}.pdf`;
+    link.click();
+  };
+
+  const handleExportPurchaseExcel = () => {
+    if (!filteredData || Object.keys(filteredData).length === 0) {
+      toast.error("Data tidak tersedia untuk diexport.");
+      return;
+    }
+
+    const rows = [];
+
+    Object.entries(filteredData).forEach(([customer, sales]) => {
+      sales.forEach((inv) => {
+        inv.items.forEach((item) => {
+          rows.push({
+            Customer: customer,
+            "No Invoice": inv.invoiceNumber,
+            Tanggal: new Date(inv.date).toLocaleDateString("id-ID"),
+            "Nama Produk": item.name,
+            Qty: item.qty,
+            "Harga Satuan": item.price,
+            Subtotal: item.qty * item.price,
+          });
+        });
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows, { origin: "A3" });
+
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [["Laporan Penjualan CV. Agrimas Perkasa"]],
+      { origin: "A1" },
+    );
+
+    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 1, c: 6 } }];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Penjualan");
+
+    const found =
+      customerId !== "all" &&
+      dummyPurchaseSupplier?.data.find((c) => c.id === customerId);
+
+    const fileName =
+      customerId === "all"
+        ? "Laporan-Penjualan.xlsx"
+        : `Laporan-Penjualan-${found.nama}.xlsx`;
+
+    XLSX.writeFile(workbook, fileName);
+  };
   if (isLoadingGet) {
     return <LoadingIndicator />;
   }
@@ -88,7 +148,7 @@ const StockPage = () => {
       <Card className="px-4 py-7">
         <CardContent>
           <Text size={"5"} weight={"bold"}>
-            Laporan Stok Barang
+            Laporan Penjualan
           </Text>
           <Box className="grid grid-cols-12 items-end">
             <Box className="col-span-10">
@@ -206,29 +266,30 @@ const StockPage = () => {
                       />
                       <FormField
                         control={form.control}
-                        name="barang"
+                        name="customer_id"
                         render={({ field }) => (
                           <FormItem className="mr-4 w-full">
-                            <FormLabel>Stok Barang</FormLabel>
+                            <FormLabel>Customer</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Pilih barang" />
+                                  <SelectValue placeholder="Pilih customer" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="m@example.com">
                                   Keseluruhan
                                 </SelectItem>
-                                <SelectItem value="m@google.com">
-                                  Barang A
-                                </SelectItem>
-                                <SelectItem value="m@support.com">
-                                  Barang B
-                                </SelectItem>
+                                {dataCustomerReceiveable?.data.map(
+                                  (customer, index) => (
+                                    <SelectItem value={customer.id} key={index}>
+                                      {customer.nama}
+                                    </SelectItem>
+                                  ),
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -248,7 +309,10 @@ const StockPage = () => {
                   <ChevronDown className="h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
+                  <DropdownMenuItem
+                    className="flex cursor-pointer items-center gap-2"
+                    onClick={handleExportPurchaseExcel}
+                  >
                     <Image
                       src="/icon/excel.png"
                       alt="Icon excel"
@@ -257,7 +321,10 @@ const StockPage = () => {
                     />
                     Excel
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
+                  <DropdownMenuItem
+                    className="flex cursor-pointer items-center gap-2"
+                    onClick={handleDownloadPDF}
+                  >
                     <Image
                       src="/icon/pdf.png"
                       alt="Icon pdf"
@@ -270,10 +337,13 @@ const StockPage = () => {
               </DropdownMenu>
             </Box>
           </Box>
+          <Box className="mt-20">
+            <SalesTable dataSalesReport={filteredData} isLoading={false} />
+          </Box>
         </CardContent>
       </Card>
     </Box>
   );
 };
 
-export default StockPage;
+export default ReportSalePage;

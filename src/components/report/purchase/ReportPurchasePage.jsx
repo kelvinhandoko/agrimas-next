@@ -1,13 +1,17 @@
 "use client";
 
+import { dummyPurchasesData } from "@/data/dummyPurchasesData";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Flex, Text } from "@radix-ui/themes";
+import { PDFViewer, pdf } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as XLSX from "xlsx";
 
 import { cn } from "@/lib/utils";
 
@@ -43,41 +47,97 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const ReportSalePage = () => {
-  const form = useForm<any>({
+import PurchaseReport from "./PurchaseReport";
+import PurchaseTable from "./PurchaseTable";
+
+const ReportPurchasePage = () => {
+  const form = useForm({
     // resolver: zodResolver(FormSchema),
     defaultValues: {
-      customer: "",
+      supplier_id: "",
       tgl_awal: "",
       tgl_akhir: "",
     },
   });
 
-  const onSubmit: SubmitHandler<any> = async (data) => {
-    try {
-      toast.promise(
-        async () => {
-          return {};
-        },
-        {
-          loading: "Memproses...",
-          success: async () => {
-            return "Berhasil filter laporan penjualan";
-          },
-          error: (error) => {
-            if (error instanceof Error) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
-        },
-      );
-    } catch (error) {
-      console.error("Login error:", error);
-    }
+  const [supplierId, setSupplierId] = useState("all");
+
+  const onSubmit = async (data) => {
+    setSupplierId(data.supplier_id);
+    toast.success("Berhasil filter hutang usaha");
   };
-  const { data: dataCustomerReceiveable, isLoading: isLoadingGet } =
-    api.customer.getAll.useQuery({});
+  const { data: dataSupplierReportSale, isLoading: isLoadingGet } =
+    api.supplier.getAll.useQuery({});
+
+  const filteredData =
+    supplierId === "all" ? dummyPurchasesData : dummyPurchasesData;
+
+  const handleDownloadPDF = async () => {
+    const blob = await pdf(<PurchaseReport data={filteredData} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const found =
+      supplierId !== "all" &&
+      dummySalesData?.data.find((c) => c.id === supplierId);
+
+    const nameFile =
+      supplierId === "all"
+        ? "Laporan-Pembelian"
+        : `Laporan-Pembelian-${found.nama}`;
+    link.href = url;
+    link.download = `${nameFile}.pdf`;
+    link.click();
+  };
+
+  const handleExportPurchaseExcel = () => {
+    if (!filteredData || Object.keys(filteredData).length === 0) {
+      toast.error("Data tidak tersedia untuk diexport.");
+      return;
+    }
+
+    const rows = [];
+
+    Object.entries(filteredData).forEach(([supplier, purchases]) => {
+      purchases.forEach((inv) => {
+        inv.items.forEach((item) => {
+          rows.push({
+            Supplier: supplier,
+            "No Invoice": inv.invoiceNumber,
+            Tanggal: new Date(inv.date).toLocaleDateString("id-ID"),
+            "Nama Produk": item.name,
+            Qty: item.qty,
+            "Harga Satuan": item.price,
+            Subtotal: item.qty * item.price,
+          });
+        });
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows, { origin: "A3" });
+
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [["Laporan Pembelian CV. Agrimas Perkasa"]],
+      { origin: "A1" },
+    );
+
+    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 1, c: 6 } }];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Pembelian");
+
+    const found =
+      supplierId !== "all" &&
+      dummyPurchaseSupplier?.data.find((c) => c.id === supplierId);
+
+    const fileName =
+      supplierId === "all"
+        ? "Laporan-Pembelian.xlsx"
+        : `Laporan-Pembelian-${found.nama}.xlsx`;
+
+    XLSX.writeFile(workbook, fileName);
+  };
   if (isLoadingGet) {
     return <LoadingIndicator />;
   }
@@ -89,7 +149,7 @@ const ReportSalePage = () => {
       <Card className="px-4 py-7">
         <CardContent>
           <Text size={"5"} weight={"bold"}>
-            Laporan Penjualan
+            Laporan Pembelian
           </Text>
           <Box className="grid grid-cols-12 items-end">
             <Box className="col-span-10">
@@ -187,7 +247,6 @@ const ReportSalePage = () => {
                                   mode="single"
                                   selected={field.value}
                                   onSelect={field.onChange}
-                                  initialFocus
                                   className="flex h-full w-full"
                                   classNames={{
                                     months:
@@ -207,27 +266,27 @@ const ReportSalePage = () => {
                       />
                       <FormField
                         control={form.control}
-                        name="customer"
+                        name="supplier_id"
                         render={({ field }) => (
                           <FormItem className="mr-4 w-full">
-                            <FormLabel>Customer</FormLabel>
+                            <FormLabel>Supplier</FormLabel>
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Pilih customer" />
+                                  <SelectValue placeholder="Pilih supplier" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="m@example.com">
                                   Keseluruhan
                                 </SelectItem>
-                                {dataCustomerReceiveable?.data.map(
-                                  (customer, index) => (
-                                    <SelectItem value={customer.id} key={index}>
-                                      {customer.nama}
+                                {dataSupplierReportSale?.data.map(
+                                  (supplier, index) => (
+                                    <SelectItem value={supplier.id} key={index}>
+                                      {supplier.nama}
                                     </SelectItem>
                                   ),
                                 )}
@@ -250,7 +309,10 @@ const ReportSalePage = () => {
                   <ChevronDown className="h-4 w-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
+                  <DropdownMenuItem
+                    className="flex cursor-pointer items-center gap-2"
+                    onClick={handleExportPurchaseExcel}
+                  >
                     <Image
                       src="/icon/excel.png"
                       alt="Icon excel"
@@ -259,7 +321,10 @@ const ReportSalePage = () => {
                     />
                     Excel
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
+                  <DropdownMenuItem
+                    className="flex cursor-pointer items-center gap-2"
+                    onClick={handleDownloadPDF}
+                  >
                     <Image
                       src="/icon/pdf.png"
                       alt="Icon pdf"
@@ -272,10 +337,16 @@ const ReportSalePage = () => {
               </DropdownMenu>
             </Box>
           </Box>
+          <Box className="mt-20">
+            <PurchaseTable
+              dataPurchaseReport={filteredData}
+              isLoading={false}
+            />
+          </Box>
         </CardContent>
       </Card>
     </Box>
   );
 };
 
-export default ReportSalePage;
+export default ReportPurchasePage;

@@ -31,7 +31,13 @@ const DataSaleList = () => {
   return (
     <Grid columns={{ sm: "2", md: "4" }} gap={"3"}>
       {listMenu.map((menu, index) => (
-        <SectionCard index={index} menu={menu} key={index} />
+        <SectionCard
+          index={index}
+          icon={menu.icon}
+          path={menu.path}
+          title={menu.title}
+          key={index}
+        />
       ))}
     </Grid>
   );

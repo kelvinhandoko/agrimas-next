@@ -117,6 +117,7 @@ export class ReceiveItemRepository extends BaseRepository {
         receiveItemDetail: {
           include: { purchaseDetail: { include: { product: true } } },
         },
+        company: true,
       },
     });
   }

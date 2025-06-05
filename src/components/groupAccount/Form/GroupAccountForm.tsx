@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/select";
 
 interface GroupAccountFormProps {
-  onClose: (id: string) => void;
+  onClose: () => void;
   data?: Partial<GroupAccountPayload>;
 }
 
@@ -54,8 +54,8 @@ const GroupAccountForm: FC<GroupAccountFormProps> = ({ onClose, data }) => {
       },
       {
         loading: "prosessing",
-        success: (data) => {
-          onClose(data.id);
+        success: () => {
+          onClose();
           return "berhasil membuat kelompok akun baru";
         },
         error: (e) => {

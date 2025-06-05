@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  type SalesPersonPayload,
+  SalesPersonPayload,
   salesPersonPayloadSchema,
 } from "@/model/salesPerson.model";
 import { paths } from "@/paths/paths";

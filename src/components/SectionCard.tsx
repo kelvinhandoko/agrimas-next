@@ -10,17 +10,20 @@ import { cn } from "@/lib/utils";
 import { CardSlideAnimation } from "@/components/motion/variant";
 
 interface SectionCardProps {
-  menu: { title: string; icon: ReactNode; path: string };
+  title: string;
+  icon: ReactNode;
+  path: string;
   className?: string;
   index: number;
 }
 
 const SectionCard: React.FC<SectionCardProps> = ({
-  menu,
+  title,
+  icon,
+  path,
   className,
   index,
 }) => {
-  const { title, icon, path } = menu;
   return (
     <Link href={path} className="block">
       <m.div

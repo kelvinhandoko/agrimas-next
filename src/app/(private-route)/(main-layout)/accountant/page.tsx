@@ -1,9 +1,7 @@
 import React from "react";
 
-import DataAccountantList from "@/components/accountant/DataAccountantList";
-
 const page = () => {
-  return <DataAccountantList />;
+  return <div>page</div>;
 };
 
 export default page;

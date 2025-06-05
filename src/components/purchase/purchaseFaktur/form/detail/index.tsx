@@ -58,7 +58,12 @@ const PurchaseInvoiceDetailForm: FC<PurchaseInvoiceDetailFormProps> = ({
 
   const debounceTotal = useDebounce(total, 300) ?? 0;
 
-  if (!fields.length) return null;
+  if (!fields.length)
+    return (
+      <div className="pt-8 text-center">
+        <p>Silahkan pilih surat jalan pembelian</p>
+      </div>
+    );
   return (
     <div>
       <Table>

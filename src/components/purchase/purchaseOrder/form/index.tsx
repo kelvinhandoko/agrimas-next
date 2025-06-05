@@ -73,7 +73,7 @@ const PurchaseOrderForm = () => {
       >
         <div className="flex items-center gap-2">
           <BackButton path="/sale/sale-faktur" />
-          <CardTitle>form permintaan pembelian</CardTitle>
+          <CardTitle>form pesanan pembelian</CardTitle>
         </div>
         <div className="grid-col-1 grid w-1/2 items-center gap-2 md:grid-cols-3">
           <DateInput form={form} />

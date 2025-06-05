@@ -1,9 +1,7 @@
 import { TIMEZONE } from "@/constant";
 import {
-  type CursorJournalQuery,
   type GetAllJournalQuery,
   type JournalPayload,
-  type PaginatedJournalQuery,
 } from "@/model/journal.model";
 import { convertType } from "@/utils/journalTypeHelper";
 import { type JournalType, type Prisma } from "@prisma/client";
@@ -65,58 +63,79 @@ export class JournalRepository extends BaseRepository {
     });
   }
 
-  private async _getQuery(q: GetAllJournalQuery) {
-    const { companyId, accountId, dateRange, search } = q;
-    const where: Prisma.JournalWhereInput = {};
-    where.companyId = companyId;
-    if (accountId) {
-      where.JournalDetail = {
-        some: {
-          accountId,
-        },
-      };
+  async getAll<T extends Prisma.JournalInclude>(query: GetAllJournalQuery<T>) {
+    const {
+      infiniteScroll,
+      limit,
+      page,
+      cursor,
+      takeAll,
+      search,
+      companyId,
+      include,
+      from,
+      to,
+    } = query;
+    const whereClause: Prisma.JournalWhereInput = {};
+
+    let cursorClause = undefined;
+
+    whereClause.companyId = companyId;
+
+    // state skip clause klo tidak infinite scroll
+    let skipClause: number | undefined = (page - 1) * limit;
+
+    let take = limit;
+
+    if (infiniteScroll) {
+      if (cursor) {
+        cursorClause = { id: cursor };
+      }
+      take = limit + 1;
+      skipClause = undefined;
     }
 
-    if (dateRange) {
-      const { from, to } = dateRange;
-      where.date = {
-        gte: DateTime.fromISO(from).setZone(TIMEZONE).startOf("day").toJSDate(),
-        lte: DateTime.fromISO(to).setZone(TIMEZONE).endOf("day").toJSDate(),
-      };
-    }
     if (search) {
-      where.OR = [
+      whereClause.OR = [
         {
-          description: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        {
-          ref: {
-            contains: search,
-            mode: "insensitive",
-          },
+          ref: { contains: search },
         },
       ];
     }
-    return this._db.journal.paginate({
-      where,
-      orderBy: { date: "desc" },
-      include: { JournalDetail: { include: { account: true } } },
-    });
-  }
-  async get(q: PaginatedJournalQuery) {
-    const { page, limit } = q;
-    const query = await this._getQuery(q);
-    const [data, meta] = await query.withPages({ page, limit });
-    return { data, meta };
-  }
 
-  async getInfinite(q: CursorJournalQuery) {
-    const { cursor, limit } = q;
-    const query = await this._getQuery(q);
-    const [data, meta] = await query.withCursor({ after: cursor, limit });
-    return { data, meta };
+    if (from && to) {
+      const startDay = DateTime.fromISO(from, { zone: TIMEZONE })
+        .startOf("day")
+        .toJSDate();
+      const endDay = DateTime.fromISO(to, { zone: TIMEZONE })
+        .endOf("day")
+        .toJSDate();
+      whereClause.date = {
+        gte: startDay,
+        lte: endDay,
+      };
+    }
+
+    const total = await this._db.journal.count({ where: whereClause });
+    const data = await this._db.journal.findMany({
+      where: whereClause,
+      take: take,
+      cursor: cursorClause,
+      skip: skipClause,
+      include: include ?? (undefined as unknown as T),
+    });
+
+    let nextCursor: typeof cursor | undefined = undefined;
+    if (!takeAll && data.length > limit) {
+      const nextItem = data.pop();
+      nextCursor = nextItem?.id;
+    }
+    return {
+      data,
+      meta: {
+        totalData: total,
+      },
+      nextCursor,
+    };
   }
 }

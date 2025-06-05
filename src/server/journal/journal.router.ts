@@ -5,12 +5,10 @@ import {
   createJournalController,
   getAllJournalController,
 } from "@/server/journal/controller";
-import { getInfiniteJournalController } from "@/server/journal/controller/get-infinite-journal.controller";
 
 export const journalRouter = createTRPCRouter({
   create: createJournalController,
-  get: getAllJournalController,
-  getInfinite: getInfiniteJournalController,
+  getAll: getAllJournalController,
 });
 
 export type JournalRouterOutputs = inferRouterOutputs<typeof journalRouter>;

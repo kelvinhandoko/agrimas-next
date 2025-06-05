@@ -60,10 +60,10 @@ export class PurchaseRepository extends BaseRepository {
       return prev + itemTotal;
     }, 0);
 
-    console.log({ totalBeforeDiscount });
-
     const discountedTotal = totalBeforeDiscount - discount;
     const netTotal = discountedTotal + ppn;
+    console.log(totalBeforeDiscount);
+    console.log(detail);
     return await this._db.purchase.create({
       data: {
         purchaseDate,
@@ -166,6 +166,7 @@ export class PurchaseRepository extends BaseRepository {
         },
         supplier: true,
         ReceiveItem: true,
+        company: true,
       },
     });
   }
