@@ -85,7 +85,7 @@ const SalesInvoiceForm = () => {
           <BackButton path="/sale/sale-faktur" />
           <CardTitle>form faktur penjualan</CardTitle>
         </div>
-        <div className="grid-col-1 grid w-1/2 items-center gap-2 md:grid-cols-3">
+        <div className="grid-col-1 grid w-2/3 items-center gap-2 md:grid-cols-3">
           <DateInput form={form} />
           <FormField
             control={form.control}

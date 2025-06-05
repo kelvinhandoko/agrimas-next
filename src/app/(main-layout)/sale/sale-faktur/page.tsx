@@ -1,3 +1,5 @@
+import { HydrateClient, api } from "@/trpc/server";
+
 import { SalesInvoiceTable } from "@/components/sale/saleFaktur/table";
 
 interface PageProps {
@@ -5,7 +7,16 @@ interface PageProps {
 }
 
 const page = async ({ searchParams }: PageProps) => {
-  return <SalesInvoiceTable />;
+  const params = await searchParams;
+  const limit = 10;
+  const page = 1;
+  const search = "";
+  await api.salesInvoice.get.prefetch({ limit, page, search });
+  return (
+    <HydrateClient>
+      <SalesInvoiceTable searchparams={params} />
+    </HydrateClient>
+  );
 };
 
 export default page;
