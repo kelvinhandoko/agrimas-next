@@ -1,5 +1,8 @@
+import { HydrateClient, api } from "@/trpc/server";
 import { type Metadata } from "next";
 import React from "react";
+
+import EditProductForm from "@/components/dataMaster/dataMasterList/product/EditProductForm";
 
 export const metadata: Metadata = {
   title: "Agrimasi - Edit Product Page",
@@ -15,7 +18,12 @@ interface PageProps {
 }
 const page = async ({ params }: PageProps) => {
   const id = (await params).id;
-  return <div>Edit Product page {id}</div>;
+  await api.product.getDetail.prefetch(id);
+  return (
+    <HydrateClient>
+      <EditProductForm productId={id} />
+    </HydrateClient>
+  );
 };
 
 export default page;

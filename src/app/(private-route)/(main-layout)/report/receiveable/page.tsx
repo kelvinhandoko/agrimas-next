@@ -1,7 +1,5 @@
 import { type Metadata } from "next";
 
-import ReceiveablePage from "@/components/report/receiveable/ReceiveablePage";
-
 export const metadata: Metadata = {
   title: "Agrimas - Report Receiveable Customer Page",
   description:
@@ -9,7 +7,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <ReceiveablePage />;
+  return <h1>hai</h1>;
 };
 
 export default page;

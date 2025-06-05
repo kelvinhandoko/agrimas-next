@@ -9,7 +9,7 @@ interface PageProps {
 
 const page = async ({ searchParams }: PageProps) => {
   const params = await searchParams;
-  const limit = Math.min(Number(params.limit ?? 10), 50); // cap at 50
+  const limit = Math.min(Number(params.limit ?? 10), 50);
   const page = Number(params.page ?? 1);
   const search = params.search ?? "";
   await api.salesInvoice.get.prefetch({ limit, page, search });

@@ -1,8 +1,8 @@
 "use client";
 
-import { FC } from "react";
+import { type FC } from "react";
 
-import { AccountRouterOutputs } from "@/server/account";
+import { type AccountRouterOutputs } from "@/server/account";
 
 interface ChartOfAccountRowActionProps {
   data: AccountRouterOutputs["get"]["data"][number];

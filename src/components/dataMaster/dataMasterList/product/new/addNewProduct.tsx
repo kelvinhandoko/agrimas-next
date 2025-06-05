@@ -17,6 +17,7 @@ import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
+import SupplierInput from "@/components/dataMaster/dataMasterList/product/SupplierInput";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,13 +28,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const ProductForm = () => {
   const router = useRouter();
@@ -51,39 +45,32 @@ const ProductForm = () => {
     },
   });
 
-  const { data: dataSupplier } = api.supplier.getAll.useQuery({});
-
   const { mutateAsync: createProduct } = api.product.create.useMutation();
   const onSubmit: SubmitHandler<ProductPayload> = async (data) => {
     setIsLoading(true);
 
-    try {
-      toast.promise(
-        async () => {
-          await createProduct(data);
+    toast.promise(
+      async () => {
+        await createProduct(data);
+      },
+      {
+        loading: "Memproses...",
+        success: async () => {
+          await utils.product.getAll.invalidate();
+          setIsLoading(false);
+          router.replace(paths.dataMaster.product.root);
+          form.reset();
+          return "Berhasil tambah produk";
         },
-        {
-          loading: "Memproses...",
-          success: async () => {
-            await utils.product.getAll.invalidate();
-            setIsLoading(false);
-            router.replace(paths.dataMaster.product.root);
-            form.reset();
-            return "Berhasil tambah produk";
-          },
-          error: (error) => {
-            setIsLoading(false);
-            if (error instanceof Error) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
+        error: (error) => {
+          setIsLoading(false);
+          if (error instanceof Error) {
+            return error.message;
+          }
+          return "Terjadi kesalahan";
         },
-      );
-    } catch (error) {
-      console.error("Login error:", error);
-      setIsLoading(false);
-    }
+      },
+    );
   };
 
   return (
@@ -155,33 +142,7 @@ const ProductForm = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="supplierId"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Supplier</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih supplier" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {dataSupplier?.data.map((supplier, index) => (
-                        <SelectItem value={supplier.id} key={index}>
-                          {supplier.nama}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <SupplierInput form={form} />
             <FormField
               control={form.control}
               name="price"
