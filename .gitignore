@@ -52,3 +52,6 @@ seed.*
 
 # generate index
 generate-index.ts
+
+CLAUDE.md
+mysql_migrations

@@ -6,10 +6,9 @@ import {
 } from "@/model/supplier.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
+import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
-import { Text } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,6 +16,7 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,7 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 const EditSupplierPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const { data: detailSupplier } = api.supplier.getDetail.useQuery({
     id: id,
   });
@@ -42,6 +42,7 @@ const EditSupplierPage = ({ id }: { id: string }) => {
     defaultValues: {
       nama: detailSupplier?.nama ?? "",
       alamat: detailSupplier?.alamat ?? "",
+      id,
     },
   });
 
@@ -52,24 +53,18 @@ const EditSupplierPage = ({ id }: { id: string }) => {
     try {
       toast.promise(
         async () => {
-          console.log(data);
-
           return updateSupplier(data);
         },
         {
           loading: "Memproses...",
+          position: "top-right",
           success: async () => {
             await utils.supplier.getAll.invalidate();
             setIsLoading(false);
+            router.replace(paths.dataMaster.supplier.root);
             return "Berhasil update supplier";
           },
-          error: (error) => {
-            setIsLoading(false);
-            if (error instanceof Error) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
+          error: errorFormatter,
         },
       );
     } catch (error) {
@@ -83,11 +78,12 @@ const EditSupplierPage = ({ id }: { id: string }) => {
       form.reset({
         nama: detailSupplier.nama ?? "",
         alamat: detailSupplier.alamat ?? "",
+        id: detailSupplier.id,
       });
     }
   }, [detailSupplier, form]);
   if (!detailSupplier) {
-    return <Box>loading...</Box>;
+    return <LoadingIndicator />;
   }
   return (
     <Box>

@@ -1,10 +1,9 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
-import Link from "next/link";
 import React from "react";
 import { FiBriefcase, FiPackage, FiTruck, FiUsers } from "react-icons/fi";
 
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import SectionCard from "@/components/SectionCard";
 
 const listMenu = [
   {
@@ -33,15 +32,7 @@ const DataMasterList = () => {
   return (
     <Grid columns={{ sm: "2", md: "4" }} gap={"3"}>
       {listMenu.map((menu, index) => (
-        <Link href={menu.path}>
-          <Card
-            className="flex h-[12rem] flex-col items-center justify-center rounded-sm text-gray-700 hover:shadow-lg hover:shadow-[#614de38c]"
-            key={index}
-          >
-            <CardHeader>{menu.icon}</CardHeader>
-            <CardTitle>{menu.title}</CardTitle>
-          </Card>
-        </Link>
+        <SectionCard index={index} menu={menu} key={index} />
       ))}
     </Grid>
   );

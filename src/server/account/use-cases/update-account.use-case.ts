@@ -1,48 +1,16 @@
-import { type AccountPayload } from "@/model/account.model";
+import { type AccountPayload } from "@/model";
 import { TRPCError } from "@trpc/server";
 
-import { AccountRepository } from "@/server/account/account.repository";
-import { db } from "@/server/db/prisma";
-import { ReportRepository } from "@/server/report/report.repository";
-import { TransactionService } from "@/server/services/transaction.service";
+import { type AccountRepository } from "@/server/account/account.repository";
 
-export class UpdateAccountUseCase {
-  async execute(payload: AccountPayload) {
-    const transactionService = new TransactionService(db);
-    return await transactionService.startTransaction(async (tx) => {
-      const accountRepo = new AccountRepository(tx);
-      const reportRepo = new ReportRepository(tx);
-      const data = await accountRepo.getDetail({
-        id: payload.id!,
-        include: { report: true },
+export const updateAccountUseCase =
+  (repo: AccountRepository) => async (payload: AccountPayload) => {
+    const findAccount = await repo.getDetail({ id: payload.id! });
+    if (!findAccount)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Akun tidak ditemukan",
       });
-      if (!data) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "akun tidak ditemukan",
-        });
-      }
-
-      const reportToBeAdded = payload.report.filter(
-        (report) => !data.report.some((dr) => dr.report === report),
-      );
-
-      const reportToBeDeleted = data.report.filter(
-        (dr) => !payload.report.includes(dr.report),
-      );
-
-      await Promise.all([
-        ...reportToBeAdded.map(
-          async (report) =>
-            await reportRepo.create({
-              accountId: data.id,
-              companyId: data.companyId,
-              report,
-            }),
-        ),
-        ...reportToBeDeleted.map(async (dr) => await reportRepo.delete(dr.id)),
-      ]);
-      return data;
-    });
-  }
-}
+    const account = await repo.update(payload);
+    return account;
+  };

@@ -1,0 +1,8 @@
+-- AlterEnum
+ALTER TYPE "TRANSACTION_CATEGORY" ADD VALUE 'PAJAK_DIBAYAR_DIMUKA';
+
+-- AlterTable
+ALTER TABLE "SalesInvoice" ADD COLUMN     "status" "TRANSACTION_PAYMENT_STATUS" NOT NULL DEFAULT 'UNPAID';
+
+-- AddForeignKey
+ALTER TABLE "SalesInvoiceDetail" ADD CONSTRAINT "SalesInvoiceDetail_salesInvoiceId_fkey" FOREIGN KEY ("salesInvoiceId") REFERENCES "SalesInvoice"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

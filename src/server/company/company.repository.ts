@@ -1,9 +1,8 @@
 import { type CompanyPayload } from "@/model/company.model";
-import { type Prisma, type PrismaClient } from "@prisma/client";
 
-export class CompanyRepository {
-  constructor(private _db: PrismaClient | Prisma.TransactionClient) {}
+import { BaseRepository } from "@/server/common";
 
+export class CompanyRepository extends BaseRepository {
   async findCompanyByName(name: string) {
     const data = await this._db.company.findUnique({ where: { name } });
     return data;

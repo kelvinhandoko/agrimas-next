@@ -2,7 +2,6 @@
 
 import { paths } from "@/paths/paths";
 import { Text } from "@radix-ui/themes";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 
@@ -24,18 +23,26 @@ const menuItems = [
   {
     title: "Penjualan",
     path: paths.sale.root,
+    subPaths: [paths.sale.saleOrder.root],
   },
   {
     title: "Pembelian",
     path: paths.purchase.root,
+    subPaths: [paths.purchase.purchaseOrder.root],
   },
   {
     title: "Akuntansi",
     path: paths.accountant.root,
+    subPaths: [paths.accountant.chartOfAccount],
   },
   {
     title: "Laporan",
     path: paths.report.root,
+    subPaths: [
+      paths.report.payable,
+      paths.report.receiveable,
+      paths.report.stock,
+    ],
   },
   {
     title: "Keuangan",
