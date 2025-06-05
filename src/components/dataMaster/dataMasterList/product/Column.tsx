@@ -51,7 +51,7 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
             supplierId={row.original.supplierId}
           />
           <Link
-            href={paths.dataMaster.employee.editUser(row.original.id)}
+            href={paths.dataMaster.product.edit(row.original.id)}
             className="text-yellow-400"
           >
             <PencilIcon className="text-yellow-400" />

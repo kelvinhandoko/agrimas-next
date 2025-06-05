@@ -48,6 +48,7 @@ interface DataTableProps<TData, TValue> {
   titleTable?: string;
   searchAble?: boolean;
   buttonNew?: boolean;
+  onAddNew?: () => void;
   searchPlaceholder?: string;
 }
 
@@ -113,9 +114,9 @@ const DataTable = <TData, TValue>({
         <div className="mb-6">
           <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-2xl font-bold tracking-tight text-gray-900 text-transparent md:text-3xl">
             {titleTable ?? "Data Table"}{" "}
-            {/* <span className="text-muted-foreground">
+            <span className="text-muted-foreground">
               {totalData && totalData}
-            </span> */}
+            </span>
           </h2>
         </div>
 

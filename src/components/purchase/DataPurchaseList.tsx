@@ -1,6 +1,5 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
-import Link from "next/link";
 import {
   FiCornerUpLeft,
   FiDollarSign,
@@ -8,8 +7,6 @@ import {
   FiPackage,
   FiShoppingCart,
 } from "react-icons/fi";
-
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 import SectionCard from "../SectionCard";
 
@@ -45,13 +42,7 @@ const DataPurchaseList = () => {
   return (
     <Grid columns={{ sm: "2", md: "4" }} gap={"3"}>
       {listMenu.map((menu, index) => (
-        <SectionCard
-          index={index}
-          icon={menu.icon}
-          path={menu.path}
-          title={menu.title}
-          key={index}
-        />
+        <SectionCard index={index} menu={menu} key={index} />
       ))}
     </Grid>
   );

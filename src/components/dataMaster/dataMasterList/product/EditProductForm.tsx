@@ -17,6 +17,7 @@ import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
+import SupplierInput from "@/components/dataMaster/dataMasterList/product/SupplierInput";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,13 +28,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface EditProductFormProps {
   productId: string;
@@ -54,8 +48,6 @@ const EditProductForm: FC<EditProductFormProps> = ({ productId }) => {
       buyingPrice: 0,
     },
   });
-
-  const { data: dataSupplier } = api.supplier.getAll.useQuery({});
 
   const { data: dataProduct } = api.product.getDetail.useQuery(productId);
 
@@ -169,83 +161,16 @@ const EditProductForm: FC<EditProductFormProps> = ({ productId }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="supplierId"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Supplier</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih supplier" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {dataSupplier?.data.map((supplier, index) => (
-                        <SelectItem value={supplier.id} key={index}>
-                          {supplier.nama}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Harga Beli Produk Awal (optional)</FormLabel>
-                  <FormControl>
-                    <NumericFormat
-                      placeholder="optional"
-                      name={field.name}
-                      value={field.value === 0 ? "" : field.value}
-                      onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue)
-                      }
-                      {...NUMERIC_PROPS}
-                      displayType="input"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Quantity Produk Awal (optional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="optional"
-                      min={0}
-                      name={field.name}
-                      value={field.value === 0 ? "" : field.value}
-                      onChange={(event) => {
-                        const value = Number(event.target.value);
-                        field.onChange(value);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <SupplierInput form={form} />
+
             <Flex justify={"end"} className="mt-3 gap-x-3">
               <Link href={paths.dataMaster.product.root}>
                 <Button variant={"destructiveOnline"}>Batal</Button>
               </Link>
-              <Button type="submit" disabled={isLoading}>
+              <Button
+                type="submit"
+                disabled={isLoading || !form.formState.isDirty}
+              >
                 <Spinner loading={isLoading} />
                 Tambah
               </Button>

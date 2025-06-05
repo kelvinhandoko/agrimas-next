@@ -6,10 +6,11 @@ import {
 } from "@/model/supplier.model";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
+import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
-import { TRPCClientError } from "@trpc/client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,7 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 const EditSupplierPage = ({ id }: { id: string }) => {
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const { data: detailSupplier } = api.supplier.getDetail.useQuery({
     id: id,
   });
@@ -60,15 +61,10 @@ const EditSupplierPage = ({ id }: { id: string }) => {
           success: async () => {
             await utils.supplier.getAll.invalidate();
             setIsLoading(false);
+            router.replace(paths.dataMaster.supplier.root);
             return "Berhasil update supplier";
           },
-          error: (error) => {
-            setIsLoading(false);
-            if (error instanceof TRPCClientError) {
-              return error.message;
-            }
-            return "Terjadi kesalahan";
-          },
+          error: errorFormatter,
         },
       );
     } catch (error) {

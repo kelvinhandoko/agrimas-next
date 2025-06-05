@@ -20,7 +20,7 @@ export const updateSupplierUseCase =
       companyId: payload.companyId,
       nama: payload.nama,
     });
-    if (isSupplierCreated) {
+    if (isSupplierCreated && isSupplierCreated.id !== id) {
       throw new TRPCError({
         code: "CONFLICT",
         message: "supplier ini sudah dibuat sebelumnya.",
