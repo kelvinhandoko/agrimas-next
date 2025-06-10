@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type AppRouter, createCaller } from "@/trpc/root";
 import { createTRPCContext } from "@/trpc/trpc";
-import { type InputJsonValue } from "@prisma/client/runtime/library";
 import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { headers } from "next/headers";
 import { cache } from "react";
@@ -25,19 +24,7 @@ export const createContext = cache(async () => {
 });
 
 const getQueryClient = cache(createQueryClient);
-const caller = createCaller(createContext, {
-  onError: async ({ error, path, input, ctx }) => {
-    const ipAddress = ctx?.headers.get("x-forwarded-for") ?? "";
-    await api.errorLog.create({
-      input: JSON.stringify(input) as InputJsonValue,
-      message: error.message,
-      path: path ?? "",
-      ipAddress,
-      stackTrace: JSON.stringify(error.stack),
-      statusCode: error.code as string,
-    });
-  },
-});
+const caller = createCaller(createContext);
 
 export const { trpc: api, HydrateClient } = createHydrationHelpers<AppRouter>(
   caller,

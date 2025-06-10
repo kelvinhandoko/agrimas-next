@@ -1,8 +1,12 @@
 "use client";
 
+import { splitText } from "@/utils/formatter/stringFormatter";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
 import { type AccountRouterOutputs } from "@/server/account";
+
+import ChartOfAccountRowAction from "@/components/accountant/chartOfAccount/table/RowAction";
+import { Badge } from "@/components/ui/badge";
 
 const ChartOfAccountColumn = () => {
   const columnHelper =
@@ -26,7 +30,18 @@ const ChartOfAccountColumn = () => {
     }),
     columnHelper.accessor("reports", {
       header: "Laporan",
-      cell: (info) => info.getValue().join(", "),
+      cell: (info) => (
+        <div className="flex flex-wrap items-end justify-end gap-2">
+          {info.getValue().map((report, index) => (
+            <Badge key={index}>{splitText(report)}</Badge>
+          ))}
+        </div>
+      ),
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "Aksi",
+      cell: (info) => <ChartOfAccountRowAction data={info.row.original} />,
     }),
   ] as ColumnDef<AccountRouterOutputs["get"]["data"][number]>[];
   return columns;

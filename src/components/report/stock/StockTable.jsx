@@ -1,9 +1,13 @@
-import { api } from "@/trpc/react";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import { Box, Flex, Text } from "@radix-ui/themes";
-import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { id } from "date-fns/locale";
-import { NumericFormat } from "react-number-format";
 
 import LoadingIndicator from "@/components/LoadingIndicator";
 import {
@@ -44,32 +48,31 @@ const StockTable = ({ dataReportStock, isLoading = false }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices &&
-                    invoices?.map((invoice, index) =>
-                      invoice.transaksi.map((item, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell className="font-medium">
-                            {item.noRef}
-                          </TableCell>
-                          <TableCell>
-                            {item?.tanggal
-                              ? formatInTimeZone(
-                                  new Date(item.tanggal),
-                                  "Asia/Jakarta",
-                                  "dd MMMM yyyy",
-                                  { locale: id },
-                                )
-                              : "-"}
-                          </TableCell>
-                          <TableCell>
-                            {item.tipe === "masuk" && item.jumlah}
-                          </TableCell>
-                          <TableCell>
-                            {item.tipe === "keluar" && item.jumlah}
-                          </TableCell>
-                        </TableRow>
-                      )),
-                    )}
+                  {invoices?.map((invoice, index) =>
+                    invoice.transaksi.map((item, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">
+                          {item.noRef}
+                        </TableCell>
+                        <TableCell>
+                          {item?.tanggal
+                            ? formatInTimeZone(
+                                new Date(item.tanggal),
+                                "Asia/Jakarta",
+                                "dd MMMM yyyy",
+                                { locale: id },
+                              )
+                            : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {item.tipe === "masuk" && item.jumlah}
+                        </TableCell>
+                        <TableCell>
+                          {item.tipe === "keluar" && item.jumlah}
+                        </TableCell>
+                      </TableRow>
+                    )),
+                  )}
                   {/* <TableRow>
                     <TableCell colSpan={"3"} className="font-bold">
                       Total

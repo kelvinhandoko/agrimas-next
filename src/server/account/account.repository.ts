@@ -146,14 +146,19 @@ export class AccountRepository extends BaseRepository {
   private async _getQuery(query: GetAccountQuery) {
     const { companyId, search } = query;
     const whereClause: Prisma.AccountWhereInput = {};
+    console.log({ search });
     if (search) {
       whereClause.OR = [
         {
           name: {
             contains: search,
+            mode: "insensitive",
           },
+        },
+        {
           code: {
             contains: search,
+            mode: "insensitive",
           },
         },
       ];

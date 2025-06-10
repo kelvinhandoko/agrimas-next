@@ -18,6 +18,7 @@ export const authConfig = {
     session: ({ session, token }) => {
       return {
         ...session,
+
         user: {
           ...session.user,
           id: token.id,

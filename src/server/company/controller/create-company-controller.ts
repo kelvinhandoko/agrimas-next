@@ -27,7 +27,7 @@ export const createCompanyController = ownerProcedure
 
       const companyData = await createCompany.execute({
         ...input,
-        userId: ctx.session.user.id!,
+        userId: ctx.session.user.id,
       });
 
       const createGroupAccount = createGroupAccountUseCase(groupAccountRepo);

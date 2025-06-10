@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+// @ts-nocheck
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { formatInTimeZone } from "date-fns-tz";
 import { id } from "date-fns/locale";

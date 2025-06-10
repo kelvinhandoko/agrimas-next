@@ -12,7 +12,7 @@ export const accountPayloadSchema = z.object({
   name: z
     .string({ required_error: "nama akun tidak boleh kosong" })
     .min(1, "nama akun minimal 1 huruf."),
-  companyId: z.string({ required_error: "perusahaan tidak boleh kosong" }),
+
   groupAccountId: z.string({
     required_error: "kelompok akun tidak boleh kosong",
   }),
@@ -24,7 +24,7 @@ export const accountPayloadSchema = z.object({
   id: z.string().optional(),
 });
 
-export type AccountPayload = z.infer<typeof accountPayloadSchema>;
+export type AccountPayload = z.infer<typeof accountPayloadSchema> & WithCompany;
 
 export const getAccountQuerySchema = getQuery;
 

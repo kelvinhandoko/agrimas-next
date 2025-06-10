@@ -4,14 +4,14 @@ import { dummyPurchasesData } from "@/data/dummyPurchasesData";
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Flex, Text } from "@radix-ui/themes";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { format } from "date-fns";
+import ExcelJS from "exceljs";
 import { CalendarIcon, ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as XLSX from "xlsx";
 
 import { cn } from "@/lib/utils";
 
@@ -90,7 +90,7 @@ const ReportPurchasePage = () => {
     link.click();
   };
 
-  const handleExportPurchaseExcel = () => {
+  const handleExportPurchaseExcel = async () => {
     if (!filteredData || Object.keys(filteredData).length === 0) {
       toast.error("Data tidak tersedia untuk diexport.");
       return;
@@ -114,18 +114,31 @@ const ReportPurchasePage = () => {
       });
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(rows, { origin: "A3" });
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Laporan Pembelian");
 
-    XLSX.utils.sheet_add_aoa(
-      worksheet,
-      [["Laporan Pembelian CV. Agrimas Perkasa"]],
-      { origin: "A1" },
-    );
+    // Add title
+    worksheet.mergeCells("A1:G1");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = "Laporan Pembelian CV. Agrimas Perkasa";
+    titleCell.font = { bold: true, size: 14 };
+    titleCell.alignment = { horizontal: "center" };
 
-    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 1, c: 6 } }];
+    // Add headers
+    const headers = Object.keys(rows[0]);
+    worksheet.addRow(headers);
+    worksheet.getRow(2).font = { bold: true };
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Pembelian");
+    // Add data
+    rows.forEach((row) => {
+      worksheet.addRow(Object.values(row));
+    });
+
+    // Auto-fit columns
+    worksheet.columns.forEach((column) => {
+      column.width = 15;
+    });
 
     const found =
       supplierId !== "all" &&
@@ -136,7 +149,17 @@ const ReportPurchasePage = () => {
         ? "Laporan-Pembelian.xlsx"
         : `Laporan-Pembelian-${found.nama}.xlsx`;
 
-    XLSX.writeFile(workbook, fileName);
+    // Generate and download the file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    window.URL.revokeObjectURL(url);
   };
   if (isLoadingGet) {
     return <LoadingIndicator />;

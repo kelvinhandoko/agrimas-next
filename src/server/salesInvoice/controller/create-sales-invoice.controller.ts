@@ -1,11 +1,7 @@
 import { salesInvoicePayloadSchema } from "@/model/sales-invoice.model";
 import { companyProcedure } from "@/trpc/trpc";
 
-import { AccountRepository } from "@/server/account";
 import { CustomerRepository } from "@/server/customer";
-import { DefaultAccountRepository } from "@/server/defaultAccount/default-account.repository";
-import { JournalRepository } from "@/server/journal/journal.repository";
-import { JournalDetailRepository } from "@/server/journalDetail/journal-detail.repository";
 import { ProductRepository } from "@/server/product/product.repository";
 import { getTotalCOGSUseCase } from "@/server/product/use-cases/get-total-cogs.use-case";
 import { SalesInvoiceRepository } from "@/server/salesInvoice/sales-invoice.repository";
@@ -26,12 +22,6 @@ export const createSalesInvoiceController = companyProcedure
 
       const salesInvoiceDetailRepo = new SalesInvoiceDetailRepository(trx);
       const productRepo = new ProductRepository(trx);
-
-      const defaultAccountRepo = new DefaultAccountRepository(trx);
-
-      const journalRepo = new JournalRepository(trx);
-      const journalDetailRepo = new JournalDetailRepository(trx);
-      const accountRepo = new AccountRepository(trx);
 
       const totalCOGS = await getTotalCOGSUseCase(productRepo)(
         input.details.map(({ quantity, productId }) => {

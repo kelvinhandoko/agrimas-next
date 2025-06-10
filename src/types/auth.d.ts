@@ -1,11 +1,7 @@
 import { type Role } from "@prisma/client";
-import { type DefaultSession } from "next-auth";
 import "next-auth/jwt";
 
 declare module "next-auth" {
-  /**
-   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface User {
     companyId: string | null;
     role: Role;
@@ -14,16 +10,11 @@ declare module "next-auth" {
 
   interface Session {
     user: {
+      id: string;
       role: Role;
       username: string;
       companyId: string | null;
-      /**
-       * By default, TypeScript merges new interface properties and overwrites existing ones.
-       * In this case, the default session user properties will be overwritten,
-       * with the new ones defined above. To keep the default session user properties,
-       * you need to add them back into the newly declared interface.
-       */
-    } & DefaultSession["user"];
+    };
   }
 }
 

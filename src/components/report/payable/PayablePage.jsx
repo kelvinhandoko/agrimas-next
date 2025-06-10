@@ -6,12 +6,12 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box, Text } from "@radix-ui/themes";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
+import ExcelJS from "exceljs";
 import { ChevronDown, FileText } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as XLSX from "xlsx";
 
 import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -88,7 +88,7 @@ const PayablePage = () => {
     link.click();
   };
 
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
     if (!filterDataPayable || Object.keys(filterDataPayable).length === 0) {
       toast.error("Data tidak tersedia untuk diexport.");
       return;
@@ -106,29 +106,53 @@ const PayablePage = () => {
         });
       });
     });
-    // 1. Siapkan worksheet dari data
-    const worksheet = XLSX.utils.json_to_sheet(rows, { origin: "A3" });
 
-    XLSX.utils.sheet_add_aoa(worksheet, [
-      ["Laporan Hutang Usaha CV. Agrimas Perkasa"],
-    ]);
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Laporan Hutang Usaha");
 
-    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+    // Add title
+    worksheet.mergeCells("A1:E1");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = "Laporan Hutang Usaha CV. Agrimas Perkasa";
+    titleCell.font = { bold: true, size: 14 };
+    titleCell.alignment = { horizontal: "center" };
 
-    // 2. Buat workbook
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan Hutang Usaha");
+    // Add headers
+    const headers = Object.keys(rows[0]);
+    worksheet.addRow(headers);
+    worksheet.getRow(2).font = { bold: true };
+
+    // Add data
+    rows.forEach((row) => {
+      worksheet.addRow(Object.values(row));
+    });
+
+    // Auto-fit columns
+    worksheet.columns.forEach((column) => {
+      column.width = 15;
+    });
 
     const found =
       supplierId !== "all" &&
       dummyPayableSupplier?.data.find((c) => c.id === supplierId);
 
-    // 3. Simpan file Excel
+    // Generate and download the file
     const fileName =
       supplierId === "all"
         ? "Laporan-Hutang-Usaha.xlsx"
         : `Laporan-Hutang-Usaha-${found.nama}.xlsx`;
-    XLSX.writeFile(workbook, fileName);
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    window.URL.revokeObjectURL(url);
   };
 
   if (isLoadingGet) {

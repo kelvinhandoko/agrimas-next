@@ -1,11 +1,8 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
-import Link from "next/link";
 import { BiArchive, BiBook } from "react-icons/bi";
 import { FiBook } from "react-icons/fi";
 import { LuBookMinus, LuBookText } from "react-icons/lu";
-
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 import SectionCard from "../SectionCard";
 
@@ -40,13 +37,7 @@ const DataReportList = () => {
   return (
     <Grid columns={{ sm: "2", md: "4" }} gap={"3"}>
       {listMenu.map((menu, index) => (
-        <SectionCard
-          index={index}
-          icon={menu.icon}
-          path={menu.path}
-          title={menu.title}
-          key={index}
-        />
+        <SectionCard index={index} menu={menu} key={index} />
       ))}
     </Grid>
   );

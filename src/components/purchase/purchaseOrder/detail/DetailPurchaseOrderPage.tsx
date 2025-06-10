@@ -10,7 +10,6 @@ import { NumericFormat } from "react-number-format";
 
 import BackButton from "@/components/BackButton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -21,8 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { TableDetailPurchaseOrder } from "./TableDetailPurchaseOrder";
 
 interface DetailPurchaseOrderProps {
   id: string;

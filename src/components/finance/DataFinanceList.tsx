@@ -1,18 +1,12 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
 import { DollarSign } from "lucide-react";
-import Link from "next/link";
 import { FiBook } from "react-icons/fi";
 import { LuBookText } from "react-icons/lu";
 
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import SectionCard from "@/components/SectionCard";
 
 const listMenu = [
-  // {
-  //   title: "Piutang Customer",
-  //   icon: <BiArchive size={"50px"} />,
-  //   path: paths.dataMaster.product.root,
-  // },
   {
     title: "metode pembayaran",
     icon: <DollarSign size={"50px"} />,
@@ -26,22 +20,14 @@ const listMenu = [
   {
     title: "Pelunasan Hutang",
     icon: <LuBookText size={"50px"} />,
-    path: paths.dataMaster.supplier.root,
+    path: paths.purchase.purchasePayment.new,
   },
 ];
 const DataFinanceList = () => {
   return (
     <Grid columns={{ sm: "2", md: "4" }} gap={"3"}>
       {listMenu.map((menu, index) => (
-        <Link href={menu.path} key={index}>
-          <Card
-            className="flex h-[12rem] flex-col items-center justify-center rounded-sm text-gray-700 hover:shadow-lg hover:shadow-[#614de38c]"
-            key={index}
-          >
-            <CardHeader>{menu.icon}</CardHeader>
-            <CardTitle>{menu.title}</CardTitle>
-          </Card>
-        </Link>
+        <SectionCard index={index} menu={menu} key={index} />
       ))}
     </Grid>
   );

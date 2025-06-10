@@ -1,4 +1,4 @@
-const DetailPurchaseFakturPage = ({ id }) => {
+const DetailPurchaseFakturPage = () => {
   return <div>DetailPurchaseFakturPage</div>;
 };
 

@@ -1,7 +1,16 @@
 "use client";
 
 import { CommandList } from "cmdk";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+  ChevronsUpDown,
+  Database,
+  Inbox,
+  Loader2,
+  Plus,
+  Search,
+} from "lucide-react";
 import * as React from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -10,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -38,6 +48,11 @@ interface AutoCompleteProps<T> {
   hasMore: boolean;
   fetchMore: () => void;
   defaultValue?: Partial<T> & { id: string };
+  isError?: boolean;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  searchEmptyTitle?: string;
+  searchEmptyDescription?: string;
 }
 
 export function AutoComplete<T>({
@@ -58,51 +73,136 @@ export function AutoComplete<T>({
   onInputChange,
   defaultValue,
   customLabel,
+  isError = false,
+  emptyTitle = "Tidak ada data",
+  emptyDescription = "Belum ada data yang tersedia saat ini",
+  searchEmptyTitle = "Tidak ditemukan",
+  searchEmptyDescription = "Coba kata kunci yang berbeda",
 }: AutoCompleteProps<T>) {
   if (!labelKey && !customLabel) {
     throw new Error("must put either labelKey or customLabel");
   }
-  const [input, setInput] = React.useState("");
 
+  const [input, setInput] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const container = React.useRef(null);
-
   const [ref, inView] = useInView();
 
   const selectedData = options.find((option) => option[valueKey] === value);
+
   const handleChangeInput = (input: string) => {
     setInput(input);
     onInputChange?.(input);
   };
 
+  const handleAddNew = () => {
+    if (onAddNew && input.trim()) {
+      onAddNew(input.trim());
+      setOpen(false);
+    }
+  };
+
   React.useEffect(() => {
-    if (inView && hasMore) {
+    if (inView && hasMore && !isFetching) {
       fetchMore();
     }
-  }, [inView]);
+  }, [inView, hasMore, isFetching, fetchMore]);
+
+  // Enhanced Empty State Components
+  const LoadingState = () => (
+    <div className="flex flex-col items-center justify-center px-4 py-8">
+      <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
+      <p className="text-sm text-muted-foreground">Memuat data...</p>
+    </div>
+  );
+
+  const ErrorState = () => (
+    <div className="flex flex-col items-center justify-center px-4 py-8">
+      <AlertCircle className="mb-3 h-8 w-8 text-destructive" />
+      <p className="mb-1 text-sm font-medium text-destructive">
+        Gagal memuat data
+      </p>
+      <p className="text-center text-xs text-muted-foreground">
+        Terjadi kesalahan saat mengambil data
+      </p>
+    </div>
+  );
+
+  const SearchEmptyState = () => (
+    <div className="flex flex-col items-center justify-center px-4 py-8">
+      <div className="relative mb-4">
+        <Search className="h-8 w-8 text-muted-foreground" />
+        <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-destructive" />
+      </div>
+      <p className="mb-1 text-sm font-medium text-foreground">
+        {searchEmptyTitle}
+      </p>
+      <p className="mb-4 text-center text-xs text-muted-foreground">
+        {searchEmptyDescription}
+      </p>
+      {onAddNew && input.trim() && (
+        <Button onClick={handleAddNew} size="sm" className="h-8 px-3 text-xs">
+          <Plus className="mr-1 h-3 w-3" />
+          Buat {input.trim()}
+        </Button>
+      )}
+    </div>
+  );
+
+  const InitialEmptyState = () => (
+    <div className="flex flex-col items-center justify-center px-4 py-8">
+      <div className="relative mb-4">
+        <Database className="h-10 w-10 text-muted-foreground" />
+        <Inbox className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-background p-0.5 text-muted-foreground" />
+      </div>
+      <p className="mb-1 text-sm font-medium text-foreground">{emptyTitle}</p>
+      <p className="mb-4 text-center text-xs text-muted-foreground">
+        {emptyDescription}
+      </p>
+      {onAddNew && (
+        <Button
+          onClick={() => onAddNew("")}
+          size="sm"
+          variant="outline"
+          className="h-8 px-3 text-xs"
+        >
+          <Plus className="mr-1 h-3 w-3" />
+          Tambah data baru
+        </Button>
+      )}
+    </div>
+  );
+
+  const renderEmptyState = () => {
+    if (isLoading) return <LoadingState />;
+    if (isError) return <ErrorState />;
+    if (input.trim() && options.length === 0) return <SearchEmptyState />;
+    if (options.length === 0) return <InitialEmptyState />;
+    return null;
+  };
 
   return (
-    <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            disabled={disabled}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className={cn(
-              "flex h-10 w-72 max-w-full items-center justify-start rounded-md border border-input bg-transparent px-3 py-2 text-sm font-normal ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-              className,
-            )}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          disabled={disabled}
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn(
+            "flex h-10 w-72 max-w-full items-center justify-start rounded-md border border-input bg-transparent px-3 py-2 text-sm font-normal ring-offset-background transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            className,
+          )}
+        >
+          <div
+            className={cn("flex flex-1 items-center", {
+              "text-muted-foreground": !value,
+              "flex flex-1 items-center gap-2 text-start": !customLabel,
+            })}
           >
-            <div
-              className={cn("", {
-                "text-muted-foreground": !value,
-                "flex flex-1 items-center gap-2 text-start": !customLabel,
-              })}
-            >
-              {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {startLabel && selectedData && <>{startLabel(selectedData)}</>}
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {startLabel && selectedData && <>{startLabel(selectedData)}</>}
+            <span className="truncate">
               {value ? (
                 customLabel && selectedData ? (
                   <>{customLabel(selectedData)}</>
@@ -112,137 +212,170 @@ export function AutoComplete<T>({
               ) : (
                 placeholder
               )}
-            </div>
-            <ChevronsUpDown className="ml-auto h-4 w-3 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-fit p-0">
-          <Command shouldFilter={false}>
+            </span>
+          </div>
+          <ChevronsUpDown className="ml-auto h-4 w-3 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+        <Command shouldFilter={false}>
+          <div className="flex items-center border-b px-3">
             <CommandInput
               value={input}
               onValueChange={handleChangeInput}
-              placeholder="Search option..."
+              placeholder="Cari data..."
+              className="border-0 focus:ring-0"
             />
-            {isLoading ? (
-              <div className="flex w-full items-center justify-center p-2 py-6">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              </div>
-            ) : (
-              <>
-                {onAddNew && input && (
-                  <CommandGroup heading="new data" forceMount>
-                    <CommandItem>
-                      <Button
-                        className="w-full"
-                        onClick={() => onAddNew(input)}
-                      >
-                        tambah data baru : {input}
-                      </Button>
-                    </CommandItem>
-                  </CommandGroup>
-                )}
-                {!input && defaultValue && (
-                  <CommandGroup heading="default selected" forceMount>
-                    <CommandList>
-                      <CommandItem
-                        value={defaultValue.id}
-                        onSelect={() => {
-                          onSelect(defaultValue.id);
-                          setOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn("mr-2 h-4 w-4 opacity-0", {
-                            "opacity-100": value === defaultValue.id,
-                          })}
-                        />
+          </div>
+
+          {isLoading && !options.length ? (
+            <LoadingState />
+          ) : isError ? (
+            <ErrorState />
+          ) : (
+            <CommandList className="max-h-[300px]">
+              {/* Add New Option */}
+              {onAddNew && input.trim() && (
+                <CommandGroup
+                  heading={
+                    <div className="flex items-center">
+                      <Plus className="mr-1.5 h-3 w-3 opacity-70" />
+                      Data Baru
+                    </div>
+                  }
+                >
+                  <CommandItem
+                    onSelect={handleAddNew}
+                    className="cursor-pointer"
+                  >
+                    <Plus className="mr-2 h-4 w-4 text-primary" />
+                    <span>tambah {input.trim()}</span>
+                  </CommandItem>
+                </CommandGroup>
+              )}
+
+              {/* Default Value */}
+              {!input && defaultValue && (
+                <CommandGroup
+                  heading={
+                    <div className="flex items-center">
+                      <Check className="mr-1.5 h-3 w-3 opacity-70" />
+                      Default
+                    </div>
+                  }
+                >
+                  <CommandItem
+                    value={defaultValue.id}
+                    onSelect={() => {
+                      onSelect(defaultValue.id);
+                      setOpen(false);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={cn("mr-2 h-4 w-4 opacity-0", {
+                        "opacity-100": value === defaultValue.id,
+                      })}
+                    />
+                    <div className="flex items-center gap-2 truncate">
+                      {customLabel ? (
+                        <>{customLabel(defaultValue as T)}</>
+                      ) : (
+                        <>
+                          {startLabel && <>{startLabel(defaultValue as T)}</>}
+                          {labelKey &&
+                            (defaultValue[labelKey] as React.ReactNode)}
+                        </>
+                      )}
+                    </div>
+                  </CommandItem>
+                </CommandGroup>
+              )}
+
+              {/* Options List */}
+              {options.length > 0 ? (
+                <CommandGroup
+                  heading={
+                    <div className="flex items-center">
+                      <Database className="mr-1.5 h-3 w-3 opacity-70" />
+                      Data ({options.length})
+                    </div>
+                  }
+                >
+                  {options.map((option, i) => (
+                    <CommandItem
+                      key={i}
+                      value={
+                        (customLabel
+                          ? customLabel(option)
+                          : labelKey && option[labelKey]) as string
+                      }
+                      onSelect={() => {
+                        onSelect(
+                          (option[valueKey] as string) === value
+                            ? ""
+                            : (option[valueKey] as string),
+                        );
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <Check
+                        className={cn("mr-2 h-4 w-4 opacity-0", {
+                          "opacity-100": value === option[valueKey],
+                        })}
+                      />
+                      <div className="flex items-center gap-2 truncate">
                         {customLabel ? (
-                          <>{customLabel(defaultValue as T)}</>
+                          <>{customLabel(option)}</>
                         ) : (
                           <>
-                            {startLabel && <>{startLabel(defaultValue as T)}</>}
-                            {labelKey &&
-                              (defaultValue[labelKey] as React.ReactNode)}
+                            {startLabel && <>{startLabel(option)}</>}
+                            {labelKey && (option[labelKey] as React.ReactNode)}
                           </>
                         )}
-                      </CommandItem>
-                    </CommandList>
-                  </CommandGroup>
-                )}
-
-                <CommandGroup
-                  className="max-h-48 overflow-scroll"
-                  heading="data"
-                  ref={container}
-                >
-                  {isLoading ? (
-                    <CommandItem className="p-4 text-center">
-                      {" "}
-                      <Loader2 className="animate-spin" />
+                      </div>
                     </CommandItem>
-                  ) : (
-                    <CommandList>
-                      {!options.length ? (
-                        <CommandItem className="p-2 text-center">
-                          data tidak ditemukan
-                        </CommandItem>
-                      ) : (
-                        options.map((option, i) => (
-                          <CommandItem
-                            key={i}
-                            value={
-                              (customLabel
-                                ? customLabel(option)
-                                : labelKey && option[labelKey]) as string
-                            }
-                            onSelect={() => {
-                              onSelect(
-                                (option[valueKey] as string) === value
-                                  ? ""
-                                  : (option[valueKey] as string),
-                              );
-                              setOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn("mr-2 h-4 w-4 opacity-0", {
-                                "opacity-100": value === option[valueKey],
-                              })}
-                            />
-                            {customLabel ? (
-                              <>{customLabel(option)}</>
-                            ) : (
-                              <>
-                                {startLabel && <>{startLabel(option)}</>}
-                                {labelKey &&
-                                  (option[labelKey] as React.ReactNode)}
-                              </>
-                            )}
-                          </CommandItem>
-                        ))
-                      )}
-                      <CommandItem
-                        className="flex h-6 w-full items-center justify-center"
-                        ref={ref}
-                      >
-                        {!options.length ? (
-                          ""
-                        ) : isFetching ? (
-                          <Loader2 className="animate-spin" />
-                        ) : (
+                  ))}
+
+                  {/* Infinite scroll loader */}
+                  {hasMore && (
+                    <CommandItem ref={ref} disabled className="justify-center">
+                      {isFetching ? (
+                        <div className="flex items-center gap-2 py-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
                           <span className="text-xs text-muted-foreground">
-                            no more data.
+                            Memuat lebih banyak...
                           </span>
-                        )}
-                      </CommandItem>
-                    </CommandList>
+                        </div>
+                      ) : (
+                        <div className="h-2" />
+                      )}
+                    </CommandItem>
                   )}
                 </CommandGroup>
-              </>
-            )}
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </>
+              ) : (
+                <CommandEmpty asChild>{renderEmptyState()}</CommandEmpty>
+              )}
+
+              {/* Quick add at bottom for existing data */}
+              {onAddNew && input.trim() && options.length > 0 && (
+                <div className="border-t p-2">
+                  <Button
+                    onClick={handleAddNew}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-full justify-start text-xs"
+                  >
+                    <Plus className="mr-2 h-3 w-3" />
+                    Buat ata baru: {input.trim()}
+                  </Button>
+                </div>
+              )}
+            </CommandList>
+          )}
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

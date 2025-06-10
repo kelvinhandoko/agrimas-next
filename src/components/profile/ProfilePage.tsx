@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { api } from "@/trpc/react";
@@ -18,6 +19,16 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const ProfilePage = () => {
   const { data } = useSession();
   console.log(data);
@@ -31,8 +42,6 @@ const ProfilePage = () => {
       role: data?.user.role ?? "",
     },
   });
-
-  const { mutateAsync: createSupplier } = api.supplier.create.useMutation();
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     setIsLoading(true);

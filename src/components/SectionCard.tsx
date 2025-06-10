@@ -10,17 +10,18 @@ import { cn } from "@/lib/utils";
 import { CardSlideAnimation } from "@/components/motion/variant";
 
 interface SectionCardProps {
-  title: string;
-  icon: ReactNode;
-  path: string;
+  menu: {
+    title: string;
+    icon: ReactNode;
+    path: string;
+  };
+
   className?: string;
   index: number;
 }
 
 const SectionCard: React.FC<SectionCardProps> = ({
-  title,
-  icon,
-  path,
+  menu: { title, icon, path },
   className,
   index,
 }) => {

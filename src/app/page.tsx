@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return redirect(paths.dataMaster.root);
+  redirect(paths.dataMaster.root);
 };
 
 export default page;
