@@ -45,7 +45,7 @@ const PurchaseFakturPage = () => {
       <Box className="mb-8">
         <BackButton path={paths.purchase.root} />
       </Box>
-      {/* <pre>{JSON.stringify(data, undefined, 2)}</pre> */}
+      <pre>{JSON.stringify(data, undefined, 2)}</pre>
       <DataTable
         columns={PurchaseInvoiceColumn()}
         data={data?.data || []}
