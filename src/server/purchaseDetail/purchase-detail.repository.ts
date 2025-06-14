@@ -1,15 +1,13 @@
 import { type PurchaseDetailPayload } from "@/model/purchase-detail.model";
-import { discountHandler } from "@/utils/discountHandler";
 
 import { BaseRepository } from "@/server/common";
 
 export class PurchaseDetailRepository extends BaseRepository {
   async create(payload: PurchaseDetailPayload) {
     const { purchaseId, productId, quantity, price, ppn, discount } = payload;
-    const totalBefore = discountHandler(price, discount ?? 0) * quantity;
-    const ppnPercent = (ppn ?? 0) / 100;
-    const ppnAmount = totalBefore * ppnPercent;
-    const netTotal = totalBefore + ppnAmount;
+    const totalBefore = (price - (discount ?? 0)) * quantity;
+
+    const netTotal = totalBefore + ppn;
     return await this._db.purchaseDetail.create({
       data: {
         purchaseId,

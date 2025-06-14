@@ -5,7 +5,7 @@ import { type SupplierRepository } from "@/server/supplier/supplier.repository";
 
 export const updateSupplierUseCase =
   (supplierRepo: SupplierRepository) => async (payload: SupplierPayload) => {
-    const { alamat, companyId, nama, id } = payload;
+    const { alamat, companyId, nama, id, ...others } = payload;
     const findSupplier = await supplierRepo.getDetailById({
       id: id!,
     });
@@ -30,6 +30,7 @@ export const updateSupplierUseCase =
       alamat,
       companyId,
       nama,
+      ...others,
       id: id!,
     });
   };

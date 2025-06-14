@@ -146,16 +146,24 @@ model JournalDetail {
 }
 
 model Supplier {
-  id        String     @id @default(cuid())
-  nama      String
-  alamat    String?
-  companyId String
-  deleted   DateTime?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now()) @updatedAt
-  products  Product[]
-  purchases Purchase[]
-  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id           String     @id @default(cuid())
+  nama         String
+  alamat       String?
+  companyId    String
+  deleted      DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  products     Product[]
+  purchases    Purchase[]
+  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  idCard       String     @default("")
+  kode         String     @default("")
+  pic_name     String     @default("")
+  phone_number String     @default("")
+  email        String     @default("")
+  fax          String     @default("")
+  website      String     @default("")
+  kode_pos     String     @default("")
 
   @@unique([nama, companyId])
 }

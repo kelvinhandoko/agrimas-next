@@ -46,7 +46,9 @@ export const purchaseDetailQuerySchema = z.object({
 export type PurchaseDetailQuery<T> = z.infer<typeof purchaseDetailQuerySchema> &
   PurchaseInclude<T>;
 
-export const GetAllPurchaseQuerySchema = getQuery;
+export const GetAllPurchaseQuerySchema = getQuery.extend({
+  supplierId: z.string().optional().describe("id supplier"),
+});
 
 export type GetAllPurchaseQuery = z.infer<typeof GetAllPurchaseQuerySchema> &
   WithCompany;
