@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { env } from "@/env";
 import { appRouter } from "@/trpc/root";
 import { createTRPCContext } from "@/trpc/trpc";
@@ -20,14 +22,12 @@ const handler = (req: NextRequest) =>
     req,
     router: appRouter,
     createContext: () => createContext(req),
-    onError:
-      env.NODE_ENV === "development"
-        ? ({ path, error }) => {
-            console.error(
-              `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
-            );
-          }
-        : undefined,
+    onError: async ({ error, path, input, ctx }) => {
+      env.NODE_ENV === "development" &&
+        console.error(
+          `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+        );
+    },
   });
 
 export { handler as GET, handler as POST };

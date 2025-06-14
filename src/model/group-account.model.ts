@@ -1,11 +1,12 @@
-import { AccountClass, type Prisma } from "@prisma/client";
+import { AccountClass } from "@prisma/client";
 import { z } from "zod";
 
-import { basicQuery } from "@/server/common/models/basic";
-
-type GroupAccountInclude<T> = {
-  include?: Prisma.Subset<T, Prisma.GroupAccountInclude>;
-};
+import {
+  type WithCompany,
+  cursorQuery,
+  getQuery,
+  paginatedQuery,
+} from "@/server/common/models/basic";
 
 export const groupAccountPayloadSchema = z.object({
   name: z.string(),
@@ -13,15 +14,29 @@ export const groupAccountPayloadSchema = z.object({
     invalid_type_error: "kelas akun tidak valid",
   }),
   code: z.string().optional(),
-  companyId: z.string().optional(),
   id: z.string().optional(),
 });
 
-export type GroupAccountPayload = z.infer<typeof groupAccountPayloadSchema>;
+export type GroupAccountPayload = z.infer<typeof groupAccountPayloadSchema> &
+  WithCompany;
 
-export const getAllGroupAccountQuerySchema = basicQuery;
+export const getGroupAccountQuerySchema = getQuery;
 
-export type GetAllGroupAccountQuery<T> = z.infer<
-  typeof getAllGroupAccountQuerySchema
+export type GetGroupAccountQuery = z.infer<typeof getGroupAccountQuerySchema> &
+  WithCompany;
+
+export const getPaginatedGroupAccountQuerySchema =
+  getGroupAccountQuerySchema.merge(paginatedQuery);
+
+export type GetPaginatedGroupAccountQuery = z.infer<
+  typeof getPaginatedGroupAccountQuerySchema
 > &
-  GroupAccountInclude<T>;
+  WithCompany;
+
+export const getCursorGroupAccountQuerySchema =
+  getGroupAccountQuerySchema.merge(cursorQuery);
+
+export type GetCursorGroupAccountQuery = z.infer<
+  typeof getCursorGroupAccountQuerySchema
+> &
+  WithCompany;

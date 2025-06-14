@@ -5,7 +5,7 @@ import { type SupplierRepository } from "@/server/supplier/supplier.repository";
 
 export const createSupplierUseCase =
   (supplierRepo: SupplierRepository) => async (payload: SupplierPayload) => {
-    const { alamat, companyId, nama } = payload;
+    const { alamat, companyId, nama, ...others } = payload;
     const findUniqueSupplier = await supplierRepo.getUniqueData({
       companyId,
       nama,
@@ -21,5 +21,6 @@ export const createSupplierUseCase =
       alamat,
       companyId,
       nama,
+      ...others,
     });
   };

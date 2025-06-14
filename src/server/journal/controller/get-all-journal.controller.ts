@@ -2,7 +2,7 @@ import { getAllJournalQuerySchema } from "@/model";
 import { companyProcedure } from "@/trpc/trpc";
 
 import { JournalRepository } from "@/server/journal/journal.repository";
-import { getAllJournalUseCase } from "@/server/journal/use-cases";
+import { getAllJournalUseCase } from "@/server/journal/use-cases/get-all-journal.use-case";
 
 export const getAllJournalController = companyProcedure
   .input(getAllJournalQuerySchema)

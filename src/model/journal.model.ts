@@ -2,7 +2,11 @@ import { journalDetailPayloadSchema } from "@/model/journal-detail.model";
 import { JournalType, type Prisma } from "@prisma/client";
 import { z } from "zod";
 
-import { basicQuery, dateRangeSchema } from "@/server/common/models/basic";
+import {
+  type WithCompany,
+  basicQuery,
+  dateRangeSchema,
+} from "@/server/common/models/basic";
 
 type JournalInclude<T> = {
   include?: Prisma.Subset<T, Prisma.JournalInclude>;
@@ -30,4 +34,5 @@ export const getAllJournalQuerySchema = basicQuery.extend({
 export type GetAllJournalQuery<T extends Prisma.JournalInclude> = z.infer<
   typeof getAllJournalQuerySchema
 > &
+  WithCompany &
   JournalInclude<T>;

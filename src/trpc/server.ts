@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { type AppRouter, createCaller } from "@/trpc/root";
 import { createTRPCContext } from "@/trpc/trpc";
 import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { cache } from "react";
 import "server-only";
 
@@ -24,13 +24,7 @@ export const createContext = cache(async () => {
 });
 
 const getQueryClient = cache(createQueryClient);
-const caller = createCaller(createContext, {
-  onError: ({ error }) => {
-    if (error.code === "UNAUTHORIZED") {
-      redirect("/api/auth/signin");
-    }
-  },
-});
+const caller = createCaller(createContext);
 
 export const { trpc: api, HydrateClient } = createHydrationHelpers<AppRouter>(
   caller,
