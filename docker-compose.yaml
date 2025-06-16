@@ -1,23 +1,36 @@
-version: "3.9"
-
 services:
-  mysql:
-    image: mysql:latest
-    container_name: mysql_test_db
+  db:
+    image: postgres:17
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_USER: test_user
-      MYSQL_PASSWORD: test_password
-      MYSQL_DATABASE: test_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "3307:3306"
+      - "127.0.0.1:5432:5432" # Only bind inside server (no public)
     volumes:
-      - mysql_data:/var/lib/mysql # Properly reference the named volume
+      - pgdata:/var/lib/postgresql/data
+
+  agri:
+    build:
+      context: .
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - db
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
       retries: 5
 
 volumes:
-  mysql_data: # Define the named volume here
+  pgdata:
