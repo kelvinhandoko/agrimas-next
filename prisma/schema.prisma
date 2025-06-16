@@ -297,6 +297,7 @@ model ReceiveItemDetail {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   purchaseDetailId String
+  note             String?
   purchaseDetail   PurchaseDetail @relation(fields: [purchaseDetailId], references: [id])
   receiveItem      ReceiveItem    @relation(fields: [receiveId], references: [id])
 }

@@ -53,7 +53,7 @@ const PurchaseReceivedForm = () => {
         loading: "sedang membuat Surat Penerimaan Barang...",
         success: async () => {
           router.replace(paths.purchase.purchaseReceived.root);
-          // await utils.receiveItem..invalidate();
+          await utils.receiveItem.get.invalidate();
           return "berhasil membuat Surat penerimaan Barang";
         },
         error: errorFormatter,
@@ -72,7 +72,7 @@ const PurchaseReceivedForm = () => {
           <BackButton path={paths.purchase.purchaseReceived.root} />
           <CardTitle>form penerimaan Pembelian</CardTitle>
         </div>
-        <div className="grid-col-1 grid w-1/2 items-center gap-2 md:grid-cols-3">
+        <div className="grid w-full grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:w-3/4">
           <DateInput form={form} />
           <FormField
             control={form.control}
@@ -82,13 +82,12 @@ const PurchaseReceivedForm = () => {
                 <FormLabel>ref</FormLabel>
                 <FormControl>
                   <Input
-                    className="w-64"
+                    className="w-full"
                     placeholder="ref (optional)"
                     {...field}
                     value={field.value ?? ""}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -98,17 +97,16 @@ const PurchaseReceivedForm = () => {
             control={form.control}
             name="note"
             render={({ field }) => (
-              <FormItem className="col-span-2">
+              <FormItem className="sm:col-span-2 lg:col-span-3">
                 <FormLabel>catatan</FormLabel>
                 <FormControl>
                   <Textarea
-                    className="w-full"
+                    className="min-h-[100px] w-full"
                     placeholder="catatan (optional)"
                     {...field}
                     value={field.value ?? ""}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}

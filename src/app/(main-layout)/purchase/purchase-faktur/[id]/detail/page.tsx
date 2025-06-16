@@ -9,13 +9,12 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-const page = async ({ params }: PageProps) => {
-  const id = (await params).id;
+// interface PageProps {
+//   params: Promise<{
+//     id: string;
+//   }>;
+// }
+const page = async () => {
   return <DetailPurchaseFakturPage />;
 };
 

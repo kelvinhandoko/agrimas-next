@@ -6,9 +6,8 @@ import { Box } from "@radix-ui/themes";
 import { useSearchParams } from "next/navigation";
 
 import BackButton from "@/components/BackButton";
-import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
-import { purchaseReceivedColumn } from "@/components/purchase/purchaseReceived/Column";
+import { PurchaseReceivedColumns } from "@/components/purchase/purchaseReceived/Column";
 
 const PurchaseReceivedPage = () => {
   const searchparams = useSearchParams();
@@ -20,18 +19,17 @@ const PurchaseReceivedPage = () => {
     limit,
     search,
   });
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
+
   return (
     <Box>
       <Box className="mb-8">
         <BackButton path={paths.purchase.root} />
       </Box>
       <DataTable
-        columns={purchaseReceivedColumn()}
+        columns={PurchaseReceivedColumns()}
         data={data?.data ?? []}
         path={paths.purchase.purchaseReceived.new}
+        isLoading={isLoading}
         searchAble
         searchPlaceholder="cari no penerimaan pembelian"
         buttonAddName="Tambah Penerimaan Pembelian"
