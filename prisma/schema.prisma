@@ -245,6 +245,7 @@ model PurchaseDetail {
   discount            Int
   totalBeforeDiscount Int
   ppn                 Int                 @default(0)
+  discount_percent    Int                 @default(0)
   netTotal            Int
   totalReceive        Int                 @default(0)
   deleted             DateTime?

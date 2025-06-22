@@ -4,7 +4,15 @@ import { BaseRepository } from "@/server/common";
 
 export class PurchaseDetailRepository extends BaseRepository {
   async create(payload: PurchaseDetailPayload) {
-    const { purchaseId, productId, quantity, price, ppn, discount } = payload;
+    const {
+      purchaseId,
+      productId,
+      quantity,
+      price,
+      ppn,
+      discount,
+      discount_percent,
+    } = payload;
     const totalBefore = (price - (discount ?? 0)) * quantity;
 
     const netTotal = totalBefore + ppn;
@@ -13,6 +21,7 @@ export class PurchaseDetailRepository extends BaseRepository {
         purchaseId,
         productId,
         quantity,
+        discount_percent,
         price,
         totalReceive: 0,
         totalBeforeDiscount: totalBefore,

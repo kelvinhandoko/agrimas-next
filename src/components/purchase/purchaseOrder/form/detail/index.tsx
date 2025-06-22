@@ -2,6 +2,7 @@
 
 import { NUMERIC_PROPS } from "@/constant";
 import { type PurchasePayload } from "@/model/purchase.model";
+import { discountHandler } from "@/utils/discountHandler";
 import { Trash2 } from "lucide-react";
 import { type FC } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
@@ -65,7 +66,7 @@ const PurchaseOrderDetailForm: FC<PurchaseOrderDetailFormProps> = ({
             <TableHead>produk</TableHead>
             <TableHead className="w-[10ch]">quantity</TableHead>
             <TableHead className="w-[20ch]">harga</TableHead>
-            <TableHead className="w-[20ch]">diskon</TableHead>
+            <TableHead className="w-[20ch]">diskon (%)</TableHead>
             <TableHead className="w-[20ch]">pajak</TableHead>
             <TableHead className="w-[25ch]">total</TableHead>
             <TableHead></TableHead>
@@ -125,17 +126,26 @@ const PurchaseOrderDetailForm: FC<PurchaseOrderDetailFormProps> = ({
                 <TableCell>
                   <FormField
                     control={form.control}
-                    name={`detail.${index}.discount`}
+                    name={`detail.${index}.discount_percent`}
                     render={({ field }) => (
                       <FormItem className="flex flex-col items-start justify-start gap-2">
                         <FormControl>
                           <NumericFormat
                             placeholder="masukan diskon"
                             value={field.value === 0 ? "" : field.value}
-                            onValueChange={({ floatValue }) =>
-                              field.onChange(floatValue)
-                            }
+                            onValueChange={({ floatValue }) => {
+                              field.onChange(floatValue);
+                              const finalTotal = discountHandler(
+                                form.getValues(`detail.${index}.price`),
+                                floatValue || 0,
+                              );
+                              form.setValue(
+                                `detail.${index}.discount`,
+                                finalTotal,
+                              );
+                            }}
                             {...NUMERIC_PROPS}
+                            prefix=""
                           />
                         </FormControl>
                         <FormMessage />
@@ -153,9 +163,9 @@ const PurchaseOrderDetailForm: FC<PurchaseOrderDetailFormProps> = ({
                           <NumericFormat
                             placeholder="masukan pajak"
                             value={field.value === 0 ? "" : field.value}
-                            onValueChange={({ floatValue }) =>
-                              field.onChange(floatValue)
-                            }
+                            onValueChange={({ floatValue }) => {
+                              field.onChange(floatValue);
+                            }}
                             {...NUMERIC_PROPS}
                           />
                         </FormControl>
@@ -192,6 +202,7 @@ const PurchaseOrderDetailForm: FC<PurchaseOrderDetailFormProps> = ({
                       price: 0,
                       quantity: 1,
                       ppn: 0,
+                      discount_percent: 0,
                     })
                   }
                 >
