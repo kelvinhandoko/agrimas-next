@@ -122,6 +122,7 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
                         <TableHead className="w-[15ch]">No</TableHead>
                         <TableHead>Nama Barang</TableHead>
                         <TableHead>Quantity</TableHead>
+                        <TableHead>note</TableHead>
                         <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -133,6 +134,7 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
                             {detail.purchaseDetail.product.name}
                           </TableCell>
                           <TableCell>{detail.quantity}</TableCell>
+                          <TableCell>{detail.note || "-"}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

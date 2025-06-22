@@ -43,6 +43,7 @@ const PurchaseOrderInput: FC<PurchaseOrderInput> = ({ form }) => {
                 hasMore={hasNextPage}
                 fetchMore={fetchNextPage}
                 valueKey="id"
+                className="w-full"
                 onSelect={(val) => {
                   field.onChange(val);
                   const orders = purchaseOrders.find(

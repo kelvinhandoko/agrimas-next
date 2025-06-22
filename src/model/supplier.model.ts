@@ -8,9 +8,20 @@ import {
 } from "@/server/common/models/basic";
 
 export const supplierPayloadSchema = z.object({
+  id: z.string().optional(),
   nama: z.string().min(1, { message: "Nama supplier wajib diisi" }),
   alamat: z.string().nullable(),
-  id: z.string().optional(),
+  idCard: z.string().min(1, { message: "npwp / ktp wajib diisi" }),
+  kode: z.string().min(1, { message: "Kode supplier wajib diisi" }),
+  pic_name: z.string().min(1, { message: "Nama PIC wajib diisi" }),
+  phone_number: z.string().min(1, { message: "Nomor telepon wajib diisi" }),
+  email: z
+    .string()
+    .min(1, { message: "Email wajib diisi" })
+    .email({ message: "Format email tidak valid" }),
+  fax: z.string().min(1, { message: "Nomor fax wajib diisi" }),
+  website: z.string().min(1, { message: "Website wajib diisi" }),
+  kode_pos: z.string().min(1, { message: "Kode pos wajib diisi" }),
 });
 
 export type SupplierPayload = z.infer<typeof supplierPayloadSchema> &

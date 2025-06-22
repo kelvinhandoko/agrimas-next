@@ -6,6 +6,7 @@ export const receiveItemDetailPayloadSchema = z.object({
   purchaseDetailId: z.string().describe("id detail pembelian"),
   productId: z.string().describe("id produk"),
   productName: z.string(),
+  note: z.string().nullish(),
   price: z
     .number()
     .nonnegative("harga tidak boleh kurang dari 0")

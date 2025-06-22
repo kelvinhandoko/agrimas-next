@@ -10,6 +10,12 @@ export const purchaseDetailPayloadSchema = z.object({
   price: z.number().describe("harga satuan"),
   discount: z.number().optional().describe("diskon (optional)"),
   ppn: z.number().nonnegative().default(0).describe("ppn (optional)"),
+  discount_percent: z
+    .number()
+    .nonnegative()
+    .max(99)
+    .default(0)
+    .describe("discount percent (optional)"),
 });
 
 export type PurchaseDetailPayload = z.infer<
