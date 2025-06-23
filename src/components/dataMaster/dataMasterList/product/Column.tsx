@@ -22,7 +22,7 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
   [
     columnHelper.accessor("name", {
       header: () => <div>Nama Produk</div>,
-      cell: ({ row }) => <div className="lowercase">{row.original.name}</div>,
+      cell: ({ row }) => <div className="capitalize">{row.original.name}</div>,
     }),
     columnHelper.accessor("sellingPrice", {
       header: () => <div>Harga jual</div>,

@@ -146,16 +146,24 @@ model JournalDetail {
 }
 
 model Supplier {
-  id        String     @id @default(cuid())
-  nama      String
-  alamat    String?
-  companyId String
-  deleted   DateTime?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now()) @updatedAt
-  products  Product[]
-  purchases Purchase[]
-  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id           String     @id @default(cuid())
+  nama         String
+  alamat       String?
+  companyId    String
+  deleted      DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+  products     Product[]
+  purchases    Purchase[]
+  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  idCard       String     @default("")
+  kode         String     @default("")
+  pic_name     String     @default("")
+  phone_number String     @default("")
+  email        String     @default("")
+  fax          String     @default("")
+  website      String     @default("")
+  kode_pos     String     @default("")
 
   @@unique([nama, companyId])
 }
@@ -237,6 +245,7 @@ model PurchaseDetail {
   discount            Int
   totalBeforeDiscount Int
   ppn                 Int                 @default(0)
+  discount_percent    Int                 @default(0)
   netTotal            Int
   totalReceive        Int                 @default(0)
   deleted             DateTime?
@@ -289,6 +298,7 @@ model ReceiveItemDetail {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   purchaseDetailId String
+  note             String?
   purchaseDetail   PurchaseDetail @relation(fields: [purchaseDetailId], references: [id])
   receiveItem      ReceiveItem    @relation(fields: [receiveId], references: [id])
 }

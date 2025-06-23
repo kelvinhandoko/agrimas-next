@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
+import SupplierFilter from "@/components/filter/SupplierFilter";
 
 import { purchaseOrderColumn } from "./Column";
 
@@ -16,8 +17,10 @@ const PurchaseOrderPage = () => {
   const page = Number(searchparams.get("page") ?? 1);
   const limit = Number(searchparams.get("limit") ?? 10);
   const search = searchparams.get("search") ?? "";
+  const supplierId = searchparams.get("supplierId") ?? "";
   const { data, isLoading } = api.purchase.getAll.useQuery({
     page,
+    supplierId,
     limit,
     search,
   });
@@ -32,6 +35,7 @@ const PurchaseOrderPage = () => {
       </Box>
       <DataTable
         columns={purchaseOrderColumn()}
+        filterComponent={<SupplierFilter />}
         data={data?.data ?? []}
         path={paths.purchase.purchaseOrder.new}
         searchAble

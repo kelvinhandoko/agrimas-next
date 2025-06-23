@@ -51,6 +51,7 @@ const SupplierInput: FC<SupplierInput> = ({ form }) => {
                 onSelect={(val) => {
                   field.onChange(val);
                 }}
+                className="w-full"
                 isFetching={isFetching}
                 onInputChange={(data) => setSearch(data)}
                 isLoading={isLoading}

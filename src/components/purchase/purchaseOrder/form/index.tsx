@@ -8,6 +8,7 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -38,6 +39,7 @@ const PurchaseOrderForm = () => {
     resolver: zodResolver(purchasePayloadSchema),
     defaultValues: {
       purchaseDate: today,
+      dueDate: DateTime.fromJSDate(today).plus({ day: 30 }).toJSDate(),
       discount: 0,
       ppn: 0,
       supplierId: "",
@@ -75,44 +77,46 @@ const PurchaseOrderForm = () => {
           <BackButton path="/sale/sale-faktur" />
           <CardTitle>form pesanan pembelian</CardTitle>
         </div>
-        <div className="grid-col-1 grid w-1/2 items-center gap-2 md:grid-cols-3">
+        <div className="grid w-full grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:w-3/4">
           <DateInput form={form} />
+
           <DueDateInput form={form} />
+
           <FormField
             control={form.control}
             name="ref"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-2">
                 <FormLabel>ref</FormLabel>
                 <FormControl>
                   <Input
-                    className="w-64"
+                    className="w-full"
                     placeholder="ref (optional)"
                     {...field}
                     value={field.value ?? ""}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <SupplierInput form={form} />
+
           <FormField
             control={form.control}
             name="note"
             render={({ field }) => (
-              <FormItem className="col-span-2">
+              <FormItem className="sm:col-span-2">
                 <FormLabel>catatan</FormLabel>
                 <FormControl>
                   <Textarea
-                    className="w-full"
+                    className="min-h-[100px] w-full"
                     placeholder="catatan (optional)"
                     {...field}
                     value={field.value ?? ""}
                   />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}

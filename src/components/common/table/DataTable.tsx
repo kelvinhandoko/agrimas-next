@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -58,6 +58,7 @@ interface DataTableProps<TData, TValue> {
   buttonNew?: boolean;
   onAddNew?: () => void;
   onRetry?: () => void;
+  filterComponent?: ReactNode;
   searchPlaceholder?: string;
   emptyTitle?: string;
   emptyDescription?: string;
@@ -71,6 +72,7 @@ const DataTable = <TData, TValue>({
   data,
   className,
   hideColumn = [],
+  filterComponent,
   totalPage = 1,
   withNumber = false,
   canSelectRow = false,
@@ -379,14 +381,17 @@ const DataTable = <TData, TValue>({
 
         {/* Controls Section */}
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          {searchAble && (
-            <div className="relative w-full sm:w-80">
-              <SearchInput
-                placeholder={searchPlaceholder}
-                className="h-11 w-full rounded-xl border-gray-200 bg-white pl-4 pr-4 shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-              />
-            </div>
-          )}
+          <div className="flex gap-1">
+            {searchAble && (
+              <div className="relative w-full sm:w-80">
+                <SearchInput
+                  placeholder={searchPlaceholder}
+                  className="h-11 w-full rounded-xl border-gray-200 bg-white pl-4 pr-4 shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+            )}
+            {filterComponent && <>{filterComponent}</>}
+          </div>
 
           {buttonNew && (
             <>

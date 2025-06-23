@@ -7,10 +7,6 @@ import { type FC } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import { cn } from "@/lib/utils";
-
-import { useDebounce } from "@/hooks/use-debounce";
-
 import PurchaseReceivedDetailCalculateTotal from "@/components/purchase/purchaseReceived/form/detail/calculatedTotal";
 import { Button } from "@/components/ui/button";
 import { CardDescription } from "@/components/ui/card";
@@ -29,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 
 interface PurchaseReceivedDetailFormProps {
   form: UseFormReturn<ReceiveItemPayload>;
@@ -45,20 +42,6 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
     keyName: "uid",
   });
 
-  const subTotal = form
-    .watch("details")
-    ?.reduce(
-      (acc, curr) =>
-        acc + curr.price * curr.quantity - (curr.discount ?? 0) + curr.tax,
-      0,
-    );
-
-  const debounceSubTotal = useDebounce(subTotal, 300);
-
-  const total = subTotal - form.watch("discount") + form.watch("tax");
-
-  const debounceTotal = useDebounce(total, 300) ?? 0;
-
   if (!fields.length) return null;
   return (
     <div>
@@ -73,6 +56,7 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
             <TableHead className="w-[20ch]">harga</TableHead>
             <TableHead className="w-[10ch]">diskon</TableHead>
             <TableHead className="w-[10ch]">pajak</TableHead>
+            <TableHead className="w-[30ch]">note</TableHead>
             <TableHead className="w-[25ch]">total</TableHead>
             <TableHead className="w-[20ch]"></TableHead>
           </TableRow>
@@ -82,10 +66,7 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
             {fields.map((field, index) => {
               const isFullfilled = field.totalReceive === field.maxQuantity;
               return (
-                <TableRow
-                  key={field.uid}
-                  className={cn(isFullfilled && "line-through")}
-                >
+                <TableRow key={field.uid}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <CardDescription>{field.productName}</CardDescription>
@@ -100,6 +81,7 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
                             <NumericFormat
                               placeholder="masukan jumlah"
                               value={field.value}
+                              disabled={isFullfilled}
                               onValueChange={({ floatValue }) =>
                                 field.onChange(floatValue)
                               }
@@ -221,19 +203,39 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
                     />
                   </TableCell>
                   <TableCell>
+                    <FormField
+                      control={form.control}
+                      name={`details.${index}.note`}
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col items-start justify-start gap-2">
+                          <FormControl>
+                            <Textarea
+                              placeholder="masukan catatan"
+                              {...field}
+                              value={field.value ?? ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </TableCell>
+                  <TableCell>
                     <PurchaseReceivedDetailCalculateTotal
                       form={form}
                       index={index}
                     />
                   </TableCell>
                   <TableCell className="w-16">
-                    <Button
-                      onClick={() => remove(index)}
-                      variant="destructive"
-                      size="icon"
-                    >
-                      <Trash2 />
-                    </Button>
+                    {isFullfilled ? null : (
+                      <Button
+                        onClick={() => remove(index)}
+                        variant="destructive"
+                        size="icon"
+                      >
+                        <Trash2 />
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               );
@@ -242,81 +244,7 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={8}></TableCell>
-            <TableCell>sub total</TableCell>
-            <TableCell>
-              <NumericFormat
-                value={debounceSubTotal}
-                {...NUMERIC_PROPS}
-                displayType="text"
-              />
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={8}></TableCell>
-            <TableCell>diskon</TableCell>
-            <TableCell>
-              <FormField
-                control={form.control}
-                name={"discount"}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start justify-start gap-2">
-                    <FormControl>
-                      <NumericFormat
-                        className="pl-0"
-                        placeholder="masukan jumlah diskon"
-                        value={field.value}
-                        onValueChange={({ floatValue }) =>
-                          field.onChange(floatValue)
-                        }
-                        {...NUMERIC_PROPS}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={8}></TableCell>
-            <TableCell>pajak</TableCell>
-            <TableCell>
-              <FormField
-                control={form.control}
-                name={"tax"}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start justify-start gap-2">
-                    <FormControl>
-                      <NumericFormat
-                        className="pl-0"
-                        placeholder="masukan jumlah pajak"
-                        value={field.value}
-                        onValueChange={({ floatValue }) =>
-                          field.onChange(floatValue)
-                        }
-                        {...NUMERIC_PROPS}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={8}></TableCell>
-            <TableCell>total</TableCell>
-            <TableCell>
-              <NumericFormat
-                value={debounceTotal}
-                {...NUMERIC_PROPS}
-                displayType="text"
-              />
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={8}></TableCell>
+            <TableCell colSpan={9}></TableCell>
             <TableCell colSpan={2}>
               <div className="flex items-center gap-2">
                 <Button
@@ -329,6 +257,10 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
                 <Button
                   type="submit"
                   isLoading={isFormLoading}
+                  disabled={
+                    !form.formState.isDirty ||
+                    form.watch("details").length === 0
+                  }
                   className="w-full"
                 >
                   simpan

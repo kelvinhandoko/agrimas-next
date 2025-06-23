@@ -62,8 +62,7 @@ export class PurchaseRepository extends BaseRepository {
 
     const discountedTotal = totalBeforeDiscount - discount;
     const netTotal = discountedTotal + ppn;
-    console.log(totalBeforeDiscount);
-    console.log(detail);
+
     return await this._db.purchase.create({
       data: {
         purchaseDate,
@@ -100,8 +99,13 @@ export class PurchaseRepository extends BaseRepository {
   }
 
   private async _getQuery(query: GetAllPurchaseQuery) {
-    const { search, companyId, dateRange } = query;
+    const { search, companyId, dateRange, supplierId } = query;
     const whereClause: Prisma.PurchaseWhereInput = {};
+
+    if (supplierId) {
+      whereClause.supplierId = supplierId;
+    }
+
     if (search) {
       whereClause.OR = [
         {

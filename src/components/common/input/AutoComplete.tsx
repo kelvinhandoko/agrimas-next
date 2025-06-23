@@ -85,7 +85,7 @@ export function AutoComplete<T>({
 
   const [input, setInput] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const container = React.useRef(null);
+
   const [ref, inView] = useInView();
 
   const selectedData = options.find((option) => option[valueKey] === value);

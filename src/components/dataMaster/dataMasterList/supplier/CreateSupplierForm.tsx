@@ -1,5 +1,4 @@
 import { type FORM_TYPE } from "@/constant";
-import { type CustomerPayload } from "@/model/customer.model";
 import { type SupplierPayload } from "@/model/supplier.model";
 import { api } from "@/trpc/react";
 import { errorFormatter } from "@/utils/formatter/errorFormatter";
@@ -30,17 +29,22 @@ const CreateSupplierForm: FC<IProps> = ({ onClose, type, data }) => {
 
   const utils = api.useUtils();
 
-  const form = useForm<CustomerPayload>({
+  const form = useForm<SupplierPayload>({
     defaultValues: { nama: "" },
   });
 
-  const onSubmit: SubmitHandler<CustomerPayload> = async ({ nama, alamat }) => {
+  const onSubmit: SubmitHandler<SupplierPayload> = async ({
+    nama,
+    alamat,
+    ...others
+  }) => {
     toast.promise(
       async () => {
         if (type === "CREATE") {
           return await createSupplier({
             nama,
             alamat,
+            ...others,
           });
         }
       },
