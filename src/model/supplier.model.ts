@@ -10,18 +10,15 @@ import {
 export const supplierPayloadSchema = z.object({
   id: z.string().optional(),
   nama: z.string().min(1, { message: "Nama supplier wajib diisi" }),
-  alamat: z.string().nullable(),
-  idCard: z.string().min(1, { message: "npwp / ktp wajib diisi" }),
-  kode: z.string().min(1, { message: "Kode supplier wajib diisi" }),
-  pic_name: z.string().min(1, { message: "Nama PIC wajib diisi" }),
-  phone_number: z.string().min(1, { message: "Nomor telepon wajib diisi" }),
-  email: z
-    .string()
-    .min(1, { message: "Email wajib diisi" })
-    .email({ message: "Format email tidak valid" }),
-  fax: z.string().min(1, { message: "Nomor fax wajib diisi" }),
-  website: z.string().min(1, { message: "Website wajib diisi" }),
-  kode_pos: z.string().min(1, { message: "Kode pos wajib diisi" }),
+  alamat: z.string().min(1, { message: "Nama supplier wajib diisi" }),
+  idCard: z.string().optional().default(""),
+  kode: z.string().optional().default(""),
+  pic_name: z.string().optional().default(""),
+  phone_number: z.string().optional().default(""),
+  email: z.string().optional().default(""),
+  fax: z.string().optional().default(""),
+  website: z.string().optional().default(""),
+  kode_pos: z.string().optional().default(""),
 });
 
 export type SupplierPayload = z.infer<typeof supplierPayloadSchema> &

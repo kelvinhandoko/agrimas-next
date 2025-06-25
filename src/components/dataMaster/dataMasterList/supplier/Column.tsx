@@ -24,9 +24,10 @@ export const supplierlColumn = [
   {
     id: "actions",
     enableHiding: false,
+    meta: { style: { textAlign: "right" } },
     header: () => <div className="text-center">Aksi</div>,
     cell: ({ row }) => (
-      <Flex justify="center" gapX="3">
+      <Flex justify="end" gapX="3">
         <DetailSupplierModal
           id={row.original.id}
           name={row.original.nama}
