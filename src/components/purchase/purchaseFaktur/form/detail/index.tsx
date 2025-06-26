@@ -6,9 +6,9 @@ import { type FC } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import { useDebounce@/lib/utilsse-debounce";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/server/lib/utils";
+import { useDebounce } from "@/hooks/use-debounce";
 
 import PurchaseInvoiceDetailCalculateTotal from "@/components/purchase/purchaseFaktur/form/detail/calculatedTotal";
 import { Button } from "@/components/ui/button";

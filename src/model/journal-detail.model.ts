@@ -1,11 +1,6 @@
-import { type Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { dateRangeSchema } from "@/server/common/models/basic";
-
-type JournalDetailInclude<T> = {
-  include?: Prisma.Subset<T, Prisma.JournalDetailInclude>;
-};
 
 export const journalDetailPayloadSchema = z.object({
   id: z.string().optional(),
@@ -24,7 +19,6 @@ export const getAllJournalDetailQuerySchema = dateRangeSchema.extend({
   accountId: z.string().optional(),
 });
 
-export type GetAllJournalDetailQuery<T = undefined> = z.infer<
+export type GetAllJournalDetailQuery = z.infer<
   typeof getAllJournalDetailQuerySchema
-> &
-  JournalDetailInclude<T> & { companyId: string };
+> & { companyId: string };
