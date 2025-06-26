@@ -4,9 +4,9 @@ import { accountRouter } from "@/server/account";
 import { companyRouter } from "@/server/company/company.router";
 import { customerRouter } from "@/server/customer";
 import { errorLogRouter } from "@/server/errorLog";
+import { generalLedgerRouter } from "@/server/generalLedger/generalLedger.router";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
 import { journalRouter } from "@/server/journal/journal.router";
-import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
 import { paymentMethodRouter } from "@/server/paymentMethod/payment-method.router";
 import { productRouter } from "@/server/product/product.router";
 import { purchaseRouter } from "@/server/purchase/purchase.router";
@@ -29,7 +29,7 @@ export const appRouter = createTRPCRouter({
   account: accountRouter,
   groupAccount: groupAccountRouter,
   journal: journalRouter,
-  journalDetail: journalDetailRouter,
+  generalLedger: generalLedgerRouter,
   company: companyRouter,
   supplier: supplierRouter,
   customer: customerRouter,

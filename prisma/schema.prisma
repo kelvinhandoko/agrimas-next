@@ -19,7 +19,6 @@ model Company {
   account         Account[]
   customers       Customer[]
   DefaultAccount  DefaultAccount[]
-  ErrorLog        ErrorLog[]
   GeneralLedger   GeneralLedger[]
   groupAccount    GroupAccount[]
   InitialProduct  InitialProduct[]
@@ -47,7 +46,6 @@ model User {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   deleted     DateTime?
-  ErrorLog    ErrorLog[]
   userCompany User_Company[]
 }
 
@@ -347,22 +345,6 @@ model PaymentMethod {
   company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
   purchasePayments PurchasePayment[]
   SalesPayment     SalesPayment[]
-}
-
-model ErrorLog {
-  id         String    @id @default(cuid())
-  path       String
-  message    String
-  stackTrace Json?
-  statusCode String?
-  userId     String?
-  input      Json?
-  ipAddress  String?
-  createdAt  DateTime  @default(now())
-  companyId  String?
-  deleted    DateTime?
-  company    Company?  @relation(fields: [companyId], references: [id])
-  user       User?     @relation(fields: [userId], references: [id])
 }
 
 model SalesInvoice {

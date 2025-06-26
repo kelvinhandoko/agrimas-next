@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import AddNewPurchaseReturnPage from "@/components/purchase/purchaseReturn/new/AddNewPurchaseReturnPage";
 

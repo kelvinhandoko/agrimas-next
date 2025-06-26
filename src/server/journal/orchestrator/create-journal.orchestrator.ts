@@ -27,7 +27,7 @@ export const createJournalOrchestrator =
           accountId: createdDetail.accountId,
           companyId: createdJournal.companyId,
           journalDetailId: createdDetail.id,
-          amount: Math.abs(createdDetail.debit - createdDetail.credit),
+          amount: createdDetail.debit - createdDetail.credit,
         });
       }),
     );

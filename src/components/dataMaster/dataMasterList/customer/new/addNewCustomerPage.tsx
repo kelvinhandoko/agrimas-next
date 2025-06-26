@@ -9,7 +9,6 @@ import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -28,7 +27,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 const AddNewCustomerPage = () => {
-  const router = useRouter();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<CustomerPayload>({

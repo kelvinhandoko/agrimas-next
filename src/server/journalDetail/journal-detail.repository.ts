@@ -12,6 +12,7 @@ export class JournalDetailRepository extends BaseRepository {
   async create(payload: JournalDetailPayload) {
     return await this._db.journalDetail.create({
       data: payload,
+      include: { account: true },
     });
   }
   async createMany(payload: Array<JournalDetailPayload>) {

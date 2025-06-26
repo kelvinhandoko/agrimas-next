@@ -8,7 +8,7 @@ export const createGeneralLedgerUseCase =
     const getLastData = await generalLedgerRepo.findLatestData(
       payload.accountId,
     );
-    const runningBalance = getLastData?.runningBalance ?? 0 + payload.amount;
+    const runningBalance = (getLastData?.runningBalance ?? 0) + payload.amount;
     return await generalLedgerRepo.create({ ...payload, runningBalance });
   };
 

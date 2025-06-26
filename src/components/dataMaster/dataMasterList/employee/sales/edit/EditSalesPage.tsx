@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  SalesPersonPayload,
+  type SalesPersonPayload,
   salesPersonPayloadSchema,
 } from "@/model/salesPerson.model";
 import { paths } from "@/paths/paths";
@@ -37,12 +37,11 @@ const EditSalesPage = ({ id }: { id: string }) => {
   });
 
   // get detail sales query
-  const { data: salesDetail, isLoading: isLoadingSalesDetail } =
-    api.salesPerson.findDetail.useQuery({
-      by: "id",
-      identifier: id,
-      companyId: "",
-    });
+  const { data: salesDetail } = api.salesPerson.findDetail.useQuery({
+    by: "id",
+    identifier: id,
+    companyId: "",
+  });
 
   // update sales mutation
   const { mutateAsync: updateSales } = api.salesPerson.update.useMutation();

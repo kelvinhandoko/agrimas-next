@@ -55,7 +55,6 @@ interface DataTableProps<TData, TValue> {
   totalPage?: number;
   titleTable?: string;
   searchAble?: boolean;
-  buttonNew?: boolean;
   onAddNew?: () => void;
   onRetry?: () => void;
   filterComponent?: ReactNode;
@@ -86,7 +85,6 @@ const DataTable = <TData, TValue>({
   titleTable,
   onAddNew,
   onRetry,
-  buttonNew = true,
   emptyTitle,
   emptyDescription,
   emptyIcon,
@@ -99,6 +97,9 @@ const DataTable = <TData, TValue>({
   const limit = Number(searchParams.get("limit")) || LIMIT;
   const page = Number(searchParams.get("page")) || 1;
   const searchQuery = searchParams.get("search") || "";
+
+  // Determine if "Add" button should be shown
+  const showAddButton = !!(path || onAddNew);
 
   const columnVisibility = columns.reduce(
     (visibilityMap, column) => {
@@ -179,11 +180,22 @@ const DataTable = <TData, TValue>({
           <Filter className="mr-2 h-4 w-4" />
           Hapus Filter
         </Button>
-        {buttonNew && onAddNew && (
-          <Button onClick={onAddNew} size="sm">
-            <PlusIcon className="mr-2 h-4 w-4" />
-            {buttonAddName || "Tambah Data"}
-          </Button>
+        {showAddButton && (
+          <>
+            {path ? (
+              <Link href={path}>
+                <Button size="sm">
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  {buttonAddName || "Tambah Data"}
+                </Button>
+              </Link>
+            ) : onAddNew ? (
+              <Button onClick={onAddNew} size="sm">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                {buttonAddName || "Tambah Data"}
+              </Button>
+            ) : null}
+          </>
         )}
       </div>
     </div>
@@ -213,7 +225,7 @@ const DataTable = <TData, TValue>({
         <p className="mb-8 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
           {emptyDescription || defaultDescription}
         </p>
-        {buttonNew && (
+        {showAddButton && (
           <div className="flex flex-col gap-3 sm:flex-row">
             {path ? (
               <Link href={path}>
@@ -301,11 +313,22 @@ const DataTable = <TData, TValue>({
                 <Filter className="mr-2 h-4 w-4" />
                 Hapus Filter
               </Button>
-              {buttonNew && onAddNew && (
-                <Button onClick={onAddNew} size="sm">
-                  <PlusIcon className="mr-2 h-4 w-4" />
-                  {buttonAddName || "Tambah Data"}
-                </Button>
+              {showAddButton && (
+                <>
+                  {path ? (
+                    <Link href={path}>
+                      <Button size="sm">
+                        <PlusIcon className="mr-2 h-4 w-4" />
+                        {buttonAddName || "Tambah Data"}
+                      </Button>
+                    </Link>
+                  ) : onAddNew ? (
+                    <Button onClick={onAddNew} size="sm">
+                      <PlusIcon className="mr-2 h-4 w-4" />
+                      {buttonAddName || "Tambah Data"}
+                    </Button>
+                  ) : null}
+                </>
               )}
             </div>
           }
@@ -327,7 +350,7 @@ const DataTable = <TData, TValue>({
           title={emptyTitle || defaultTitle}
           description={emptyDescription || defaultDescription}
           action={
-            buttonNew && (
+            showAddButton && (
               <>
                 {path ? (
                   <Link href={path}>
@@ -393,7 +416,7 @@ const DataTable = <TData, TValue>({
             {filterComponent && <>{filterComponent}</>}
           </div>
 
-          {buttonNew && (
+          {showAddButton && (
             <>
               {path ? (
                 <Link href={path} className="w-full sm:w-auto">

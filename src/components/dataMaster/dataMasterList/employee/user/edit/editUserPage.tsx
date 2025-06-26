@@ -145,7 +145,7 @@ const EditUserPage = ({ id }: { id: string }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.values(Role).map((role, index) => (
+                      {Object.values(Role).map((role) => (
                         <SelectItem key={role} value={role}>
                           {role}
                         </SelectItem>
