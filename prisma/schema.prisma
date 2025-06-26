@@ -116,17 +116,22 @@ model SubAccount {
 }
 
 model Journal {
-  id            String          @id @default(cuid())
-  date          DateTime
-  ref           String
-  description   String?
-  type          JournalType
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  companyId     String
-  deleted       DateTime?
-  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  JournalDetail JournalDetail[]
+  id              String           @id @default(cuid())
+  date            DateTime
+  ref             String
+  description     String?
+  type            JournalType
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  companyId       String
+  deleted         DateTime?
+  company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  JournalDetail   JournalDetail[]
+  ReceiveItem     ReceiveItem?
+  PurchaseInvoice PurchaseInvoice?
+  SalesInvoice    SalesInvoice?
+  SalesPayment    SalesPayment?
+  PurchasePayment PurchasePayment?
 }
 
 model JournalDetail {
@@ -270,6 +275,8 @@ model PurchasePayment {
   purchaseInvoice   PurchaseInvoice @relation(fields: [purchaseInvoiceId], references: [id])
   companyId         String
   company           Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  journalId         String?         @unique
+  journal           Journal?        @relation(fields: [journalId], references: [id])
 }
 
 model ReceiveItem {
@@ -287,6 +294,8 @@ model ReceiveItem {
   company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
   purchase          Purchase            @relation(fields: [purchaseId], references: [id])
   receiveItemDetail ReceiveItemDetail[]
+  journalId         String?             @unique
+  journal           Journal?            @relation(fields: [journalId], references: [id])
 }
 
 model ReceiveItemDetail {
@@ -322,6 +331,8 @@ model PurchaseInvoice {
   company          Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   receiveItem      ReceiveItem                @relation(fields: [receiveId], references: [id])
   purchasePayments PurchasePayment[]
+  journalId        String?                    @unique
+  journal          Journal?                   @relation(fields: [journalId], references: [id])
 }
 
 model PaymentMethod {
@@ -379,6 +390,8 @@ model SalesInvoice {
   salesPerson        SalesPerson                @relation(fields: [salesPersonId], references: [id])
   salesInvoiceDetail SalesInvoiceDetail[]
   SalesPayment       SalesPayment[]
+  journalId          String?                    @unique
+  journal            Journal?                   @relation(fields: [journalId], references: [id])
 }
 
 model SalesInvoiceDetail {
@@ -422,6 +435,8 @@ model SalesPayment {
   company         Company       @relation(fields: [companyId], references: [id])
   paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   salesInvoice    SalesInvoice  @relation(fields: [salesInvoiceId], references: [id])
+  journalId       String?       @unique
+  journal         Journal?      @relation(fields: [journalId], references: [id])
 }
 
 model DefaultAccount {
@@ -437,13 +452,13 @@ model DefaultAccount {
 }
 
 model GeneralLedger {
-  id              String        @id
+  id              String        @id @default(cuid())
   accountId       String
   journalDetailId String
   runningBalance  Int
   companyId       String
   createdAt       DateTime      @default(now())
-  updatedAt       DateTime
+  updatedAt       DateTime      @updatedAt
   deleted         DateTime?
   Account         Account       @relation(fields: [accountId], references: [id])
   Company         Company       @relation(fields: [companyId], references: [id])

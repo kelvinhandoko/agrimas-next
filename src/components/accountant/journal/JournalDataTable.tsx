@@ -3,47 +3,42 @@
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { predefinedRanges } from "@/utils/dateHelper";
-import { toast } from "sonner";
+import { type FC } from "react";
 
-import LoadingIndicator from "@/components/LoadingIndicator";
 import DataTable from "@/components/common/table/DataTable";
 
-import { journalColumn } from "./Column";
+import { JournalColumn } from "./Column";
 
-const JournalDataTable = () => {
-  const { data, isLoading } = api.journal.getAll.useQuery({
-    from: predefinedRanges.thisMonth.from.toISO()!,
-    to: predefinedRanges.thisMonth.to.toISO()!,
-  });
-  const utils = api.useUtils();
+interface IProps {
+  searchparams: Record<string, string | undefined>;
+}
 
-  const { mutateAsync: deleteUser } = api.user.delete.useMutation({
-    onSuccess: async () => {
-      toast.success("Berhasil hapus user");
-      await utils.user.getAll.invalidate();
-    },
-    onError: () => {
-      toast.error("Gagal menghapus user");
-    },
-  });
+const JournalDataTable: FC<IProps> = ({ searchparams }) => {
+  const search = searchparams.search;
+  const limit = Number(searchparams.limit) || 10;
+  const page = Number(searchparams.page) || 1;
 
-  const handleDeleteJournal = async (id: string) => {
-    try {
-      await deleteUser(id);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
+  const dateRange = {
+    from: searchparams.from || predefinedRanges.thisMonth.from.toISO()!,
+    to: searchparams.to || predefinedRanges.thisMonth.to.toISO()!,
   };
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
+
+  const { data, isLoading } = api.journal.get.useQuery({
+    dateRange,
+    limit,
+    page,
+    search,
+  });
 
   return (
     <DataTable
-      columns={journalColumn({ handleDeleteJournal })}
+      columns={JournalColumn()}
       data={data?.data ?? []}
       searchAble
       path={paths.accountant.newJournal}
+      isLoading={isLoading}
+      totalData={data?.meta.totalCount}
+      totalPage={data?.meta.pageCount}
       buttonAddName="Tambah Jurnal Umum"
       titleTable="Data Jurnal Umum"
     />

@@ -15,6 +15,7 @@ export const createJournalDetailUseCase =
     const findAccount = await accountRepo.getDetail({
       id: payload.accountId,
     });
+
     if (!findAccount) {
       throw new TRPCError({
         code: "NOT_FOUND",
@@ -41,3 +42,7 @@ export const createJournalDetailUseCase =
 
     return await journalDetailRepo.create(payload);
   };
+
+export type CreateJournalDetailUseCase = ReturnType<
+  typeof createJournalDetailUseCase
+>;

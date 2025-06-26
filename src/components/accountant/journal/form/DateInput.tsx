@@ -35,8 +35,8 @@ const DateInput: FC<DateInputProps> = ({ form }) => {
       control={form.control}
       name="date"
       render={({ field }) => (
-        <FormItem className="flex flex-col">
-          <FormLabel>tanggal</FormLabel>
+        <FormItem className="flex items-center gap-2">
+          <FormLabel>tanggal :</FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl>

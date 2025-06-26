@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { DateTime } from "luxon";
 
 import { type DbTransactionClient, type db } from "@/server/db";
@@ -30,5 +31,13 @@ export class BaseRepository {
       ref: `${refCode}-${datePart}-${paddedSeq}`,
       seq: paddedSeq,
     };
+  }
+
+  protected _fail(err: unknown) {
+    return new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Terjadi kesalahan pada server",
+      cause: err,
+    });
   }
 }
