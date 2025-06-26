@@ -1,16 +1,13 @@
 import { journalDetailPayloadSchema } from "@/model/journal-detail.model";
-import { JournalType, type Prisma } from "@prisma/client";
+import { JournalType } from "@prisma/client";
 import { z } from "zod";
 
 import {
   type WithCompany,
-  basicQuery,
-  dateRangeSchema,
+  cursorQuery,
+  getQuery,
+  paginatedQuery,
 } from "@/server/common/models/basic";
-
-type JournalInclude<T> = {
-  include?: Prisma.Subset<T, Prisma.JournalInclude>;
-};
 
 export const journalPayloadSchema = z.object({
   id: z.string().optional(),
@@ -20,19 +17,31 @@ export const journalPayloadSchema = z.object({
   type: z.nativeEnum(JournalType, {
     invalid_type_error: "tipe jurnal tidak valid",
   }),
-  details: z.array(journalDetailPayloadSchema.omit({ journalId: true })),
+  details: z
+    .array(journalDetailPayloadSchema.omit({ journalId: true }))
+    .min(2, "minimal detail jurnal adalah 2"),
 });
 
 export type JournalPayload = z.infer<typeof journalPayloadSchema> & {
   companyId: string;
 };
 
-export const getAllJournalQuerySchema = basicQuery.extend({
-  ...dateRangeSchema.shape,
-});
+export const getJournalQuerySchema = getQuery;
 
-export type GetAllJournalQuery<T extends Prisma.JournalInclude> = z.infer<
-  typeof getAllJournalQuerySchema
+export type GetJournalQuery = z.infer<typeof getJournalQuerySchema> &
+  WithCompany;
+
+export const paginatedJournalQuerySchema = paginatedQuery.merge(
+  getJournalQuerySchema,
+);
+export type PaginatedJournalQuery = z.infer<
+  typeof paginatedJournalQuerySchema
 > &
-  WithCompany &
-  JournalInclude<T>;
+  WithCompany;
+
+export const cursoredJournalQuerySchema = cursorQuery.merge(
+  getJournalQuerySchema,
+);
+
+export type CursoredJournalQuery = z.infer<typeof cursoredJournalQuerySchema> &
+  WithCompany;

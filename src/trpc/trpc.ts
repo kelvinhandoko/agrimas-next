@@ -77,28 +77,6 @@ export const createCallerFactory = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 
-/**
- * Middleware for adding artificial latency and logging execution times in development.
- *
- * @param {Object} params - Procedure call details
- * @returns {Promise<Object>} The result of the procedure execution
- */
-const timingMiddleware = t.middleware(async ({ next, path }) => {
-  const start = Date.now();
-
-  if (t._config.isDev) {
-    const waitMs = Math.floor(Math.random() * 400) + 100;
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-  }
-
-  const result = await next();
-
-  const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
-
-  return result;
-});
-
 const loggerMiddleware = t.middleware(async ({ path, type, next }) => {
   const start = Date.now();
   const result = await next();

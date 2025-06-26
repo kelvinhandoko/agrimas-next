@@ -1,5 +1,5 @@
 import { purchaseDetailPayloadSchema } from "@/model/purchase-detail.model";
-import { type Prisma, TRANSACTION_STATUS } from "@prisma/client";
+import { TRANSACTION_STATUS } from "@prisma/client";
 import { z } from "zod";
 
 import {
@@ -8,10 +8,6 @@ import {
   getQuery,
   paginatedQuery,
 } from "@/server/common";
-
-type PurchaseInclude<T> = {
-  include?: Prisma.Subset<T, Prisma.PurchaseInclude>;
-};
 
 export const purchasePayloadSchema = z.object({
   id: z.string().optional().describe("id pembelian"),
@@ -43,8 +39,7 @@ export const purchaseDetailQuerySchema = z.object({
   id: z.string().describe("id pembelian"),
 });
 
-export type PurchaseDetailQuery<T> = z.infer<typeof purchaseDetailQuerySchema> &
-  PurchaseInclude<T>;
+export type PurchaseDetailQuery = z.infer<typeof purchaseDetailQuerySchema>;
 
 export const GetAllPurchaseQuerySchema = getQuery.extend({
   supplierId: z.string().optional().describe("id supplier"),

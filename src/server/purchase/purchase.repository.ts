@@ -3,7 +3,6 @@ import {
   type CursorPurchaseQuery,
   type GetAllPurchaseQuery,
   type PaginatedPurchaseQuery,
-  type PurchaseDetailQuery,
   type PurchasePayload,
   type UpdatePurchaseStatusPayload,
 } from "@/model/purchase.model";
@@ -85,16 +84,6 @@ export class PurchaseRepository extends BaseRepository {
     return await this._db.purchase.update({
       where: { id },
       data: { status },
-    });
-  }
-
-  async findDetail<T extends Prisma.PurchaseInclude>(
-    query: PurchaseDetailQuery<T>,
-  ) {
-    const { id, include } = query;
-    return await this._db.purchase.findUnique({
-      where: { id },
-      include: include ?? (undefined as unknown as T),
     });
   }
 

@@ -1,14 +1,14 @@
-import { getAllJournalQuerySchema } from "@/model";
+import { paginatedJournalQuerySchema } from "@/model";
 import { companyProcedure } from "@/trpc/trpc";
 
 import { JournalRepository } from "@/server/journal/journal.repository";
-import { getAllJournalUseCase } from "@/server/journal/use-cases/get-all-journal.use-case";
+import { getPaginatedJournalUseCase } from "@/server/journal/use-cases/get-paginated-journal.use-case";
 
-export const getAllJournalController = companyProcedure
-  .input(getAllJournalQuerySchema)
+export const getPaginatedJournalController = companyProcedure
+  .input(paginatedJournalQuerySchema)
   .query(async ({ ctx, input }) => {
     const journalRepo = new JournalRepository(ctx.db);
-    const getAllJournal = getAllJournalUseCase(journalRepo);
+    const getAllJournal = getPaginatedJournalUseCase(journalRepo);
     return await getAllJournal({
       ...input,
       companyId: ctx.session.user.companyId,

@@ -1,16 +1,16 @@
 import { type JournalType } from "@prisma/client";
 
-export const convertType = (type: JournalType) => {
+export const convertType = (type: JournalType): string => {
   switch (true) {
     case type === "ADJUSTING":
-      return "AJP";
+      return "JURNAL PENYESUAIAN";
     case type === "CLOSING":
-      return "JP";
+      return "JURNAL PENUTUP";
     case type === "REVERSING":
-      return "RE";
+      return "JURNAL PEMBALIK";
     case type === "GENERAL":
-      return "JU";
+      return "JURNAL UMUM";
     default:
-      break;
+      return "JURNAL UMUM";
   }
 };

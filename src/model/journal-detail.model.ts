@@ -1,18 +1,15 @@
-import { type Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { dateRangeSchema } from "@/server/common/models/basic";
-
-type JournalDetailInclude<T> = {
-  include?: Prisma.Subset<T, Prisma.JournalDetailInclude>;
-};
 
 export const journalDetailPayloadSchema = z.object({
   id: z.string().optional(),
   debit: z.number().nonnegative("debit tidak boleh negatif").default(0),
   credit: z.number().nonnegative("kredit tidak boleh negatif").default(0),
   journalId: z.string({ required_error: "jurnal tidak boleh kosong" }),
-  accountId: z.string({ required_error: "nama akun tidak boleh kosong" }),
+  accountId: z
+    .string({ required_error: "nama akun tidak boleh kosong" })
+    .min(1, "nama akun tidak boleh kosong"),
   subAccountId: z.string().nullish(),
 });
 
@@ -22,7 +19,6 @@ export const getAllJournalDetailQuerySchema = dateRangeSchema.extend({
   accountId: z.string().optional(),
 });
 
-export type GetAllJournalDetailQuery<T = undefined> = z.infer<
+export type GetAllJournalDetailQuery = z.infer<
   typeof getAllJournalDetailQuerySchema
-> &
-  JournalDetailInclude<T> & { companyId: string };
+> & { companyId: string };

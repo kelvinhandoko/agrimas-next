@@ -3,12 +3,12 @@ import { type inferRouterOutputs } from "@trpc/server";
 
 import {
   createJournalController,
-  getAllJournalController,
+  getPaginatedJournalController,
 } from "@/server/journal/controller";
 
 export const journalRouter = createTRPCRouter({
   create: createJournalController,
-  getAll: getAllJournalController,
+  get: getPaginatedJournalController,
 });
 
 export type JournalRouterOutputs = inferRouterOutputs<typeof journalRouter>;

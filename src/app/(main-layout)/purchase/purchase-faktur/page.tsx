@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { type Metadata } from "next";
 
 import PurchaseFakturPage from "@/components/purchase/purchaseFaktur/PurchaseFakturPage";
 

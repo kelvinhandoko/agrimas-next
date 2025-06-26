@@ -126,7 +126,6 @@ export class AccountRepository extends BaseRepository {
     });
   }
 
-  // Update only balance
   async updateBalance(payload: UpdateBalancePayload) {
     return this._db.account.update({
       where: { id: payload.id },
@@ -169,9 +168,14 @@ export class AccountRepository extends BaseRepository {
       include: {
         groupAccount: true,
       },
-      orderBy: {
-        code: "asc",
-      },
+      orderBy: [
+        {
+          code: "asc",
+        },
+        {
+          createdAt: "asc",
+        },
+      ],
     });
   }
 

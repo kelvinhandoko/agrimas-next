@@ -1,11 +1,9 @@
 import { type GetAllUserQuery, type UserPayload } from "@/model/user.model";
-import { type Prisma, type PrismaClient } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 
-import { type DbTransactionClient } from "@/server/db";
+import { BaseRepository } from "@/server/common";
 
-export class UserRepository {
-  constructor(private _db: PrismaClient | DbTransactionClient) {}
-
+export class UserRepository extends BaseRepository {
   async findUserByUsername(username: string) {
     const data = await this._db.user.findFirst({ where: { username } });
 
@@ -39,17 +37,9 @@ export class UserRepository {
     return data;
   }
 
-  async getAll<T extends Prisma.UserInclude>(query: GetAllUserQuery<T>) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
-      companyId,
-      include,
-    } = query;
+  async getAll(query: GetAllUserQuery) {
+    const { infiniteScroll, limit, page, cursor, takeAll, search, companyId } =
+      query;
     const whereClause: Prisma.UserWhereInput = {};
 
     let cursorClause = undefined;
@@ -72,7 +62,6 @@ export class UserRepository {
     }
 
     if (search) {
-      const splitSearch = search.split(" ");
       whereClause.OR = [
         {
           username: { contains: search },
@@ -87,7 +76,6 @@ export class UserRepository {
       cursor: cursorClause,
       skip: skipClause,
       omit: { password: true },
-      include: include ?? (undefined as unknown as T),
     });
 
     let nextCursor: typeof cursor | undefined = undefined;

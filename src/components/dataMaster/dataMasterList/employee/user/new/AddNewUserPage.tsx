@@ -128,7 +128,7 @@ const AddNewUserPage = () => {
                     </FormControl>
                     <SelectContent>
                       {Object.values(Role).map((role, index) => (
-                        <SelectItem key={role} value={role}>
+                        <SelectItem key={index} value={role}>
                           {role}
                         </SelectItem>
                       ))}

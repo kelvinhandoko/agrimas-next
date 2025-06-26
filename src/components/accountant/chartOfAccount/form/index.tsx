@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 import { errorFormatter } from "@/utils/formatter/errorFormatter";
 import { splitText } from "@/utils/formatter/stringFormatter";
 import { Laporan, NormalPosition } from "@prisma/client";
-import React, { type FC } from "react";
+import React, { type FC, useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -27,9 +27,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 interface AccountFormProps {
   type?: FORM_TYPE;
   onClose: (id: string) => void;
+  data?: Partial<AccountPayload>;
 }
 
-const AccountForm: FC<AccountFormProps> = ({ type = "CREATE", onClose }) => {
+const AccountForm: FC<AccountFormProps> = ({
+  type = "CREATE",
+  onClose,
+  data,
+}) => {
   const utils = api.useUtils();
   const form = useForm<AccountPayload>({
     defaultValues: {
@@ -66,6 +71,13 @@ const AccountForm: FC<AccountFormProps> = ({ type = "CREATE", onClose }) => {
       },
     );
   };
+
+  useEffect(() => {
+    if (data) {
+      form.reset(data);
+    }
+  }, [data]);
+
   return (
     <Form {...form}>
       <form
