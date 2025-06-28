@@ -11,7 +11,7 @@ export const createReceiveItemUseCase =
   }) =>
   async (payload: ReceiveItemPayload) => {
     const { purchaseId } = payload;
-    const purchase = await repos.purchaseRepo.findDetail({ id: purchaseId });
+    const purchase = await repos.purchaseRepo.getDetail(purchaseId);
     if (!purchase)
       throw new TRPCError({
         code: "NOT_FOUND",
