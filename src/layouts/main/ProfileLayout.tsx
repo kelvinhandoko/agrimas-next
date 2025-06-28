@@ -3,7 +3,7 @@
 import { paths } from "@/paths/paths";
 import { Box } from "@radix-ui/themes";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import BackButton from "@/components/BackButton";
 import ListItem from "@/components/Navigation/ListItem";
