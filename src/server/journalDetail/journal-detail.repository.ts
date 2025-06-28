@@ -12,6 +12,7 @@ export class JournalDetailRepository extends BaseRepository {
   async create(payload: JournalDetailPayload) {
     return await this._db.journalDetail.create({
       data: payload,
+      include: { account: true },
     });
   }
   async createMany(payload: Array<JournalDetailPayload>) {
@@ -20,10 +21,8 @@ export class JournalDetailRepository extends BaseRepository {
     });
   }
 
-  async getAllByAccountId<T extends Prisma.JournalDetailInclude>(
-    query: GetAllJournalDetailQuery<T>,
-  ) {
-    const { companyId, accountId, from, include, to } = query;
+  async getAllByAccountId(query: GetAllJournalDetailQuery) {
+    const { companyId, accountId, from, to } = query;
     const whereClause: Prisma.JournalDetailWhereInput = {
       journal: {
         companyId,
@@ -53,7 +52,6 @@ export class JournalDetailRepository extends BaseRepository {
     const totalPromise = this._db.journalDetail.count({ where: whereClause });
     const dataPromise = this._db.journalDetail.findMany({
       where: whereClause,
-      include: (include as T) ?? undefined,
     });
 
     const [total, data] = await Promise.all([totalPromise, dataPromise]);

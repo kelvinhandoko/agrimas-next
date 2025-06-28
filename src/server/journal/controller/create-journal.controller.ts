@@ -1,12 +1,15 @@
 import { journalPayloadSchema } from "@/model";
 import { companyProcedure } from "@/trpc/trpc";
-import { TRPCError } from "@trpc/server";
 
 import { AccountRepository } from "@/server/account";
 import { db } from "@/server/db/prisma";
+import { GeneralLedgerRepository } from "@/server/generalLedger/repository/general-ledger.repository";
+import { createGeneralLedgerUseCase } from "@/server/generalLedger/use-cases/create-general-ledger.use-case";
 import { JournalRepository } from "@/server/journal/journal.repository";
-import { createJournalUseCase } from "@/server/journal/use-cases";
-import { JournalDetailRepository } from "@/server/journalDetail";
+import { createJournalOrchestrator } from "@/server/journal/orchestrator/create-journal.orchestrator";
+import { createJournalUseCase } from "@/server/journal/use-cases/create-journal.use-case";
+import { JournalDetailRepository } from "@/server/journalDetail/journal-detail.repository";
+import { createJournalDetailUseCase } from "@/server/journalDetail/use-cases/create-journal-detail.use-case";
 import { TransactionService } from "@/server/services";
 
 export const createJournalController = companyProcedure
@@ -17,31 +20,19 @@ export const createJournalController = companyProcedure
       const journalRepo = new JournalRepository(tx);
       const journalDetailRepo = new JournalDetailRepository(tx);
       const accountRepo = new AccountRepository(tx);
+      const generalLedgerRepo = new GeneralLedgerRepository(tx);
 
-      const creditTotal = input.details.reduce(
-        (acc, curr) => acc + curr.credit,
-        0,
-      );
-      const debitTotal = input.details.reduce(
-        (acc, curr) => acc + curr.debit,
-        0,
-      );
-      const checkBalance = creditTotal === debitTotal;
-      if (!checkBalance) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "debit dan kredit tidak balance",
-        });
-      }
-
-      const createJournal = createJournalUseCase(
-        journalRepo,
+      const createJournal = createJournalUseCase(journalRepo);
+      const createJournalDetail = createJournalDetailUseCase({
         journalDetailRepo,
         accountRepo,
-      );
-      return await createJournal({
-        ...input,
-        companyId: ctx.session.user.companyId,
       });
+      const createGeneralLedger = createGeneralLedgerUseCase(generalLedgerRepo);
+
+      return await createJournalOrchestrator({
+        createGeneralLedgerUseCase: createGeneralLedger,
+        createJournalDetailUseCase: createJournalDetail,
+        createJournalUseCase: createJournal,
+      })({ ...input, companyId: ctx.session.user.companyId });
     });
   });

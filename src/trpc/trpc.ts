@@ -8,9 +8,14 @@
  *
  * Use this file as a reference for creating API endpoints or extending server capabilities.
  */
+import { env } from "@/env";
 import { TRPCError, initTRPC } from "@trpc/server";
+import { getStatusCodeFromKey } from "@trpc/server/unstable-core-do-not-import";
 import superjson from "superjson";
+import { type TRPCPanelMeta } from "trpc-ui";
 import { ZodError } from "zod";
+
+import { logger } from "@/lib/winston";
 
 import { CompanyRepository } from "@/server/company/company.repository";
 import { GetCompanyByIdUseCase } from "@/server/company/use-cases";
@@ -41,19 +46,22 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * - Custom transformer (superjson)
  * - Error formatting for Zod validation errors
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+const t = initTRPC
+  .context<typeof createTRPCContext>()
+  .meta<TRPCPanelMeta>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * Creates a server-side caller for invoking tRPC procedures directly.
@@ -69,24 +77,21 @@ export const createCallerFactory = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 
-/**
- * Middleware for adding artificial latency and logging execution times in development.
- *
- * @param {Object} params - Procedure call details
- * @returns {Promise<Object>} The result of the procedure execution
- */
-const timingMiddleware = t.middleware(async ({ next, path }) => {
+const loggerMiddleware = t.middleware(async ({ path, type, next }) => {
   const start = Date.now();
-
-  if (t._config.isDev) {
-    const waitMs = Math.floor(Math.random() * 400) + 100;
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-  }
-
   const result = await next();
+  const durationMs = Date.now() - start;
 
-  const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
+  if (result.ok) {
+    if (env.NODE_ENV !== "production") {
+      logger.info(`✅ ${type.toUpperCase()} ${path} - ${durationMs}ms ]`);
+    }
+  } else {
+    logger.error(`❌ ${type.toUpperCase()} ${path} - ${durationMs}ms`);
+    logger.error(
+      `Error [${getStatusCodeFromKey(result.error.code)}]: ${result.error.message}`,
+    );
+  }
 
   return result;
 });
@@ -96,14 +101,14 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  *
  * Automatically uses timing middleware for debugging in development.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure.use(loggerMiddleware);
 
 /**
  * Protected procedure: Accessible only to authenticated users.
  *
  * Ensures `ctx.session.user` is non-null.
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = publicProcedure.use(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -179,7 +184,7 @@ export const adminCompanyProcedure = companyProcedure.use(({ ctx, next }) => {
  */
 export const ownerCompanyProcedure = adminCompanyProcedure.use(
   ({ ctx, next }) => {
-    if (ctx.session?.user?.role !== "ADMIN") {
+    if (ctx.session?.user?.role !== "OWNER") {
       throw new TRPCError({ code: "FORBIDDEN" });
     }
 

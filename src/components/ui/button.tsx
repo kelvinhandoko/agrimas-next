@@ -1,5 +1,7 @@
 import { Slot } from "@radix-ui/react-slot";
+import { Slottable } from "@radix-ui/themes";
 import { type VariantProps, cva } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -17,7 +19,7 @@ const buttonVariants = cva(
           "border border-[#624DE3] text-[#624DE3] hover:bg-[#624DE3]/10 shadow-sm hover:shadow-md",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: " hover:bg-[#624DE3]/10 ",
         link: "text-primary underline-offset-4 hover:underline",
         destructiveOnline:
           "border border-red-600 text-red-600 bg-transparent hover:bg-red-600 hover:text-white",
@@ -40,10 +42,14 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, isLoading = false, size, asChild = false, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
@@ -51,7 +57,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+        disabled={isLoading || props.disabled}
+      >
+        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {isLoading ? (
+          <span>loading..</span>
+        ) : (
+          <Slottable>{props.children}</Slottable>
+        )}
+      </Comp>
     );
   },
 );

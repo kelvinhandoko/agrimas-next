@@ -1,11 +1,23 @@
-import { supplierRouter } from "@/server";
 import { createCallerFactory, createTRPCRouter } from "@/trpc/trpc";
 
 import { accountRouter } from "@/server/account";
 import { companyRouter } from "@/server/company/company.router";
+import { customerRouter } from "@/server/customer";
+import { generalLedgerRouter } from "@/server/generalLedger/generalLedger.router";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
-import { journalRouter } from "@/server/journal";
-import { journalDetailRouter } from "@/server/journalDetail/journal-detail.router";
+import { journalRouter } from "@/server/journal/journal.router";
+import { paymentMethodRouter } from "@/server/paymentMethod/payment-method.router";
+import { productRouter } from "@/server/product/product.router";
+import { purchaseRouter } from "@/server/purchase/purchase.router";
+import { purchaseInvoiceRouter } from "@/server/purchaseInvoice/purchase-invoice.router";
+import { purchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
+import { receiveItemRouter } from "@/server/recieveItem/receive-item.router";
+import { reportRouter } from "@/server/report/report.router";
+import { salesInvoiceRouter } from "@/server/salesInvoice/sales-invoice.router";
+import { salesPaymentRouter } from "@/server/salesPayment/sales-payment.router";
+import { salesPersonRouter } from "@/server/salesPerson/sales-person.router";
+import { supplierRouter } from "@/server/supplier";
+import { userRouter } from "@/server/user/user.router";
 
 /**
  * This is the primary router for your server.
@@ -16,9 +28,21 @@ export const appRouter = createTRPCRouter({
   account: accountRouter,
   groupAccount: groupAccountRouter,
   journal: journalRouter,
-  journalDetail: journalDetailRouter,
+  generalLedger: generalLedgerRouter,
   company: companyRouter,
   supplier: supplierRouter,
+  customer: customerRouter,
+  salesPerson: salesPersonRouter,
+  salesInvoice: salesInvoiceRouter,
+  salesPayment: salesPaymentRouter,
+  user: userRouter,
+  product: productRouter,
+  purchase: purchaseRouter,
+  receiveItem: receiveItemRouter,
+  purchasePayment: purchasePaymentRouter,
+  paymentMethod: paymentMethodRouter,
+  report: reportRouter,
+  purchaseInvoice: purchaseInvoiceRouter,
 });
 
 // export type definition of API

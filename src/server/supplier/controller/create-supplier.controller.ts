@@ -7,12 +7,10 @@ import { createSupplierUseCase } from "@/server/supplier/use-cases/create-suppli
 export const createSupplierController = companyProcedure
   .input(supplierPayloadSchema)
   .mutation(async ({ ctx, input }) => {
-    const { alamat, nama } = input;
     const supplierRepo = new SupplierRepository(ctx.db);
     const createSuppier = createSupplierUseCase(supplierRepo);
     return await createSuppier({
-      alamat,
-      nama,
+      ...input,
       companyId: ctx.session.user.companyId,
     });
   });

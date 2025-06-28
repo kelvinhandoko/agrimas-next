@@ -1,28 +1,27 @@
 import { TIMEZONE } from "@/constant";
 import {
-  type GetAllJournalQuery,
+  type CursoredJournalQuery,
+  type GetJournalQuery,
   type JournalPayload,
+  type PaginatedJournalQuery,
 } from "@/model/journal.model";
-import { convertType } from "@/utils/journalTypeHelper";
-import { type JournalType, type Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 
 import { BaseRepository } from "@/server/common/repository/BaseRepository";
 
 export class JournalRepository extends BaseRepository {
-  private async _generateRef(type: JournalType) {
-    const findData = await this._db.journal.findMany({
-      where: {
-        ref: { startsWith: convertType(type) },
-      },
-    });
-    return `${convertType(type)}-${findData.length + 1}`;
-  }
   async create(payload: Omit<JournalPayload, "details">) {
+    const { companyId, date, type, description, ref } = payload;
     return await this._db.journal.create({
       data: {
-        ...payload,
-        ref: payload.ref ?? (await this._generateRef(payload.type)),
+        companyId,
+        date,
+        type,
+        description,
+        ref: ref?.length
+          ? ref
+          : (await this._createRef(companyId, "journal", "JO")).ref,
       },
     });
   }
@@ -33,82 +32,58 @@ export class JournalRepository extends BaseRepository {
     });
   }
 
-  async getAll<T extends Prisma.JournalInclude>(query: GetAllJournalQuery<T>) {
-    const {
-      infiniteScroll,
-      limit,
-      page,
-      cursor,
-      takeAll,
-      search,
-      companyId,
-      include,
-      from,
-      to,
-    } = query;
-    const whereClause: Prisma.JournalWhereInput = {};
-
-    let cursorClause = undefined;
-
-    whereClause.companyId = companyId;
-
-    // state skip clause klo tidak infinite scroll
-    let skipClause: number | undefined = (page - 1) * limit;
-
-    let take = limit;
-
-    if (infiniteScroll) {
-      if (cursor) {
-        cursorClause = { id: cursor };
-      }
-      take = limit + 1;
-      skipClause = undefined;
-    }
+  private async _getQuery(q: GetJournalQuery) {
+    const { companyId, dateRange, search } = q;
+    const whereClause: Prisma.JournalWhereInput = { companyId };
 
     if (search) {
-      const splitSearch = search.split(" ");
-      const formatedSearch = splitSearch.join(" & ");
       whereClause.OR = [
         {
-          ref: { contains: search },
+          ref: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: search,
+            mode: "insensitive",
+          },
         },
       ];
     }
 
-    if (from && to) {
-      const startDay = DateTime.fromISO(from, { zone: TIMEZONE })
-        .startOf("day")
-        .toJSDate();
-      const endDay = DateTime.fromISO(to, { zone: TIMEZONE })
-        .endOf("day")
-        .toJSDate();
+    if (dateRange) {
+      const { from, to } = dateRange;
       whereClause.date = {
-        gte: startDay,
-        lte: endDay,
+        gte: DateTime.fromISO(from).setZone(TIMEZONE).startOf("day").toJSDate(),
+        lte: DateTime.fromISO(to).setZone(TIMEZONE).endOf("day").toJSDate(),
       };
     }
 
-    const totalPromise = this._db.journal.count({ where: whereClause });
-    const dataPromise = this._db.journal.findMany({
+    return this._db.journal.paginate({
       where: whereClause,
-      take: take,
-      cursor: cursorClause,
-      skip: skipClause,
-      include: include ?? (undefined as unknown as T),
+      include: { JournalDetail: true },
+      orderBy: { date: "desc" },
     });
+  }
 
-    const [total, data] = await Promise.all([totalPromise, dataPromise]);
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (!takeAll && data.length > limit) {
-      const nextItem = data.pop();
-      nextCursor = nextItem?.id;
-    }
-    return {
-      data,
-      meta: {
-        totalData: total,
-      },
-      nextCursor,
-    };
+  async getPaginated(q: PaginatedJournalQuery) {
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withPages({
+      limit: q.limit,
+      page: q.page,
+    });
+    return { data, meta };
+  }
+  async getCursor(q: CursoredJournalQuery) {
+    const [data, meta] = await (
+      await this._getQuery(q)
+    ).withCursor({
+      limit: q.limit,
+      after: q.cursor,
+    });
+    return { data, meta };
   }
 }
