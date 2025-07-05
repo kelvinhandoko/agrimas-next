@@ -1,4 +1,4 @@
-import { CursorPurchaseInvoiceQuery } from "@/model/purchase-invoice";
+import { type CursorPurchaseInvoiceQuery } from "@/model/purchase-invoice";
 
 import { type PurchaseInvoiceRepository } from "@/server/purchaseInvoice/purchase-invoice.repository";
 
