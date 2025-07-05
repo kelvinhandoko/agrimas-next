@@ -18,7 +18,7 @@ const PurchaseOrderDetailCalculateTotal: FC<
 > = ({ form, index }) => {
   const field = form.watch(`detail.${index}`);
   const total =
-    field.price * field.quantity - (field.discount ?? 0) + field.ppn;
+    (field.price - (field.discount ?? 0)) * field.quantity + field.ppn;
   const debounceTotal = useDebounce(total, 300);
   return (
     <NumericFormat

@@ -34,7 +34,7 @@ export class SalesInvoiceRepository extends BaseRepository {
     const { details, ...rest } = payload;
     const totalBefore = details.reduce(
       (acc, curr) =>
-        acc + curr.price * curr.quantity - curr.discount + curr.tax,
+        acc + (curr.price - curr.discount) * curr.quantity + curr.tax,
       0,
     );
 

@@ -55,7 +55,7 @@ export class PurchaseRepository extends BaseRepository {
     } = payload;
     const totalBeforeDiscount = detail.reduce((prev, curr) => {
       const itemTotal =
-        curr.price * curr.quantity - (curr.discount ?? 0) + curr.ppn;
+        (curr.price - (curr.discount ?? 0)) * curr.quantity + curr.ppn;
       return prev + itemTotal;
     }, 0);
 

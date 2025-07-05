@@ -47,7 +47,7 @@ const SalesInvoiceDetailForm: FC<SalesInvoiceDetailFormProps> = ({
     .watch("details")
     .reduce(
       (acc, curr) =>
-        acc + curr.price * curr.quantity - curr.discount + curr.tax,
+        acc + (curr.price - curr.discount) * curr.quantity + curr.tax,
       0,
     );
 
