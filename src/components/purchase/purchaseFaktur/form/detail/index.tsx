@@ -6,8 +6,6 @@ import { type FC } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import { cn } from "@/lib/utils";
-
 import { useDebounce } from "@/hooks/use-debounce";
 
 import PurchaseInvoiceDetailCalculateTotal from "@/components/purchase/purchaseFaktur/form/detail/calculatedTotal";
@@ -81,12 +79,8 @@ const PurchaseInvoiceDetailForm: FC<PurchaseInvoiceDetailFormProps> = ({
         <TableBody>
           <>
             {fields.map((field, index) => {
-              const isFullfilled = field.totalReceive === field.maxQuantity;
               return (
-                <TableRow
-                  key={field.uid}
-                  className={cn(isFullfilled && "line-through")}
-                >
+                <TableRow key={field.uid}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <CardDescription>{field.productName}</CardDescription>

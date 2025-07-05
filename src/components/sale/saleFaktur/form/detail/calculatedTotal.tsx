@@ -17,7 +17,7 @@ const SalesInvoiceDetailCalculateTotal: FC<
   SalesInvoiceDetailCalculateTotalProps
 > = ({ form, index }) => {
   const field = form.watch(`details.${index}`);
-  const total = field.price * field.quantity - field.discount + field.tax;
+  const total = (field.price - field.discount) * field.quantity + field.tax;
   const debounceTotal = useDebounce(total, 300);
   return (
     <NumericFormat

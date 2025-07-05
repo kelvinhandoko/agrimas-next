@@ -48,7 +48,7 @@ const PurchaseOrderDetailForm: FC<PurchaseOrderDetailFormProps> = ({
     .watch("detail")
     ?.reduce(
       (acc, curr) =>
-        acc + curr.price * curr.quantity - (curr.discount ?? 0) + curr.ppn,
+        acc + (curr.price - (curr.discount ?? 0)) * curr.quantity + curr.ppn,
       0,
     );
 

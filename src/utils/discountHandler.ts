@@ -12,9 +12,8 @@ export const discountHandler = (totalBefore: number, discount: number) => {
       message: "diskon tidak valid",
     });
   }
-  console.log(totalBefore);
-  console.log(discount);
+
   const discountAmount = (totalBefore * discount) / 100;
-  console.log(discountAmount);
+
   return discountAmount;
 };
