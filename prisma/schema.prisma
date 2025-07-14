@@ -10,31 +10,35 @@ datasource db {
 }
 
 model Company {
-  id              String            @id @default(cuid())
-  name            String            @unique
-  address         String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  deleted         DateTime?
-  account         Account[]
-  customers       Customer[]
-  DefaultAccount  DefaultAccount[]
-  GeneralLedger   GeneralLedger[]
-  groupAccount    GroupAccount[]
-  InitialProduct  InitialProduct[]
-  Journal         Journal[]
-  PaymentMethod   PaymentMethod[]
-  Product         Product[]
-  purchases       Purchase[]
-  PurchaseInvoice PurchaseInvoice[]
-  receiveItems    ReceiveItem[]
-  SalesInvoice    SalesInvoice[]
-  SalesPayment    SalesPayment[]
-  SalesPerson     SalesPerson[]
-  SubAcount       SubAccount[]
-  suppliers       Supplier[]
-  UserCompany     User_Company[]
-  PurchasePayment PurchasePayment[]
+  id                   String                 @id @default(cuid())
+  name                 String                 @unique
+  address              String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  deleted              DateTime?
+  account              Account[]
+  customers            Customer[]
+  DefaultAccount       DefaultAccount[]
+  GeneralLedger        GeneralLedger[]
+  groupAccount         GroupAccount[]
+  InitialProduct       InitialProduct[]
+  Journal              Journal[]
+  PaymentMethod        PaymentMethod[]
+  Product              Product[]
+  purchases            Purchase[]
+  PurchaseInvoice      PurchaseInvoice[]
+  receiveItems         ReceiveItem[]
+  SalesInvoice         SalesInvoice[]
+  SalesPayment         SalesPayment[]
+  SalesPerson          SalesPerson[]
+  SubAcount            SubAccount[]
+  suppliers            Supplier[]
+  UserCompany          User_Company[]
+  PurchasePayment      PurchasePayment[]
+  PurchaseReturn       PurchaseReturn[]
+  PurchaseReturnDetail PurchaseReturnDetail[]
+  InvoiceReturn        InvoiceReturn[]
+  InvoiceReturnDetail  InvoiceReturnDetail[]
 }
 
 model User {
@@ -149,59 +153,65 @@ model JournalDetail {
 }
 
 model Supplier {
-  id           String     @id @default(cuid())
-  nama         String
-  alamat       String?
-  companyId    String
-  deleted      DateTime?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
-  products     Product[]
-  purchases    Purchase[]
-  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  idCard       String     @default("")
-  kode         String     @default("")
-  pic_name     String     @default("")
-  phone_number String     @default("")
-  email        String     @default("")
-  fax          String     @default("")
-  website      String     @default("")
-  kode_pos     String     @default("")
+  id             String           @id @default(cuid())
+  nama           String
+  alamat         String?
+  companyId      String
+  deleted        DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now()) @updatedAt
+  products       Product[]
+  purchases      Purchase[]
+  company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  idCard         String           @default("")
+  kode           String           @default("")
+  deposit        Int              @default(0)
+  pic_name       String           @default("")
+  phone_number   String           @default("")
+  email          String           @default("")
+  fax            String           @default("")
+  website        String           @default("")
+  kode_pos       String           @default("")
+  PurchaseReturn PurchaseReturn[]
 
   @@unique([nama, companyId])
 }
 
 model Customer {
-  id           String         @id @default(cuid())
-  nama         String
-  alamat       String?
-  companyId    String
-  deleted      DateTime?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @default(now()) @updatedAt
-  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  SalesInvoice SalesInvoice[]
+  id            String          @id @default(cuid())
+  nama          String
+  alamat        String?
+  companyId     String
+  deleted       DateTime?
+  deposit       Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now()) @updatedAt
+  company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  SalesInvoice  SalesInvoice[]
+  InvoiceReturn InvoiceReturn[]
 
   @@unique([nama, companyId])
 }
 
 model Product {
-  id                 String               @id @default(cuid())
-  name               String
-  companyId          String
-  deleted            DateTime?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  supplierId         String
-  currentQuantity    Int
-  averagePrice       Int
-  sellingPrice       Int                  @default(0)
-  buyingPrice        Int                  @default(0)
-  initialProduct     InitialProduct?
-  company            Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  supplier           Supplier             @relation(fields: [supplierId], references: [id])
-  purchaseDetails    PurchaseDetail[]
-  SalesInvoiceDetail SalesInvoiceDetail[]
+  id                   String                 @id @default(cuid())
+  name                 String
+  companyId            String
+  deleted              DateTime?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  supplierId           String
+  currentQuantity      Int
+  averagePrice         Int
+  sellingPrice         Int                    @default(0)
+  buyingPrice          Int                    @default(0)
+  initialProduct       InitialProduct?
+  company              Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  supplier             Supplier               @relation(fields: [supplierId], references: [id])
+  purchaseDetails      PurchaseDetail[]
+  SalesInvoiceDetail   SalesInvoiceDetail[]
+  InvoiceReturnDetail  InvoiceReturnDetail[]
+  PurchaseReturnDetail PurchaseReturnDetail[]
 }
 
 model InitialProduct {
@@ -445,6 +455,68 @@ model GeneralLedger {
   Account         Account       @relation(fields: [accountId], references: [id])
   Company         Company       @relation(fields: [companyId], references: [id])
   JournalDetail   JournalDetail @relation(fields: [journalDetailId], references: [id])
+}
+
+model PurchaseReturn {
+  id                   String                 @id @default(cuid())
+  date                 DateTime
+  ref                  String
+  note                 String?
+  totalReturn          Int
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  deleted              DateTime?
+  supplierId           String
+  supplier             Supplier               @relation(fields: [supplierId], references: [id])
+  companyId            String
+  company              Company                @relation(fields: [companyId], references: [id])
+  PurchaseReturnDetail PurchaseReturnDetail[]
+}
+
+model PurchaseReturnDetail {
+  id               String         @id @default(cuid())
+  purchaseReturnId String
+  productId        String
+  purchaseReturn   PurchaseReturn @relation(fields: [purchaseReturnId], references: [id])
+  product          Product        @relation(fields: [productId], references: [id])
+  quantity         Int
+  price            Int            @default(0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  deleted          DateTime?
+  Company          Company?       @relation(fields: [companyId], references: [id])
+  companyId        String?
+}
+
+model InvoiceReturn {
+  id                  String                @id @default(cuid())
+  date                DateTime
+  ref                 String
+  note                String?
+  totalReturn         Int
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  deleted             DateTime?
+  customerId          String
+  customer            Customer              @relation(fields: [customerId], references: [id])
+  companyId           String
+  company             Company               @relation(fields: [companyId], references: [id])
+  InvoiceReturnDetail InvoiceReturnDetail[]
+}
+
+model InvoiceReturnDetail {
+  id              String        @id @default(cuid())
+  invoiceReturnId String
+  invoiceReturn   InvoiceReturn @relation(fields: [invoiceReturnId], references: [id])
+  productId       String
+  product         Product       @relation(fields: [productId], references: [id])
+  quantity        Int
+  price           Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deleted         DateTime?
+  Company         Company?      @relation(fields: [companyId], references: [id])
+  companyId       String?
 }
 
 enum JournalType {

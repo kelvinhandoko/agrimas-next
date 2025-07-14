@@ -7,319 +7,409 @@ skinparam DefaultFontName Futura
 
 title Agrimas ERD
 
+' Define entities
+entity Company {
+  * id : String <<PK>>
+  --
+  * name : String <<unique>>
+  address : String
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
 entity User {
-  +id: varchar <<PK>>
+  * id : String <<PK>>
   --
-  username: varchar
-  firstName: varchar
-  lastName: varchar
-  password: varchar
-  role: varchar
-  created_at: timestamp
+  * username : String
+  image : String
+  * password : String
+  * role : Role
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-entity User_Perusahaan {
-  +id: varchar <<PK>>
+entity User_Company {
+  * id : String <<PK>>
   --
-  userId: varchar <<FK>>
-  idPerusahaan: varchar <<FK>>
-}
-
-entity Perusahaan {
-  +id: varchar <<PK>>
-  --
-  name: varchar
-  alamat: varchar
-  email: varchar
-}
-
-entity Sales {
-  +id: varchar <<PK>>
-  --
-  firstName: varchar
-  lastName: varchar
-  alamat: varchar
-  email: varchar
-  phone: varchar
-  created_at: timestamp
-  --
-  idPerusahaan: varchar <<FK>>
-}
-
-entity Product {
-  +id: varchar <<PK>>
-  --
-  nama: varchar
-  quantity: varchar
-  averagePrice: varchar
-  --
-  idSupplier: varchar <<FK>>
-  idPerusahaan: varchar <<FK>>
-}
-
-entity Supplier {
-  +id: varchar <<PK>>
-  --
-  nama: varchar
-  alamat: varchar
-  --
-  idPerusahaan: varchar <<FK>>
-}
-
-entity Invoice {
-  +id: varchar <<PK>>
-  --
-  ref: varchar
-  invoiceDate: datetime
-  totalInvoiceBefore: int
-  totalInvoiceAfter: int
-  suratJalan: varchar
-  dueDate: datetime
-  keterangan: varchar
-  createdAt: timestamp
-  updatedAt: timestamp
-  discount: int
-  ppn: int
-  --
-  salesId: varchar <<FK>>
-  idPerusahaan: varchar <<FK>>
-  customerId: varchar <<FK>>
-}
-
-entity InvoiceDetail {
-  +id: varchar <<PK>>
-  --
-  price: int
-  quantity: int
-  discount: int
-  ppn: int
-  totalBefore: int
-  totalAfter: int
-  --
-  productId: varchar <<FK>>
-  invoiceId: varchar <<FK>>
-}
-
-entity InvoicePayment {
-  +id: varchar <<PK>>
-  --
-  totalPayment: varchar
-  status: enum
-  paymentDate: date
-  --
-  invoiceId: varchar <<FK>>
-}
-
-entity InvoiceReturn {
-  +id: varchar <<PK>>
-  --
-  returnDate: datetime
-  keterangan: varchar
-}
-
-entity InvoiceReturnDetail {
-  +id: varchar <<PK>>
-  --
-  quantity: int
-  --
-  invoiceDetailId: varchar <<FK>>
-  invoiceReturnId: varchar <<FK>>
-}
-
-entity Customer {
-  +id: varchar <<PK>>
-  --
-  nama: varchar
-  alamat: varchar
-  --
-  idPerusahaan: varchar <<FK>>
-}
-
-entity Purchase {
-  +id: varchar <<PK>>
-  --
-  ref: varchar
-  PurchaseDate: datetime
-  totalPurchaseBefore: int
-  totalPurchaseAfter: int
-  suratJalan: varchar
-  dueDate: datetime
-  keterangan: varchar
-  createdAt: timestamp
-  updatedAt: timestamp
-  discount: int
-  ppn: int
-  --
-  supplierId: varchar <<FK>>
-  idPerusahaan: varchar <<FK>>
-}
-
-entity PurchaseDetail {
-  +id: varchar <<PK>>
-  --
-  price: int
-  quantity: int
-  discount: int
-  ppn: int
-  totalBefore: int
-  totalAfter: int
-  --
-  productId: varchar <<FK>>
-  purchaseId: varchar <<FK>>
-}
-
-entity PurchasePayment {
-  +id: varchar <<PK>>
-  --
-  totalPayment: varchar
-  status: enum
-  paymentDate: date
-  --
-  purchaseId: varchar <<FK>>
-}
-
-entity ReceiveItem {
-  +id: varchar <<PK>>
-  --
-  quantity: int
-  --
-  purchaseDetailId: varchar <<FK>>
-}
-
-entity PurchaseReturn {
-  +id: varchar <<PK>>
-  --
-  returnDate: datetime
-  keterangan: varchar
-}
-
-entity PurchaseReturnDetail {
-  +id: varchar <<PK>>
-  --
-  quantity: int
-  --
-  purchaseDetailId: varchar <<FK>>
-  purchaseReturnId: varchar <<FK>>
-}
-
-entity Journal {
-  +id: varchar <<PK>>
-  --
-  dateJournal: date
-  noJournal: varchar
-  description: text
-  type: JournalType
-  created_at: datetime
-  --
-  idPerusahaan: varchar <<FK>>
-}
-
-entity JournalDetail {
-  +id: varchar <<PK>>
-  --
-  debit: float
-  credit: float
-  journalId: varchar <<FK>>
-  accountId: varchar <<FK>>
-  subAccountId: varchar <<FK>> [null]
-  createdAt: datetime      
-  updatedAt: datetime    
+  * userId : String <<FK>>
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
 entity GroupAccount {
-  +id: varchar <<PK>>
+  * id : String <<PK>>
   --
-  name: varchar
-  code: varchar
-  laporan: Laporan[]
-  accountClass: AccountClass
-  createdAt: datetime      
-  updatedAt: datetime      
-  --
-  idPerusahaan: varchar <<FK>>
+  * name : String
+  * code : String
+  * accountClass : AccountClass
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
 entity Account {
-  +id: varchar <<PK>>
+  * id : String <<PK>>
   --
-  normalPosition: NormalPosition
-  code: varchar
-  name: varchar
-  groupAccountId: varchar <<FK>>
-  createdAt: datetime      
-  updatedAt: datetime  
+  * posisi : NormalPosition
+  * code : String
+  * name : String
+  * currentBalance : Int
+  * groupAccountId : String <<FK>>
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+
+
+entity Journal {
+  * id : String <<PK>>
   --
-  idPerusahaan: varchar <<FK>>    
+  * date : DateTime
+  * ref : String
+  description : String
+  * type : JournalType
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-entity SubAccount {
-  +id: varchar <<PK>>
+entity JournalDetail {
+  * id : String <<PK>>
   --
-  code: varchar
-  name: varchar
-  accountId: varchar <<FK>>
-  createdAt: datetime      
-  updatedAt: datetime
+  * debit : Int
+  * credit : Int
+  * journalId : String <<FK>>
+  * accountId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-enum AccountClass {
-  ASSET
-  LIABILITY
-  EQUITY
-  REVENUE
-  EXPENSE
+entity Supplier {
+  * id : String <<PK>>
+  --
+  * nama : String
+  alamat : String
+  * companyId : String <<FK>>
+  * idCard : String
+  * kode : String
+  * pic_name : String
+  * phone_number : String
+  * email : String
+  * fax : String
+  * website : String
+  * kode_pos : String
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-enum NormalPosition {
-  DEBIT
-  CREDIT
+entity Customer {
+  * id : String <<PK>>
+  --
+  * nama : String
+  alamat : String
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-enum JournalType {
-  GENERAL
-  ADJUSTING
-  REVERSING
-  CLOSING
+entity Product {
+  * id : String <<PK>>
+  --
+  * name : String
+  * companyId : String <<FK>>
+  * supplierId : String <<FK>>
+  * currentQuantity : Int
+  * averagePrice : Int
+  * sellingPrice : Int
+  * buyingPrice : Int
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-enum Laporan {
-  NERACA
-  LABA_RUGI
-  PERUBAHAN_MODAL
+entity InitialProduct {
+  * id : String <<PK>>
+  --
+  * companyId : String <<FK>>
+  * productId : String <<FK>>
+  * quantity : Int
+  * price : Int
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
 }
 
-User }|--|| Perusahaan : "belongs to"
-User_Perusahaan }|--|| User : "belongs to"
-User_Perusahaan }|--|| Perusahaan : "belongs to"
-Sales }|--|| Perusahaan : "belongs to"
-Customer }|--|| Perusahaan : "belongs to"
-Supplier }|--|| Perusahaan : "belongs to"
-Invoice }|--|| Perusahaan : "belongs to"
-Invoice }|--|| Sales : "generated by"
-Invoice }|--|| Customer : "issued to"
-InvoiceDetail }|--|| Invoice : "part of"
-InvoiceDetail }|--|| Product : "related to"
-Product }|--|| Supplier : "supplied by"
-Product }|--|| Perusahaan : "owned by"
-Purchase }|--|| Supplier : "procured from"
-Purchase }|--|| Perusahaan : "issued by"
-PurchaseDetail }|--||Product : "related to"
-PurchasePayment }|--|| Purchase : "pays for"
-PurchaseDetail }|--|| Purchase : "part of"
-InvoicePayment }|--|| Invoice : "pays for"
-InvoiceReturnDetail }|--|| InvoiceReturn : "belongs to"
-InvoiceReturnDetail }|--|| InvoiceDetail : "returns"
-ReceiveItem }|--|| PurchaseDetail : "received for"
-PurchaseReturnDetail }|--|| PurchaseReturn : "belongs to"
-PurchaseReturnDetail }|--|| PurchaseDetail : "returns"
-PurchaseDetail }|--|| InvoiceDetail : "related to"
+entity Purchase {
+  * id : String <<PK>>
+  --
+  * ref : String
+  * purchaseDate : DateTime
+  * totalBeforeDiscount : Int
+  * netTotal : Int
+  note : String
+  * discount : Int
+  * supplierId : String <<FK>>
+  * ppn : Int
+  * companyId : String <<FK>>
+  * dueDate : DateTime
+  * status : TRANSACTION_STATUS
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
 
-JournalDetail }|--|| Journal : "part of"
-JournalDetail }|--|| Account : "for"
-JournalDetail }|--|| SubAccount : "for sub-account"
-Account }|--|| GroupAccount : "belongs to"
+entity PurchaseDetail {
+  * id : String <<PK>>
+  --
+  * purchaseId : String <<FK>>
+  * productId : String <<FK>>
+  * quantity : Int
+  * price : Int
+  * discount : Int
+  * totalBeforeDiscount : Int
+  * ppn : Int
+  * discount_percent : Int
+  * netTotal : Int
+  * totalReceive : Int
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
 
-GroupAccount }|--|| Perusahaan : "owned by"
-Account }|--|| Perusahaan : "owned by"
+entity ReceiveItem {
+  * id : String <<PK>>
+  --
+  * purchaseId : String <<FK>>
+  * receiveDate : DateTime
+  * companyId : String <<FK>>
+  * totalAmount : Int
+  * ref : String
+  note : String
+  journalId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity ReceiveItemDetail {
+  * id : String <<PK>>
+  --
+  * receiveId : String <<FK>>
+  * productId : String <<FK>>
+  * purchaseDetailId : String <<FK>>
+  * quantity : Int
+  note : String
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity PurchaseInvoice {
+  * id : String <<PK>>
+  --
+  * date : DateTime
+  * receiveId : String <<FK>>
+  * companyId : String <<FK>>
+  * paymentStatus : TRANSACTION_PAYMENT_STATUS
+  * totalPayment : Int
+  ref : String
+  note : String
+  * totalAfter : Int
+  * totalBefore : Int
+  * totalDiscount : Int
+  * totalTax : Int
+  journalId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity PurchasePayment {
+  * id : String <<PK>>
+  --
+  * paymentDate : DateTime
+  * purchaseInvoiceId : String <<FK>>
+  * paymentMethodId : String <<FK>>
+  * amount : Int
+  * companyId : String <<FK>>
+  note : String
+  journalId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity PaymentMethod {
+  * id : String <<PK>>
+  --
+  * name : String
+  accountNumber : String
+  * amount : Int
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity SalesInvoice {
+  * id : String <<PK>>
+  --
+  * date : DateTime
+  * ref : String
+  suratJalan : String
+  * dueDate : DateTime
+  * customerId : String <<FK>>
+  * salesPersonId : String <<FK>>
+  * companyId : String <<FK>>
+  note : String
+  * totalBefore : Int
+  * tax : Int
+  * discount : Int
+  * totalAfter : Int
+  * cogs : Int
+  * status : TRANSACTION_PAYMENT_STATUS
+  * totalPayment : Int
+  journalId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity SalesInvoiceDetail {
+  * id : String <<PK>>
+  --
+  * salesInvoiceId : String <<FK>>
+  * productId : String <<FK>>
+  * quantity : Int
+  * price : Int
+  * discount : Int
+  * tax : Int
+  * totalBefore : Int
+  * totalAfter : Int
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity SalesPerson {
+  * id : String <<PK>>
+  --
+  * name : String
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity SalesPayment {
+  * id : String <<PK>>
+  --
+  * date : DateTime
+  * salesInvoiceId : String <<FK>>
+  * paymentMethodId : String <<FK>>
+  * amount : Int
+  * companyId : String <<FK>>
+  journalId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity DefaultAccount {
+  * id : String <<PK>>
+  --
+  * accountId : String <<FK>>
+  * companyId : String <<FK>>
+  * category : TRANSACTION_CATEGORY
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity GeneralLedger {
+  * id : String <<PK>>
+  --
+  * accountId : String <<FK>>
+  * journalDetailId : String <<FK>>
+  * runningBalance : Int
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+' Define relationships with verbs
+Company ||--o{ User_Company : "has"
+User ||--o{ User_Company : "belongs to"
+
+Company ||--o{ GroupAccount : "has"
+Company ||--o{ Account : "owns"
+Company ||--o{ Journal : "records"
+Company ||--o{ Supplier : "works with"
+Company ||--o{ Customer : "serves"
+Company ||--o{ Product : "sells"
+Company ||--o{ InitialProduct : "initializes"
+Company ||--o{ Purchase : "makes"
+Company ||--o{ ReceiveItem : "receives"
+Company ||--o{ PurchaseInvoice : "processes"
+Company ||--o{ PurchasePayment : "pays"
+Company ||--o{ PaymentMethod : "uses"
+Company ||--o{ SalesInvoice : "issues"
+Company ||--o{ SalesPerson : "employs"
+Company ||--o{ SalesPayment : "receives"
+Company ||--o{ DefaultAccount : "configures"
+Company ||--o{ GeneralLedger : "maintains"
+
+GroupAccount ||--o{ Account : "groups"
+Account ||--o{ JournalDetail : "records in"
+Account ||--o{ DefaultAccount : "defaults to"
+Account ||--o{ GeneralLedger : "tracks in"
+
+Journal ||--o{ JournalDetail : "contains"
+Journal ||--|| ReceiveItem : "documents"
+Journal ||--|| PurchaseInvoice : "records"
+Journal ||--|| SalesInvoice : "documents"
+Journal ||--|| SalesPayment : "records"
+Journal ||--|| PurchasePayment : "records"
+
+JournalDetail ||--o{ GeneralLedger : "creates"
+
+Supplier ||--o{ Product : "supplies"
+Supplier ||--o{ Purchase : "sells to"
+
+Customer ||--o{ SalesInvoice : "purchases"
+
+Product ||--|| InitialProduct : "starts with"
+Product ||--o{ PurchaseDetail : "included in"
+Product ||--o{ SalesInvoiceDetail : "sold in"
+
+Purchase ||--o{ PurchaseDetail : "includes"
+Purchase ||--o{ ReceiveItem : "results in"
+
+PurchaseDetail ||--o{ ReceiveItemDetail : "received as"
+
+ReceiveItem ||--o{ ReceiveItemDetail : "contains"
+ReceiveItem ||--o{ PurchaseInvoice : "generates"
+
+PurchaseInvoice ||--o{ PurchasePayment : "paid by"
+
+PaymentMethod ||--o{ PurchasePayment : "processes"
+PaymentMethod ||--o{ SalesPayment : "processes"
+
+SalesPerson ||--o{ SalesInvoice : "creates"
+
+SalesInvoice ||--o{ SalesInvoiceDetail : "includes"
+SalesInvoice ||--o{ SalesPayment : "paid by"
 
 @enduml

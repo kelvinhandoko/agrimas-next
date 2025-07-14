@@ -71,3 +71,11 @@ export type CursoredReceiveItemQuery = z.infer<
   typeof cursoredReceiveItemQuerySchema
 > &
   WithCompany;
+
+export const getReceiveItemBySupplierSchema = z.object({
+  supplierId: z.string().describe("id supplier"),
+  productId: z.string().describe("id produk"),
+});
+export type GetReceiveItemBySupplierPayload = z.infer<
+  typeof getReceiveItemBySupplierSchema
+>;

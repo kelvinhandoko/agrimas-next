@@ -2,6 +2,7 @@ import { TIMEZONE } from "@/constant";
 import {
   type CursoredReceiveItemQuery,
   type GetAllReceiveItemQuery,
+  type GetReceiveItemBySupplierPayload,
   type PaginatedReceiveItemQuery,
   type ReceiveItemPayload,
 } from "@/model/recieve-item.model";
@@ -120,5 +121,20 @@ export class ReceiveItemRepository extends BaseRepository {
         company: true,
       },
     });
+  }
+  async getReceiveItemBySupplier(payload: GetReceiveItemBySupplierPayload) {
+    const { productId, supplierId } = payload;
+    const {
+      _sum: { quantity },
+    } = await this._db.receiveItemDetail.aggregate({
+      _sum: { quantity: true },
+      where: {
+        productId,
+        receiveItem: {
+          purchase: { supplierId },
+        },
+      },
+    });
+    return quantity ?? 0;
   }
 }
