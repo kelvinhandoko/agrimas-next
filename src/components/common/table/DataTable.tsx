@@ -382,7 +382,7 @@ const DataTable = <TData, TValue>({
         {/* Title Section */}
         <div className="mb-6">
           <div className="mb-2 flex items-center gap-3">
-            <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-2xl font-bold tracking-tight text-gray-900 text-transparent md:text-3xl">
+            <h2 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-lg font-bold tracking-tight text-gray-900 text-transparent md:text-xl">
               {titleTable ?? "Data Table"}
             </h2>
             {totalData !== undefined && (
