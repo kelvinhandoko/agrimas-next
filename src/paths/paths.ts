@@ -119,6 +119,6 @@ export const paths = {
   },
   finance: {
     root: "/finance",
-    paymentMethod: "/payment-method",
+    paymentMethod: "/finance/payment-method",
   },
 };

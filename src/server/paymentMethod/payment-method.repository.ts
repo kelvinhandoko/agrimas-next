@@ -1,6 +1,7 @@
 import {
   type GetDetailPaymentMethodQuery,
   type PaymentMethodPayload,
+  type UpdatePaymentMethodPayload,
 } from "@/model/payment-method.model";
 import { type Prisma } from "@prisma/client";
 
@@ -13,10 +14,12 @@ import {
 
 export class PaymentMethodRepository extends BaseRepository {
   async create(payload: PaymentMethodPayload) {
-    return await this._db.paymentMethod.create({ data: payload });
+    return await this._db.paymentMethod.create({
+      data: { ...payload, amount: payload.initialAmount },
+    });
   }
 
-  async update(payload: PaymentMethodPayload) {
+  async update(payload: UpdatePaymentMethodPayload) {
     return await this._db.paymentMethod.update({
       data: payload,
       where: { id: payload.id },

@@ -347,6 +347,7 @@ model PaymentMethod {
   id               String            @id @default(cuid())
   name             String
   accountNumber    String?
+  initialAmount    Int               @default(0)
   amount           Int               @default(0)
   deleted          DateTime?
   createdAt        DateTime          @default(now())
