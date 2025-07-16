@@ -5,7 +5,7 @@ skinparam DefaultFontName Futura
 
 !pragma layout smetana
 
-title Agrimas ERD
+title Agrimas ERD - Complete Schema
 
 ' Define entities
 entity Company {
@@ -66,7 +66,17 @@ entity Account {
   deleted : DateTime
 }
 
-
+entity SubAccount {
+  * id : String <<PK>>
+  --
+  * code : String
+  * name : String
+  * accountId : String <<FK>>
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
 
 entity Journal {
   * id : String <<PK>>
@@ -88,6 +98,7 @@ entity JournalDetail {
   * credit : Int
   * journalId : String <<FK>>
   * accountId : String <<FK>>
+  subAccountId : String <<FK>>
   * createdAt : DateTime
   * updatedAt : DateTime
   deleted : DateTime
@@ -101,6 +112,7 @@ entity Supplier {
   * companyId : String <<FK>>
   * idCard : String
   * kode : String
+  * deposit : Int
   * pic_name : String
   * phone_number : String
   * email : String
@@ -118,6 +130,7 @@ entity Customer {
   * nama : String
   alamat : String
   * companyId : String <<FK>>
+  * deposit : Int
   * createdAt : DateTime
   * updatedAt : DateTime
   deleted : DateTime
@@ -142,7 +155,7 @@ entity InitialProduct {
   * id : String <<PK>>
   --
   * companyId : String <<FK>>
-  * productId : String <<FK>>
+  * productId : String <<FK>> <<unique>>
   * quantity : Int
   * price : Int
   * createdAt : DateTime
@@ -187,6 +200,21 @@ entity PurchaseDetail {
   deleted : DateTime
 }
 
+entity PurchasePayment {
+  * id : String <<PK>>
+  --
+  * paymentDate : DateTime
+  * purchaseInvoiceId : String <<FK>>
+  * paymentMethodId : String <<FK>>
+  * amount : Int
+  * companyId : String <<FK>>
+  note : String
+  journalId : String <<FK>> <<unique>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
 entity ReceiveItem {
   * id : String <<PK>>
   --
@@ -196,7 +224,7 @@ entity ReceiveItem {
   * totalAmount : Int
   * ref : String
   note : String
-  journalId : String <<FK>>
+  journalId : String <<FK>> <<unique>>
   * createdAt : DateTime
   * updatedAt : DateTime
   deleted : DateTime
@@ -229,22 +257,7 @@ entity PurchaseInvoice {
   * totalBefore : Int
   * totalDiscount : Int
   * totalTax : Int
-  journalId : String <<FK>>
-  * createdAt : DateTime
-  * updatedAt : DateTime
-  deleted : DateTime
-}
-
-entity PurchasePayment {
-  * id : String <<PK>>
-  --
-  * paymentDate : DateTime
-  * purchaseInvoiceId : String <<FK>>
-  * paymentMethodId : String <<FK>>
-  * amount : Int
-  * companyId : String <<FK>>
-  note : String
-  journalId : String <<FK>>
+  journalId : String <<FK>> <<unique>>
   * createdAt : DateTime
   * updatedAt : DateTime
   deleted : DateTime
@@ -255,6 +268,7 @@ entity PaymentMethod {
   --
   * name : String
   accountNumber : String
+  * initialAmount : Int
   * amount : Int
   * companyId : String <<FK>>
   * createdAt : DateTime
@@ -280,7 +294,7 @@ entity SalesInvoice {
   * cogs : Int
   * status : TRANSACTION_PAYMENT_STATUS
   * totalPayment : Int
-  journalId : String <<FK>>
+  journalId : String <<FK>> <<unique>>
   * createdAt : DateTime
   * updatedAt : DateTime
   deleted : DateTime
@@ -320,7 +334,7 @@ entity SalesPayment {
   * paymentMethodId : String <<FK>>
   * amount : Int
   * companyId : String <<FK>>
-  journalId : String <<FK>>
+  journalId : String <<FK>> <<unique>>
   * createdAt : DateTime
   * updatedAt : DateTime
   deleted : DateTime
@@ -329,7 +343,7 @@ entity SalesPayment {
 entity DefaultAccount {
   * id : String <<PK>>
   --
-  * accountId : String <<FK>>
+  * accountId : String <<FK>> <<unique>>
   * companyId : String <<FK>>
   * category : TRANSACTION_CATEGORY
   * createdAt : DateTime
@@ -349,12 +363,67 @@ entity GeneralLedger {
   deleted : DateTime
 }
 
-' Define relationships with verbs
+entity PurchaseReturn {
+  * id : String <<PK>>
+  --
+  * date : DateTime
+  * ref : String
+  note : String
+  * totalReturn : Int
+  * supplierId : String <<FK>>
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity PurchaseReturnDetail {
+  * id : String <<PK>>
+  --
+  * purchaseReturnId : String <<FK>>
+  * productId : String <<FK>>
+  * quantity : Int
+  * price : Int
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity InvoiceReturn {
+  * id : String <<PK>>
+  --
+  * date : DateTime
+  * ref : String
+  note : String
+  * totalReturn : Int
+  * customerId : String <<FK>>
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+entity InvoiceReturnDetail {
+  * id : String <<PK>>
+  --
+  * invoiceReturnId : String <<FK>>
+  * productId : String <<FK>>
+  * quantity : Int
+  * price : Int
+  * companyId : String <<FK>>
+  * createdAt : DateTime
+  * updatedAt : DateTime
+  deleted : DateTime
+}
+
+
 Company ||--o{ User_Company : "has"
 User ||--o{ User_Company : "belongs to"
 
 Company ||--o{ GroupAccount : "has"
 Company ||--o{ Account : "owns"
+Company ||--o{ SubAccount : "manages"
 Company ||--o{ Journal : "records"
 Company ||--o{ Supplier : "works with"
 Company ||--o{ Customer : "serves"
@@ -370,11 +439,18 @@ Company ||--o{ SalesPerson : "employs"
 Company ||--o{ SalesPayment : "receives"
 Company ||--o{ DefaultAccount : "configures"
 Company ||--o{ GeneralLedger : "maintains"
+Company ||--o{ PurchaseReturn : "processes"
+Company ||--o{ PurchaseReturnDetail : "tracks"
+Company ||--o{ InvoiceReturn : "handles"
+Company ||--o{ InvoiceReturnDetail : "records"
 
 GroupAccount ||--o{ Account : "groups"
+Account ||--o{ SubAccount : "contains"
 Account ||--o{ JournalDetail : "records in"
-Account ||--o{ DefaultAccount : "defaults to"
+Account ||--|| DefaultAccount : "defaults to"
 Account ||--o{ GeneralLedger : "tracks in"
+
+SubAccount ||--o{ JournalDetail : "details in"
 
 Journal ||--o{ JournalDetail : "contains"
 Journal ||--|| ReceiveItem : "documents"
@@ -387,12 +463,16 @@ JournalDetail ||--o{ GeneralLedger : "creates"
 
 Supplier ||--o{ Product : "supplies"
 Supplier ||--o{ Purchase : "sells to"
+Supplier ||--o{ PurchaseReturn : "receives from"
 
 Customer ||--o{ SalesInvoice : "purchases"
+Customer ||--o{ InvoiceReturn : "returns to"
 
 Product ||--|| InitialProduct : "starts with"
 Product ||--o{ PurchaseDetail : "included in"
 Product ||--o{ SalesInvoiceDetail : "sold in"
+Product ||--o{ PurchaseReturnDetail : "returned as"
+Product ||--o{ InvoiceReturnDetail : "returned in"
 
 Purchase ||--o{ PurchaseDetail : "includes"
 Purchase ||--o{ ReceiveItem : "results in"
@@ -411,5 +491,9 @@ SalesPerson ||--o{ SalesInvoice : "creates"
 
 SalesInvoice ||--o{ SalesInvoiceDetail : "includes"
 SalesInvoice ||--o{ SalesPayment : "paid by"
+
+PurchaseReturn ||--o{ PurchaseReturnDetail : "contains"
+
+InvoiceReturn ||--o{ InvoiceReturnDetail : "includes"
 
 @enduml

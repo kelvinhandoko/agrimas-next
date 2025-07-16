@@ -12,7 +12,6 @@ export class PurchaseReturnRepository extends BaseRepository {
       data: {
         ...others,
         totalReturn,
-
         ref:
           payload.ref ??
           (await this._createRef(payload.companyId, "purchase_return", "PR"))

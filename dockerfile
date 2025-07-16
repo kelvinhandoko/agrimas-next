@@ -6,8 +6,8 @@ FROM base AS deps
 WORKDIR /app
 
 # Install dependencies
-COPY package.json bun.lockb ./
-COPY prisma ./prisma
+COPY package.json bun.lock ./
+
 
 
 RUN bun install --frozen-lockfile
@@ -23,19 +23,19 @@ COPY . .
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Disable telemetry during the build
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN apt-get update -y && apt-get install -y openssl
-
+RUN bunx prisma generate
 RUN bun run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Disable telemetry
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN adduser --system --uid 1001 nextjs
 
@@ -56,9 +56,9 @@ EXPOSE 3000
 
 
 
-ENV PORT 3000
+ENV PORT=3000
 
 # Set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["bun", "server.js"]

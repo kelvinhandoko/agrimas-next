@@ -10,7 +10,6 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "dev": "next dev --turbo",
-    "postinstall": "prisma generate",
     "format": "prettier --write .",
     "lint": "next lint",
     "start": "next start",
@@ -18,7 +17,8 @@
     "test": "bun run test:setup && vitest run && bun run test:cleanup",
     "test:file": "bun run test:setup && vitest run",
     "test:cleanup": "./cleanup-test-db.sh",
-    "test:setup": "docker-compose up -d"
+    "test:setup": "docker-compose up -d",
+    "app:build": "docker compose up db && bun run db:deploy"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
