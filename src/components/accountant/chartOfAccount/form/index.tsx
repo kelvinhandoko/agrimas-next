@@ -112,7 +112,7 @@ const AccountForm: FC<AccountFormProps> = ({
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value}
                   className="flex"
                 >
                   {Object.values(NormalPosition).map((pos) => (

@@ -1,6 +1,6 @@
 import { type Metadata } from "next";
 
-import DetailPurchaseFakturPage from "@/components/purchase/purchaseFaktur/detail/DetailPurchaseFakturPage";
+import DetailPurchaseFakturPage from "@/components/purchase/purchaseFaktur/detail";
 
 export const metadata: Metadata = {
   title: "Agrimas - Detail Purchase Faktur Page",
@@ -9,13 +9,14 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-// interface PageProps {
-//   params: Promise<{
-//     id: string;
-//   }>;
-// }
-const page = async () => {
-  return <DetailPurchaseFakturPage />;
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+const page = async ({ params }: PageProps) => {
+  const id = (await params).id;
+  return <DetailPurchaseFakturPage id={id} />;
 };
 
 export default page;

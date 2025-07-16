@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+import {
+  WithCompany,
+  cursorQuery,
+  getQuery,
+  paginatedQuery,
+} from "@/server/common";
+
 export const receiveItemDetailPayloadSchema = z.object({
   id: z.string().optional().describe("id detail penerimaan"),
   receiveItemId: z.string().describe("id penerimaan"),
@@ -40,3 +47,32 @@ export type ReceiveItemDetailPayload = z.infer<
 > & {
   purchaseId: string;
 };
+
+export const getReceiveItemDetailPayloadSchema = z.object({
+  id: z.string().describe("id detail penerimaan"),
+});
+
+export const getReceiveItemDetailQuerySchema = getQuery.extend({
+  receiveId: z.string().describe("id penerimaan"),
+});
+
+export type GetReceiveItemDetailQuery = z.infer<
+  typeof getReceiveItemDetailQuerySchema
+> &
+  WithCompany;
+
+export const paginatedReceiveItemDetailQuerySchema =
+  getReceiveItemDetailQuerySchema.merge(paginatedQuery);
+
+export type PaginatedReceiveItemDetailQuery = z.infer<
+  typeof paginatedReceiveItemDetailQuerySchema
+> &
+  WithCompany;
+
+export const cursoredReceiveItemDetailQuerySchema = cursorQuery.merge(
+  getReceiveItemDetailQuerySchema,
+);
+export type CursoredReceiveItemDetailQuery = z.infer<
+  typeof cursoredReceiveItemDetailQuerySchema
+> &
+  WithCompany;

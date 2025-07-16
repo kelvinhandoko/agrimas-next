@@ -22,6 +22,7 @@ const SalesPaymentTable = () => {
       columns={salesInvoicePaymentColumn()}
       data={payments}
       totalPage={data?.meta.pageCount ?? 1}
+      isLoading={isLoading}
       withNumber={true}
       searchAble={false}
       titleTable="tabel pembayaran faktur penjualan"

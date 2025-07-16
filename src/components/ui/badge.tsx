@@ -1,4 +1,7 @@
-import { type TRANSACTION_STATUS } from "@prisma/client";
+import {
+  type TRANSACTION_PAYMENT_STATUS,
+  type TRANSACTION_STATUS,
+} from "@prisma/client";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 
@@ -9,7 +12,10 @@ type Variant = {
     "default" | "secondary" | "destructive" | "outline" | "success" | "error",
     string
   >;
-  colorScheme: Record<keyof typeof TRANSACTION_STATUS | "default", string>;
+  colorScheme: Record<
+    keyof typeof TRANSACTION_STATUS | TRANSACTION_PAYMENT_STATUS | "default",
+    string
+  >;
 };
 
 const badgeVariants = cva<Variant>(
@@ -31,7 +37,11 @@ const badgeVariants = cva<Variant>(
         // Default scheme
         default:
           "bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600",
-
+        PARTIAL:
+          "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50",
+        UNPAID:
+          "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50",
+        PAID: "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50",
         // Transaction status schemes
 
         // Delivery status schemes

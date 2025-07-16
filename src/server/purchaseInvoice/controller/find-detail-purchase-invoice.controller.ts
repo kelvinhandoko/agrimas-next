@@ -6,7 +6,7 @@ import { findDetailPurchaseInvoiceUseCase } from "@/server/purchaseInvoice/use-c
 
 export const findDetailPurchaseInvoiceController = companyProcedure
   .input(z.string())
-  .mutation(async ({ ctx, input }) => {
+  .query(async ({ ctx, input }) => {
     const purchaseInvoiceRepo = new PurchaseInvoiceRepository(ctx.db);
     return await findDetailPurchaseInvoiceUseCase(purchaseInvoiceRepo)(input);
   });

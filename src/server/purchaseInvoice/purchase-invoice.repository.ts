@@ -137,20 +137,9 @@ export class PurchaseInvoiceRepository extends BaseRepository {
       include: {
         receiveItem: {
           include: {
-            receiveItemDetail: {
-              include: {
-                purchaseDetail: {
-                  include: {
-                    product: true,
-                    purchase: { include: { supplier: true } },
-                  },
-                },
-              },
-            },
+            purchase: { include: { supplier: true } },
           },
         },
-
-        purchasePayments: { include: { paymentMethod: true } },
       },
     });
   }
