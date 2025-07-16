@@ -40,7 +40,7 @@ import {
 const AccountFilter = () => {
   const searchParams = useSearchParams();
   const accountId = searchParams.get("accountId") ?? "";
-  const [search, setSearch] = useState(accountId);
+  const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(false);
   const { updateParams } = useUpdateParams();
   const debounceSearch = useDebounce(search, 300);
@@ -61,13 +61,11 @@ const AccountFilter = () => {
 
   const groupAccounts = data?.pages.flatMap((page) => page.data) ?? [];
 
-  // First level grouping by account class
   const groupedByAccountClass = groupBy(
     groupAccounts,
     ({ groupAccount: { accountClass } }) => accountClass,
   );
 
-  // Second level grouping: within each account class, group by group account name
   const nestedGroupedAccounts = Object.entries(groupedByAccountClass).map(
     ([accountClass, accounts]) => {
       const accountClassData = convertAccountClass(

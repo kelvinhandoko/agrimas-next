@@ -4,7 +4,6 @@ import { DateTime } from "luxon";
 import { NumericFormat } from "react-number-format";
 
 import { type PurchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
-import { type SalesPaymentRouterOutput } from "@/server/salesPayment/sales-payment.router";
 
 export const purchaseInvoicePaymentColumn = () => {
   const columnHelper =
@@ -29,5 +28,5 @@ export const purchaseInvoicePaymentColumn = () => {
       header: "metode pembayaran",
       cell: (info) => info.getValue(),
     }),
-  ] as ColumnDef<SalesPaymentRouterOutput["get"]["data"][number]>[];
+  ] as ColumnDef<PurchasePaymentRouter["get"]["data"][number]>[];
 };

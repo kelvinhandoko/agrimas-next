@@ -153,26 +153,27 @@ model JournalDetail {
 }
 
 model Supplier {
-  id             String           @id @default(cuid())
-  nama           String
-  alamat         String?
-  companyId      String
-  deleted        DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @default(now()) @updatedAt
-  products       Product[]
-  purchases      Purchase[]
-  company        Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  idCard         String           @default("")
-  kode           String           @default("")
-  deposit        Int              @default(0)
-  pic_name       String           @default("")
-  phone_number   String           @default("")
-  email          String           @default("")
-  fax            String           @default("")
-  website        String           @default("")
-  kode_pos       String           @default("")
-  PurchaseReturn PurchaseReturn[]
+  id               String             @id @default(cuid())
+  nama             String
+  alamat           String?
+  companyId        String
+  deleted          DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  products         Product[]
+  purchases        Purchase[]
+  company          Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  idCard           String             @default("")
+  kode             String             @default("")
+  deposit          Int                @default(0)
+  pic_name         String             @default("")
+  phone_number     String             @default("")
+  email            String             @default("")
+  fax              String             @default("")
+  website          String             @default("")
+  kode_pos         String             @default("")
+  PurchaseReturn   PurchaseReturn[]
+  PurchasedProduct PurchasedProduct[]
 
   @@unique([nama, companyId])
 }
@@ -189,6 +190,7 @@ model Customer {
   company       Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   SalesInvoice  SalesInvoice[]
   InvoiceReturn InvoiceReturn[]
+  SoldProduct   SoldProduct[]
 
   @@unique([nama, companyId])
 }
@@ -212,6 +214,8 @@ model Product {
   SalesInvoiceDetail   SalesInvoiceDetail[]
   InvoiceReturnDetail  InvoiceReturnDetail[]
   PurchaseReturnDetail PurchaseReturnDetail[]
+  PurchasedProduct     PurchasedProduct[]
+  SoldProduct          SoldProduct[]
 }
 
 model InitialProduct {
@@ -518,6 +522,32 @@ model InvoiceReturnDetail {
   deleted         DateTime?
   Company         Company?      @relation(fields: [companyId], references: [id])
   companyId       String?
+}
+
+model PurchasedProduct {
+  id            String    @id @default(cuid())
+  supplierId    String
+  productId     String
+  totalPurchase Int
+  totalReturn   Int
+  supplier      Supplier  @relation(fields: [supplierId], references: [id])
+  product       Product   @relation(fields: [productId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deleted       DateTime?
+}
+
+model SoldProduct {
+  id          String    @id @default(cuid())
+  customerId  String
+  productId   String
+  totalSold   Int
+  totalReturn Int
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deleted     DateTime?
 }
 
 enum JournalType {

@@ -1,16 +1,22 @@
 import { api } from "@/trpc/react";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { type FC } from "react";
 
 import DataTable from "@/components/common/table/DataTable";
-import { salesInvoicePaymentColumn } from "@/components/sale/salePayment/table/columns";
+import { purchaseInvoicePaymentColumn } from "@/components/purchase/purchasePayment/table/columns";
 
-const PurchasePaymentTable = () => {
+interface PurchasePaymentTableProps {
+  purchaseId?: string;
+}
+
+const PurchasePaymentTable: FC<PurchasePaymentTableProps> = ({
+  purchaseId,
+}) => {
   const searchparams = useSearchParams();
-  const invoiceId = searchparams.get("salesInvoiceId") ?? "";
-  const { data, isLoading } = api.salesPayment.get.useQuery(
+  const invoiceId = purchaseId ?? searchparams.get("purchaseInvoiceId") ?? "";
+  const { data, isLoading } = api.purchasePayment.get.useQuery(
     {
-      salesInvoiceId: invoiceId,
+      purchaseInvoiceId: invoiceId,
     },
     {
       enabled: !!invoiceId,
@@ -19,14 +25,14 @@ const PurchasePaymentTable = () => {
   const payments = data?.data ?? [];
   return (
     <DataTable
-      columns={salesInvoicePaymentColumn()}
+      columns={purchaseInvoicePaymentColumn()}
       data={payments}
       totalPage={data?.meta.pageCount ?? 1}
       totalData={data?.meta.totalCount}
       withNumber={true}
       isLoading={isLoading}
       searchAble={false}
-      titleTable="tabel pembayaran faktur penjualan"
+      titleTable="tabel pembayaran faktur pembelian"
     />
   );
 };

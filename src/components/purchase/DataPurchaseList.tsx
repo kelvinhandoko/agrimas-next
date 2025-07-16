@@ -1,6 +1,11 @@
 import { paths } from "@/paths/paths";
 import { Grid } from "@radix-ui/themes";
-import { FiFileText, FiPackage, FiShoppingCart } from "react-icons/fi";
+import {
+  FiCornerUpLeft,
+  FiFileText,
+  FiPackage,
+  FiShoppingCart,
+} from "react-icons/fi";
 
 import SectionCard from "../SectionCard";
 
@@ -15,11 +20,11 @@ const listMenu = [
     icon: <FiPackage size={"50px"} />,
     path: paths.purchase.purchaseReceived.root,
   },
-  // {
-  //   title: "Pengembalian Barang",
-  //   icon: <FiCornerUpLeft size={"50px"} />,
-  //   path: paths.purchase.purchaseReturn.root,
-  // },
+  {
+    title: "retur penjualan",
+    icon: <FiCornerUpLeft size={"50px"} />,
+    path: paths.purchase.purchaseReturn.root,
+  },
   {
     title: "Faktur Pembelian",
     icon: <FiFileText size={"50px"} />,
