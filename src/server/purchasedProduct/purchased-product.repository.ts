@@ -1,49 +1,49 @@
 import {
-  type CursoredSoldProductQuery,
-  type FindDetailSoldProductQuery,
-  type GetSoldProductQuery,
-  type PaginatedSoldProductQuery,
-  type SoldProductPayload,
-  type UpdateSoldProductPayload,
-} from "@/model/sold-product.model";
+  type CursoredPurchasedProductQuery,
+  type FindDetailPurchasedProductQuery,
+  type GetPurchasedProductQuery,
+  type PaginatedPurchasedProductQuery,
+  type PurchasedProductPayload,
+  type UpdatePurchasedProductPayload,
+} from "@/model/purchased-product.model";
 import { type Prisma } from "@prisma/client";
 
 import { BaseRepository } from "@/server/common";
 
-export class SoldProductRepository extends BaseRepository {
-  async find(q: FindDetailSoldProductQuery) {
+export class PurchasedProductRepository extends BaseRepository {
+  async find(q: FindDetailPurchasedProductQuery) {
     const { type, identifier } = q;
-    const whereClause: Prisma.SoldProductWhereInput = {};
+    const whereClause: Prisma.PurchasedProductWhereInput = {};
     if (type === "id") {
       whereClause.id = identifier as string;
-    } else if (type === "customer_product" && identifier instanceof Object) {
-      whereClause.customerId = identifier.customerId;
+    } else if (type === "supplier_product" && identifier instanceof Object) {
+      whereClause.supplierId = identifier.supplierId;
       whereClause.productId = identifier.productId;
     }
-    return await this._db.soldProduct.findFirst({
+    return await this._db.purchasedProduct.findFirst({
       where: whereClause,
     });
   }
-  async create(payload: SoldProductPayload) {
-    return await this._db.soldProduct.create({
-      data: { ...payload, totalReturn: payload.totalSold },
+  async create(payload: PurchasedProductPayload) {
+    return await this._db.purchasedProduct.create({
+      data: { ...payload, totalReturn: payload.totalPurchase },
     });
   }
 
-  async update(payload: UpdateSoldProductPayload) {
-    return await this._db.soldProduct.update({
+  async update(payload: UpdatePurchasedProductPayload) {
+    return await this._db.purchasedProduct.update({
       data: {
         ...payload,
         totalReturn: { increment: payload.return },
-        totalSold: { increment: payload.quantity },
+        totalPurchase: { increment: payload.quantity },
       },
       where: { id: payload.id },
     });
   }
 
-  private async _getQuery(q: GetSoldProductQuery) {
-    const { search, productId, customerId } = q;
-    const whereClause: Prisma.SoldProductWhereInput = { customerId };
+  private async _getQuery(q: GetPurchasedProductQuery) {
+    const { search, productId, supplierId } = q;
+    const whereClause: Prisma.PurchasedProductWhereInput = { supplierId };
     if (productId) {
       whereClause.productId = productId;
     }
@@ -58,7 +58,7 @@ export class SoldProductRepository extends BaseRepository {
           },
         },
         {
-          customer: {
+          supplier: {
             nama: {
               contains: search,
               mode: "insensitive",
@@ -67,12 +67,12 @@ export class SoldProductRepository extends BaseRepository {
         },
       ];
     }
-    return this._db.soldProduct.paginate({
+    return this._db.purchasedProduct.paginate({
       where: whereClause,
       orderBy: { product: { name: "asc" } },
     });
   }
-  async get(q: PaginatedSoldProductQuery) {
+  async get(q: PaginatedPurchasedProductQuery) {
     const { limit, page } = q;
     const [data, meta] = await (
       await this._getQuery(q)
@@ -82,7 +82,7 @@ export class SoldProductRepository extends BaseRepository {
     });
     return { data, meta };
   }
-  async getInfinite(q: CursoredSoldProductQuery) {
+  async getInfinite(q: CursoredPurchasedProductQuery) {
     const { limit, cursor } = q;
     const [data, meta] = await (
       await this._getQuery(q)
