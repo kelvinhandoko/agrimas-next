@@ -35,7 +35,7 @@ const DueDateInput: FC<DueDateInput> = ({ form }) => {
       name="dueDate"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>tanggal Jatuh Tempo</FormLabel>
+          <FormLabel className="mb-2">tanggal Jatuh Tempo</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>

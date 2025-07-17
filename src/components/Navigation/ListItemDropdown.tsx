@@ -33,7 +33,7 @@ const ListItemDropdown = ({
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          "flex select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-[#624DE3]",
+          "flex select-none space-y-1 rounded-md p-3 font-medium leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-[#624DE3]",
           isActive && "bg-accent text-[#624DE3]",
         )}
       >
@@ -46,7 +46,7 @@ const ListItemDropdown = ({
         <DropdownMenuSeparator />
         {dropdownMenus.map((menu, index) => (
           <Link href={menu.path} key={index}>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className={cn("cursor-pointer")}>
               {menu.title}
             </DropdownMenuItem>
           </Link>

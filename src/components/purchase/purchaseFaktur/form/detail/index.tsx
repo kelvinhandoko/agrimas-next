@@ -83,10 +83,7 @@ const PurchaseInvoiceDetailForm: FC<PurchaseInvoiceDetailFormProps> = ({
             {fields.map((field, index) => {
               const isFullfilled = field.totalReceive === field.maxQuantity;
               return (
-                <TableRow
-                  key={field.uid}
-                  className={cn(isFullfilled && "line-through")}
-                >
+                <TableRow key={field.uid}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <CardDescription>{field.productName}</CardDescription>

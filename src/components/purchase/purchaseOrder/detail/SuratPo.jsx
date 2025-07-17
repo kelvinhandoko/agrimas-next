@@ -1,4 +1,5 @@
 import { DATE_FORMAT } from "@/constant";
+import { formatPrice } from "@/utils/format-price";
 import {
   Document,
   Font,
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   tableColHeader: {
-    width: "33%",
+    width: "14.3%",
     borderStyle: "solid",
     borderBottomWidth: 1,
     borderRightWidth: 1,
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   tableCol: {
-    width: "33%",
+    width: "14.3%",
     borderStyle: "solid",
     borderBottomWidth: 1,
     borderRightWidth: 1,
@@ -85,26 +86,29 @@ const styles = StyleSheet.create({
     height: "70px",
   },
   ttdContainer: {
-    textTransform: "capitalize",
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
   },
+  totalPembelianCol: {
+    width: "85.8%",
+    borderStyle: "solid",
+    borderBottomWidth: 1,
+    borderRightWidth: 1,
+    padding: 5,
+  },
 });
 
-const SuratJalanPDF = ({ data }) => {
-  // width = 21cm
-  // height = 14cm
-  const customSize = [21 * 28.35, 14 * 28.35];
+const SuratPo = ({ data }) => {
   return (
     <Document>
-      <Page size={customSize} style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <View style={styles.section}>
           <View style={styles.header}>
             <Text style={styles.title}>CV. Agrimas Perkasa</Text>
-            <Text style={styles.subtitle}>Surat Jalan</Text>
+            <Text style={styles.subtitle}>Surat Pemesanan Barang</Text>
           </View>
           <View style={styles.headerRow}>
             <View style={{ flex: 1 }}>
@@ -113,15 +117,11 @@ const SuratJalanPDF = ({ data }) => {
                 <Text style={styles.valueStyle}>: {data?.ref}</Text>
               </View>
               <View style={styles.rowStyle}>
-                <Text style={styles.labelStyle}>No Pembelian</Text>
-                <Text style={styles.valueStyle}>: {data?.purchase?.ref}</Text>
-              </View>
-              <View style={styles.rowStyle}>
                 <Text style={styles.labelStyle}>Tanggal</Text>
                 <Text style={styles.valueStyle}>
                   :{" "}
-                  {data?.receiveDate
-                    ? DateTime.fromJSDate(data?.receiveDate).toFormat(
+                  {data?.purchaseDate
+                    ? DateTime.fromJSDate(data?.purchaseDate).toFormat(
                         DATE_FORMAT,
                       )
                     : "-"}
@@ -132,14 +132,12 @@ const SuratJalanPDF = ({ data }) => {
             <View style={{ flex: 1 }}>
               <View style={styles.rowStyle}>
                 <Text style={styles.labelStyle}>Supplier</Text>
-                <Text style={styles.valueStyle}>
-                  : {data?.purchase?.supplier?.nama}
-                </Text>
+                <Text style={styles.valueStyle}>: {data?.supplier?.nama}</Text>
               </View>
               <View style={styles.rowStyle}>
                 <Text style={styles.labelStyle}>Alamat</Text>
                 <Text style={styles.valueStyle}>
-                  : {data?.purchase?.supplier?.alamat}
+                  : {data?.supplier?.alamat}
                 </Text>
               </View>
             </View>
@@ -153,29 +151,55 @@ const SuratJalanPDF = ({ data }) => {
               <Text style={styles.tableColHeader}>No</Text>
               <Text style={styles.tableColHeader}>Nama Barang</Text>
               <Text style={styles.tableColHeader}>Quantity</Text>
+              <Text style={styles.tableColHeader}>@</Text>
+              <Text style={styles.tableColHeader}>Diskon</Text>
+              <Text style={styles.tableColHeader}>PPN</Text>
+              <Text style={styles.tableColHeader}>Harga Total</Text>
             </View>
-            {data?.receiveItemDetail.map((item, idx) => (
+            {data?.purchaseDetail.map((item, idx) => (
               <View style={styles.tableRow} key={item.id}>
                 <Text style={styles.tableCol}>{idx + 1}</Text>
-                <Text style={styles.tableCol}>
-                  {item.purchaseDetail.product.name}
-                </Text>
+                <Text style={styles.tableCol}>{item.product.name}</Text>
                 <Text style={styles.tableCol}>{item.quantity}</Text>
+                <Text style={styles.tableCol}>{formatPrice(item.price)}</Text>
+                <Text style={styles.tableCol}>{item.discount}</Text>
+                <Text style={styles.tableCol}>{item.ppn}</Text>
+                <Text style={styles.tableCol}>
+                  {formatPrice(item.totalBeforeDiscount)}
+                </Text>
               </View>
             ))}
+            <View style={styles.tableRow}>
+              <Text style={styles.totalPembelianCol}>Sub Total Pembelian</Text>
+              <Text style={styles.tableCol}>
+                {formatPrice(data?.totalBeforeDiscount)}
+              </Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.totalPembelianCol}>Total Diskon</Text>
+              <Text style={styles.tableCol}>{data?.discount}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.totalPembelianCol}>Total PPN</Text>
+              <Text style={styles.tableCol}>{data?.ppn}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.totalPembelianCol}>Total Pembelian</Text>
+              <Text style={styles.tableCol}>{formatPrice(data?.netTotal)}</Text>
+            </View>
           </View>
         </View>
 
         <View style={styles.footer}>
           <View style={styles.ttdContainer}>
-            <Text>Penerima</Text>
+            <Text>Pemesan</Text>
             <View style={styles.ttd}></View>
-            <Text>{data?.company.name}</Text>
+            <Text>{data?.company?.name}</Text>
           </View>
           <View style={styles.ttdContainer}>
             <Text>Pengirim</Text>
             <View style={styles.ttd}></View>
-            <Text>{data?.purchase?.supplier?.nama}</Text>
+            <Text>{data?.supplier?.nama}</Text>
           </View>
         </View>
       </Page>
@@ -183,4 +207,4 @@ const SuratJalanPDF = ({ data }) => {
   );
 };
 
-export default SuratJalanPDF;
+export default SuratPo;

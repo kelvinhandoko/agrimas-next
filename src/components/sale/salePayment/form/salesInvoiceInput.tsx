@@ -49,6 +49,7 @@ const SalesInvoiceInput = () => {
         isLoading={isLoading}
         placeholder="pilih faktur penjualan"
         value={invoiceId}
+        className="w-full truncate"
       />
     </div>
   );

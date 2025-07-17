@@ -72,7 +72,7 @@ const PurchaseReceivedForm = () => {
           <BackButton path={paths.purchase.purchaseReceived.root} />
           <CardTitle>form penerimaan Pembelian</CardTitle>
         </div>
-        <div className="grid w-full grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:w-3/4">
+        <div className="grid w-full grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <DateInput form={form} />
           <FormField
             control={form.control}

@@ -5,6 +5,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import { id } from "date-fns/locale";
 import { NumericFormat } from "react-number-format";
 
+import CardReportMobile from "@/components/CardReportMobile";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import {
   Table,
@@ -22,13 +23,26 @@ const PayableTable = ({ dataReportPayable, isLoading = false }) => {
         <Text size="5">CV. Agrimas Perkasa</Text>
         <Text size="6">LAPORAN HUTANG USAHA</Text>
       </Flex>
-      <Box className="mt-14">
+      <Box className="mt-10 lg:mt-14">
         {isLoading && <LoadingIndicator />}
         {dataReportPayable && Object.keys(dataReportPayable).length > 0 ? (
           Object.entries(dataReportPayable).map(([customer, invoices]) => (
             <Box key={customer} className="mb-4">
-              <Text weight={"medium"}>{customer}</Text>
-              <Table className="pl-10">
+              <div className="flex items-center justify-between">
+                <Text weight={"medium"} className="mb-2">
+                  {customer}
+                </Text>
+                <NumericFormat
+                  value={invoices.reduce((sum, inv) => sum + inv.totalAfter, 0)}
+                  displayType="text"
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  prefix="Rp "
+                  className="block font-bold lg:hidden"
+                />
+              </div>
+              {/* desktop view */}
+              <Table className="hidden pl-10 lg:table">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[220px]">Nomor#</TableHead>
@@ -88,6 +102,58 @@ const PayableTable = ({ dataReportPayable, isLoading = false }) => {
                   </TableRow>
                 </TableBody>
               </Table>
+              {/* mobile view */}
+              <div className="mt-4 flex flex-col space-y-4 lg:hidden">
+                {invoices &&
+                  invoices?.map((invoice, index) => (
+                    <CardReportMobile key={invoice.id}>
+                      <Box className="flex items-center justify-between p-4">
+                        <Text className="font-medium text-muted-foreground">
+                          Nomor
+                        </Text>
+                        <Text className="font-medium">{invoice.ref}</Text>
+                      </Box>
+                      <Box className="flex items-center justify-between p-4">
+                        <Text className="font-medium text-muted-foreground">
+                          Tanggal
+                        </Text>
+                        <Text className="font-medium">
+                          {invoice?.date
+                            ? formatInTimeZone(
+                                new Date(invoice.date),
+                                "Asia/Jakarta",
+                                "dd MMMM yyyy",
+                                { locale: id },
+                              )
+                            : "-"}
+                        </Text>
+                      </Box>
+                      <Box className="flex items-center justify-between p-4">
+                        <Text className="font-medium text-muted-foreground">
+                          Jatuh Tempo
+                        </Text>
+                        <Text className="font-medium">
+                          {invoice?.dueDate
+                            ? formatInTimeZone(
+                                new Date(invoice.dueDate),
+                                "Asia/Jakarta",
+                                "dd MMMM yyyy",
+                                { locale: id },
+                              )
+                            : "-"}
+                        </Text>
+                      </Box>
+                      <Box className="flex items-center justify-between p-4">
+                        <Text className="font-medium text-muted-foreground">
+                          Hutang
+                        </Text>
+                        <Text className="font-medium">
+                          Rp {invoice?.totalAfter.toLocaleString("id-ID")}
+                        </Text>
+                      </Box>
+                    </CardReportMobile>
+                  ))}
+              </div>
             </Box>
           ))
         ) : (

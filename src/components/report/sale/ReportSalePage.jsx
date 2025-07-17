@@ -84,6 +84,86 @@ import SalesTable from "./SaleTable";
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 const ReportSalePage = () => {
   const form = useForm({
     // resolver: zodResolver(FormSchema),
@@ -202,25 +282,29 @@ const ReportSalePage = () => {
       <Box className="mb-8">
         <BackButton path={paths.report.root} />
       </Box>
-      <Card className="px-4 py-7">
+      <Card className="py-7 lg:px-4">
         <CardContent>
           <Text size={"5"} weight={"bold"}>
             Laporan Penjualan
           </Text>
           <Box className="grid grid-cols-12 items-end">
-            <Box className="col-span-10">
+            <Box className="col-span-12 lg:col-span-10">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="mt-6 flex items-end"
+                  className="mt-6 flex flex-col lg:flex-row lg:items-end"
                 >
                   <Box>
-                    <Flex align={"end"} gapX={"2"}>
+                    <Flex
+                      align={"end"}
+                      gapX={"2"}
+                      className="flex-col space-y-4 lg:flex-row lg:space-y-0"
+                    >
                       <FormField
                         control={form.control}
                         name="tgl_awal"
                         render={({ field }) => (
-                          <FormItem className="flex flex-col">
+                          <FormItem className="flex w-full flex-col lg:w-auto">
                             <FormLabel>Tanggal Awal</FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
@@ -228,7 +312,7 @@ const ReportSalePage = () => {
                                   <Button
                                     variant={"outline"}
                                     className={cn(
-                                      "w-[240px] pl-3 text-left font-normal",
+                                      "w-full pl-3 text-left font-normal lg:w-[240px]",
                                       !field.value && "text-muted-foreground",
                                     )}
                                   >
@@ -273,7 +357,7 @@ const ReportSalePage = () => {
                         control={form.control}
                         name="tgl_akhir"
                         render={({ field }) => (
-                          <FormItem className="flex flex-col">
+                          <FormItem className="flex w-full flex-col lg:w-auto">
                             <FormLabel>Tanggal Akhir</FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
@@ -281,7 +365,7 @@ const ReportSalePage = () => {
                                   <Button
                                     variant={"outline"}
                                     className={cn(
-                                      "w-[240px] pl-3 text-left font-normal",
+                                      "w-full pl-3 text-left font-normal lg:w-[240px]",
                                       !field.value && "text-muted-foreground",
                                     )}
                                   >
@@ -325,7 +409,7 @@ const ReportSalePage = () => {
                         control={form.control}
                         name="customer_id"
                         render={({ field }) => (
-                          <FormItem className="mr-4 w-full">
+                          <FormItem className="w-full lg:mr-4">
                             <FormLabel>Customer</FormLabel>
                             <Select
                               onValueChange={field.onChange}
@@ -355,11 +439,16 @@ const ReportSalePage = () => {
                       />
                     </Flex>
                   </Box>
-                  <Button type="submit">Tampilkan</Button>
+                  <Button
+                    type="submit"
+                    className="mt-6 w-full lg:mt-0 lg:w-auto"
+                  >
+                    Tampilkan
+                  </Button>
                 </form>
               </Form>
             </Box>
-            <Box className="col-span-2 justify-end place-self-end">
+            <Box className="col-span-12 mt-4 justify-end place-self-end lg:col-span-2 lg:mt-0">
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 rounded-md bg-accent px-4 py-2 font-bold text-[#624DE3] transition">
                   <FileText className="h-5 w-5" /> Export
@@ -394,7 +483,7 @@ const ReportSalePage = () => {
               </DropdownMenu>
             </Box>
           </Box>
-          <Box className="mt-20">
+          <Box className="mt-10 lg:mt-20">
             <SalesTable dataSalesReport={filteredData} isLoading={false} />
           </Box>
         </CardContent>

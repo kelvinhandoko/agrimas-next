@@ -381,7 +381,7 @@ const DataTable = <TData, TValue>({
 
         {/* Controls Section */}
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          <div className="flex gap-1">
+          <div className="flex items-start gap-1">
             {searchAble && (
               <div className="relative w-full sm:w-80">
                 <SearchInput
