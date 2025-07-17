@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import {
-  WithCompany,
+  type WithCompany,
   cursorQuery,
   getQuery,
   paginatedQuery,

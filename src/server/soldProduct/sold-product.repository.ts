@@ -69,6 +69,9 @@ export class SoldProductRepository extends BaseRepository {
     }
     return this._db.soldProduct.paginate({
       where: whereClause,
+      include: {
+        product: true,
+      },
       orderBy: { product: { name: "asc" } },
     });
   }

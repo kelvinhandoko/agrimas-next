@@ -5,6 +5,7 @@ import { companyRouter } from "@/server/company/company.router";
 import { customerRouter } from "@/server/customer";
 import { generalLedgerRouter } from "@/server/generalLedger/generalLedger.router";
 import { groupAccountRouter } from "@/server/groupAccount/group-account.router";
+import { invoiceReturnRouter } from "@/server/invoiceReturn/invoice-return.router";
 import { journalRouter } from "@/server/journal/journal.router";
 import { paymentMethodRouter } from "@/server/paymentMethod/payment-method.router";
 import { productRouter } from "@/server/product/product.router";
@@ -47,6 +48,7 @@ export const appRouter = createTRPCRouter({
   report: reportRouter,
   purchaseInvoice: purchaseInvoiceRouter,
   purchaseReturn: purchaseReturnRouter,
+  invoiceReturn: invoiceReturnRouter,
   purchasedProduct: purchasedProductRouter,
   soldProduct: soldProductRouter,
 });

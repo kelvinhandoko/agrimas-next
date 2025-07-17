@@ -1,15 +1,15 @@
 import { type PurchaseReturnPayload } from "@/model/purchase-return.model";
 import { TRPCError } from "@trpc/server";
 
-import { type IGetTotalPurchaseProductOrchestrator } from "@/server/product/orchestrator/get-total-purchase-product.orchestrator";
 import { type GetDetailProductUseCase } from "@/server/product/use-cases/get-detail-product.use-case";
 import { type CreatePurchaseReturnDetailUseCase } from "@/server/purchaseReturnDetail/use-cases/create-purchase-return-detail.use-case";
+import { type IHandlePurchaseProductOrchestrator } from "@/server/purchasedProduct/orchestrator/handle-purchased-product.orchestrator";
 
 export const createPurchaseReturnDetailOrchestrator =
   (useCases: {
     createPurchaseReturnDetail: CreatePurchaseReturnDetailUseCase;
     getProduct: GetDetailProductUseCase;
-    getPurchaseQuantity: IGetTotalPurchaseProductOrchestrator;
+    handlePurchaseProduct: IHandlePurchaseProductOrchestrator;
   }) =>
   async (
     payload: Pick<PurchaseReturnPayload, "detail">["detail"][0] & {
@@ -17,7 +17,7 @@ export const createPurchaseReturnDetailOrchestrator =
       purchaseReturnId: string;
     },
   ) => {
-    const { createPurchaseReturnDetail, getProduct, getPurchaseQuantity } =
+    const { createPurchaseReturnDetail, getProduct, handlePurchaseProduct } =
       useCases;
     const product = await getProduct(payload.productId);
     if (!product) {
@@ -26,17 +26,10 @@ export const createPurchaseReturnDetailOrchestrator =
         message: "product tidak ditemukan",
       });
     }
-
-    const availableQuantityToReturn = await getPurchaseQuantity({
-      productId: payload.productId,
+    await handlePurchaseProduct({
       supplierId: payload.supplierId,
+      productId: payload.productId,
+      return: payload.quantity,
     });
-
-    if (payload.quantity > availableQuantityToReturn) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: `jumlah retur produk ${product.name} tidak mencukupi`,
-      });
-    }
     await createPurchaseReturnDetail(payload);
   };
