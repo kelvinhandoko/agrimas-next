@@ -41,11 +41,11 @@ const menuItems = [
   {
     title: "Penjualan",
     path: paths.sale.root,
-    subPaths: [paths.sale.saleOrder.root],
+    subPaths: [paths.sale.saleFaktur.root],
     dropdownMenuItems: [
       {
         title: "Faktur Penjualan",
-        path: paths.sale.saleOrder.root,
+        path: paths.sale.saleFaktur.root,
       },
     ],
   },
