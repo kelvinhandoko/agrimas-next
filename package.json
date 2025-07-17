@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "lint": "next lint",
     "start": "next start",
+    "postinstall": "bunx prisma generate",
     "prepare": "husky install",
     "test": "bun run test:setup && vitest run && bun run test:cleanup",
     "test:file": "bun run test:setup && vitest run",

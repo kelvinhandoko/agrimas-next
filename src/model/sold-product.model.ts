@@ -13,8 +13,9 @@ export type SoldProductPayload = z.infer<typeof soldProductPayloadSchema>;
 
 export const updateSoldProductPayloadSchema = z.object({
   id: z.string().describe("id penjualan"),
-  quantity: z.number().describe("total penjualan"),
-  return: z.number().describe("total return"),
+  customerId: z.string().optional().describe("id customer"),
+  quantity: z.number().optional().describe("total penjualan"),
+  return: z.number().optional().describe("total return"),
 });
 
 export type UpdateSoldProductPayload = z.infer<
@@ -40,4 +41,29 @@ export const cursoredSoldProductQuerySchema =
 
 export type CursoredSoldProductQuery = z.infer<
   typeof cursoredSoldProductQuerySchema
+>;
+
+export const findDetailSoldProductQuerySchema = z.object({
+  type: z.enum(["id", "customer_product"]).default("id"),
+  identifier: z.union([
+    z.string(),
+    z.object({
+      customerId: z.string(),
+      productId: z.string(),
+    }),
+  ]),
+});
+
+export type FindDetailSoldProductQuery = z.infer<
+  typeof findDetailSoldProductQuerySchema
+>;
+
+export const handleSoldProductQuerySchema = updateSoldProductPayloadSchema
+  .extend({
+    productId: z.string().optional().describe("id produk"),
+  })
+  .omit({ id: true });
+
+export type HandleSoldProductQuery = z.infer<
+  typeof handleSoldProductQuerySchema
 >;

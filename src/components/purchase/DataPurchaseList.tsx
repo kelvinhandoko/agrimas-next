@@ -21,7 +21,7 @@ const listMenu = [
     path: paths.purchase.purchaseReceived.root,
   },
   {
-    title: "retur penjualan",
+    title: "retur pembelian",
     icon: <FiCornerUpLeft size={"50px"} />,
     path: paths.purchase.purchaseReturn.root,
   },

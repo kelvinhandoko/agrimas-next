@@ -4,6 +4,11 @@ import { companyProcedure } from "@/trpc/trpc";
 import { ProductRepository } from "@/server/product/product.repository";
 import { PurchaseRepository } from "@/server/purchase/purchase.repository";
 import { PurchaseDetailRepository } from "@/server/purchaseDetail/purchase-detail.repository";
+import { handlePurchaseProductOrchestrator } from "@/server/purchasedProduct/orchestrator/handle-purchased-product.orchestrator";
+import { PurchasedProductRepository } from "@/server/purchasedProduct/purchased-product.repository";
+import { createPurchasedProductUseCase } from "@/server/purchasedProduct/useCases/create-purchase-product.use-case";
+import { findPurchasedProductUseCase } from "@/server/purchasedProduct/useCases/find-purchase-product.use-case";
+import { UpdatePurchasedProductUseCase } from "@/server/purchasedProduct/useCases/update-purchase-product.use-case";
 import { ReceiveItemRepository } from "@/server/recieveItem/receive-item.repository";
 import { createReceiveItemUseCase } from "@/server/recieveItem/use-cases/create-receive-item.use-case";
 import { ReceiveItemDetailRepository } from "@/server/recieveItemDetail/receive-detail.repository";
@@ -22,6 +27,8 @@ export const createReceiveItemController = companyProcedure
       const receiveDetailRepo = new ReceiveItemDetailRepository(trx);
       const receiveItemRepo = new ReceiveItemRepository(trx);
       const productRepo = new ProductRepository(trx);
+      const purchasedProductRepo = new PurchasedProductRepository(trx);
+
       const createdReceiveItem = await createReceiveItemUseCase({
         purchaseRepo,
         receiveRepo: receiveItemRepo,
@@ -36,8 +43,25 @@ export const createReceiveItemController = companyProcedure
         tax,
       });
 
+      const createPurchaseProduct =
+        createPurchasedProductUseCase(purchasedProductRepo);
+      const updatePurchaseProduct =
+        UpdatePurchasedProductUseCase(purchasedProductRepo);
+      const findPurchaseProduct =
+        findPurchasedProductUseCase(purchasedProductRepo);
+
       await Promise.all(
         details.map(async (detail) => {
+          await handlePurchaseProductOrchestrator({
+            createPurchaseProduct,
+            findPurchaseProduct,
+            updatePurchaseProduct,
+          })({
+            productId: detail.productId,
+            quantity: detail.quantity,
+            supplierId: createdReceiveItem.purchase.supplierId,
+          });
+
           await createReceiveItemDetailUseCase({
             receiveItemDetail: receiveDetailRepo,
             productRepo,

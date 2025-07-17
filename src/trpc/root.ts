@@ -12,11 +12,13 @@ import { purchaseRouter } from "@/server/purchase/purchase.router";
 import { purchaseInvoiceRouter } from "@/server/purchaseInvoice/purchase-invoice.router";
 import { purchasePaymentRouter } from "@/server/purchasePayment/purchase-payment.router";
 import { purchaseReturnRouter } from "@/server/purchaseReturn/purchase-return.router";
+import { purchasedProductRouter } from "@/server/purchasedProduct/purchased-product.router";
 import { receiveItemRouter } from "@/server/recieveItem/receive-item.router";
 import { reportRouter } from "@/server/report/report.router";
 import { salesInvoiceRouter } from "@/server/salesInvoice/sales-invoice.router";
 import { salesPaymentRouter } from "@/server/salesPayment/sales-payment.router";
 import { salesPersonRouter } from "@/server/salesPerson/sales-person.router";
+import { soldProductRouter } from "@/server/soldProduct/sold-product.router";
 import { supplierRouter } from "@/server/supplier";
 import { userRouter } from "@/server/user/user.router";
 
@@ -45,6 +47,8 @@ export const appRouter = createTRPCRouter({
   report: reportRouter,
   purchaseInvoice: purchaseInvoiceRouter,
   purchaseReturn: purchaseReturnRouter,
+  purchasedProduct: purchasedProductRouter,
+  soldProduct: soldProductRouter,
 });
 
 // export type definition of API

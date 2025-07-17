@@ -10,6 +10,11 @@ import { SalesInvoiceDetailRepository } from "@/server/salesInvoiceDetail/sales-
 import { createSalesInvoiceDetailUseCase } from "@/server/salesInvoiceDetail/use-cases/create-sales-invoice-detail.use-case";
 import { SalesPersonRepository } from "@/server/salesPerson/sales-person.repository";
 import { TransactionService } from "@/server/services";
+import { handleSoldProductOrchestrator } from "@/server/soldProduct/orchestrator/handle-sold-product.orchestrator";
+import { SoldProductRepository } from "@/server/soldProduct/sold-product.repository";
+import { createSoldProductUseCase } from "@/server/soldProduct/useCases/create-sold-product.use-case";
+import { findSoldProductUseCase } from "@/server/soldProduct/useCases/find-sold-product.use-case";
+import { updateSoldProductUseCase } from "@/server/soldProduct/useCases/update-sold-product.use-case";
 
 export const createSalesInvoiceController = companyProcedure
   .input(salesInvoicePayloadSchema)
@@ -22,6 +27,10 @@ export const createSalesInvoiceController = companyProcedure
 
       const salesInvoiceDetailRepo = new SalesInvoiceDetailRepository(trx);
       const productRepo = new ProductRepository(trx);
+      const soldProductRepo = new SoldProductRepository(trx);
+      const createSoldProduct = createSoldProductUseCase(soldProductRepo);
+      const updateSoldProduct = updateSoldProductUseCase(soldProductRepo);
+      const findSoldProduct = findSoldProductUseCase(soldProductRepo);
 
       const totalCOGS = await getTotalCOGSUseCase(productRepo)(
         input.details.map(({ quantity, productId }) => {
@@ -44,6 +53,15 @@ export const createSalesInvoiceController = companyProcedure
 
       await Promise.all(
         input.details.map(async (detail) => {
+          await handleSoldProductOrchestrator({
+            createSoldProduct,
+            updateSoldProduct,
+            findSoldProduct,
+          })({
+            productId: detail.productId,
+            quantity: detail.quantity,
+            customerId: input.customerId,
+          });
           await createSalesInvoiceDetailUseCase({
             salesInvoiceDetailRepo,
             productRepo,

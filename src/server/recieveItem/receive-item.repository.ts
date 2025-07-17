@@ -29,6 +29,7 @@ export class ReceiveItemRepository extends BaseRepository {
           : (await this._createRef(companyId, "purchase_receive", "sj")).ref,
         purchaseId,
       },
+      include: { purchase: { include: { supplier: true } } },
     });
   }
 
