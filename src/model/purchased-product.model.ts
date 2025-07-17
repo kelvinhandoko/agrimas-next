@@ -63,9 +63,11 @@ export type FindDetailPurchasedProductQuery = z.infer<
 >;
 
 export const handlePurchasedProductQuerySchema =
-  updatePurchasedProductPayloadSchema.extend({
-    productId: z.string().optional().describe("id produk"),
-  });
+  updatePurchasedProductPayloadSchema
+    .extend({
+      productId: z.string().optional().describe("id produk"),
+    })
+    .omit({ id: true });
 
 export type HandlePurchasedProductQuery = z.infer<
   typeof handlePurchasedProductQuerySchema

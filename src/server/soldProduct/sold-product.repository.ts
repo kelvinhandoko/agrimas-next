@@ -26,7 +26,7 @@ export class SoldProductRepository extends BaseRepository {
   }
   async create(payload: SoldProductPayload) {
     return await this._db.soldProduct.create({
-      data: { ...payload, totalReturn: payload.totalSold },
+      data: { ...payload, totalReturn: 0 },
     });
   }
 
