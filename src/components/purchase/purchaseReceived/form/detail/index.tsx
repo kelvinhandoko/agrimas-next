@@ -69,7 +69,9 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
                 <TableRow key={field.uid}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
-                    <CardDescription>{field.productName}</CardDescription>
+                    <CardDescription className="text-nowrap">
+                      {field.productName}
+                    </CardDescription>
                   </TableCell>
                   <TableCell>
                     <FormField
@@ -83,7 +85,7 @@ const PurchaseReceiveDetailForm: FC<PurchaseReceivedDetailFormProps> = ({
                               value={field.value}
                               disabled={isFullfilled}
                               onValueChange={({ floatValue }) =>
-                                field.onChange(floatValue)
+                                field.onChange(floatValue || 0)
                               }
                               {...NUMERIC_PROPS}
                               prefix=""

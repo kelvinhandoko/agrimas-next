@@ -33,3 +33,7 @@ export const handleSoldProductOrchestrator =
       return: payload.return!,
     });
   };
+
+export type HandleSoldProductOrchestrator = ReturnType<
+  typeof handleSoldProductOrchestrator
+>;

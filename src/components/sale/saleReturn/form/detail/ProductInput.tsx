@@ -1,4 +1,4 @@
-import { type PurchaseReturnPayload } from "@/model/purchase-return.model";
+import { type InvoiceReturnPayload } from "@/model/invoice-return.model";
 import { api } from "@/trpc/react";
 import React, { type FC, useState } from "react";
 import { type UseFormReturn } from "react-hook-form";
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 
 interface ProductInputProps {
-  form: UseFormReturn<PurchaseReturnPayload>;
+  form: UseFormReturn<InvoiceReturnPayload>;
   index: number;
 }
 
@@ -22,15 +22,15 @@ const ProductInput: FC<ProductInputProps> = ({ form, index }) => {
   const [search, setSearch] = useState("");
   const debounceSearch = useDebounce(search, 300);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetching } =
-    api.purchasedProduct.getInfinite.useInfiniteQuery(
+    api.soldProduct.getInfinite.useInfiniteQuery(
       {
         search: debounceSearch,
         limit: 10,
-        supplierId: form.watch("supplierId"),
+        customerId: form.watch("customerId"),
       },
       {
         getNextPageParam: (lastPage) => lastPage.meta.endCursor,
-        enabled: !!form.watch("supplierId"),
+        enabled: !!form.watch("customerId"),
       },
     );
   const products = data?.pages.flatMap((page) => page.data) ?? [];
@@ -49,11 +49,11 @@ const ProductInput: FC<ProductInputProps> = ({ form, index }) => {
                 fetchMore={fetchNextPage}
                 customLabel={({
                   product: { name },
-                  totalPurchase,
+                  totalSold,
                   totalReturn,
                 }) => (
                   <p>
-                    {name} (jumlah beli: {totalPurchase - totalReturn})
+                    {name} (sisa: {totalSold - totalReturn})
                   </p>
                 )}
                 valueKey="id"

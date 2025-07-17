@@ -37,3 +37,7 @@ export const handlePurchaseProductOrchestrator =
       return: payload.return!,
     });
   };
+
+export type IHandlePurchaseProductOrchestrator = ReturnType<
+  typeof handlePurchaseProductOrchestrator
+>;

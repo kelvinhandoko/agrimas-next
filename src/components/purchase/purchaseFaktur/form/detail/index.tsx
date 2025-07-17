@@ -96,7 +96,7 @@ const PurchaseInvoiceDetailForm: FC<PurchaseInvoiceDetailFormProps> = ({
                               placeholder="masukan jumlah"
                               value={field.value}
                               onValueChange={({ floatValue }) =>
-                                field.onChange(floatValue)
+                                field.onChange(floatValue || 0)
                               }
                               {...NUMERIC_PROPS}
                               displayType="text"

@@ -2,7 +2,6 @@ import { purchaseReturnPayloadSchema } from "@/model/purchase-return.model";
 import { companyProcedure } from "@/trpc/trpc";
 
 import { db } from "@/server/db";
-import { getTotalPurchaseProductOrchestrator } from "@/server/product/orchestrator/get-total-purchase-product.orchestrator";
 import { ProductRepository } from "@/server/product/product.repository";
 import { getDetailProductUseCase } from "@/server/product/use-cases/get-detail-product.use-case";
 import { createPurchaseReturnOrchestrator } from "@/server/purchaseReturn/orchestrator/create-purchase-return.orchestrator";
@@ -11,9 +10,11 @@ import { createPurchaseReturnUseCase } from "@/server/purchaseReturn/use-cases/c
 import { createPurchaseReturnDetailOrchestrator } from "@/server/purchaseReturnDetail/orchestrator/create-purchase-return-detail.orchestrator";
 import { PurchaseReturnDetailRepository } from "@/server/purchaseReturnDetail/purchase-return-detail.repository";
 import { createPurchaseReturnDetailUseCase } from "@/server/purchaseReturnDetail/use-cases/create-purchase-return-detail.use-case";
-import { getPurchaseReturnTotalUseCase } from "@/server/purchaseReturnDetail/use-cases/get-purchase-return-total.use-case";
-import { ReceiveItemRepository } from "@/server/recieveItem/receive-item.repository";
-import { getTotalReceiveItemUseCase } from "@/server/recieveItem/use-cases/get-total-receive.use-case";
+import { handlePurchaseProductOrchestrator } from "@/server/purchasedProduct/orchestrator/handle-purchased-product.orchestrator";
+import { PurchasedProductRepository } from "@/server/purchasedProduct/purchased-product.repository";
+import { createPurchasedProductUseCase } from "@/server/purchasedProduct/useCases/create-purchase-product.use-case";
+import { findPurchasedProductUseCase } from "@/server/purchasedProduct/useCases/find-purchase-product.use-case";
+import { UpdatePurchasedProductUseCase } from "@/server/purchasedProduct/useCases/update-purchase-product.use-case";
 import { TransactionService } from "@/server/services";
 import {
   SupplierRepository,
@@ -27,17 +28,15 @@ export const createPurchaseReturnController = companyProcedure
     return await transactionService.startTransaction(async (tx) => {
       const purchaseReturnRepo = new PurchaseReturnRepository(tx);
       const purchaseReturnDetailRepo = new PurchaseReturnDetailRepository(tx);
-      const receiveItemRepo = new ReceiveItemRepository(tx);
+
       const supplierRepo = new SupplierRepository(tx);
       const productRepo = new ProductRepository(tx);
+      const purchasedProductRepo = new PurchasedProductRepository(tx);
 
       const createPurchaseReturn =
         createPurchaseReturnUseCase(purchaseReturnRepo);
       const findSupplier = getDetailByIdSupplierUseCase(supplierRepo);
-      const getTotalReceiveItem = getTotalReceiveItemUseCase(receiveItemRepo);
-      const getTotalReturn = getPurchaseReturnTotalUseCase(
-        purchaseReturnDetailRepo,
-      );
+
       const createPurchaseReturnDetail = createPurchaseReturnDetailUseCase(
         purchaseReturnDetailRepo,
       );
@@ -49,16 +48,25 @@ export const createPurchaseReturnController = companyProcedure
         findSupplier,
       })({ ...input, companyId: ctx.session.user.companyId });
 
+      const createPurchaseProduct =
+        createPurchasedProductUseCase(purchasedProductRepo);
+      const updatePurchaseProduct =
+        UpdatePurchasedProductUseCase(purchasedProductRepo);
+      const findPurchaseProduct =
+        findPurchasedProductUseCase(purchasedProductRepo);
+
+      const handlePurchaseProduct = handlePurchaseProductOrchestrator({
+        createPurchaseProduct,
+        findPurchaseProduct,
+        updatePurchaseProduct,
+      });
+
       await Promise.all(
         input.detail.map(async (detail) => {
-          const getPurchaseQuantity = getTotalPurchaseProductOrchestrator(
-            getTotalReceiveItem,
-            getTotalReturn,
-          );
           await createPurchaseReturnDetailOrchestrator({
             createPurchaseReturnDetail,
             getProduct,
-            getPurchaseQuantity,
+            handlePurchaseProduct,
           })({
             ...detail,
             purchaseReturnId: purchaseReturn.id,
