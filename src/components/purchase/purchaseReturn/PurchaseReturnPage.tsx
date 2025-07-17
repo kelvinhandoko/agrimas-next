@@ -40,10 +40,6 @@ const purchaseReceivedData = [
 ];
 
 const PurchaseReturnPage = () => {
-  // const { data, isLoading } = api.supplier.getAll.useQuery({});
-  // if (isLoading) {
-  //   return <LoadingIndicator />;
-  // }
   return (
     <Box>
       <Box className="mb-8">

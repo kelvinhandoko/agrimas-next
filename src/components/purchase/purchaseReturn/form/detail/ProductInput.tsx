@@ -22,7 +22,7 @@ const ProductInput: FC<ProductInputProps> = ({ form, index }) => {
   const [search, setSearch] = useState("");
   const debounceSearch = useDebounce(search, 300);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetching } =
-    api.product.getInfinite.useInfiniteQuery(
+    api.purchasedProduct.getInfinite.useInfiniteQuery(
       {
         search: debounceSearch,
         limit: 10,
@@ -47,17 +47,10 @@ const ProductInput: FC<ProductInputProps> = ({ form, index }) => {
                 options={products}
                 hasMore={hasNextPage}
                 fetchMore={fetchNextPage}
-                customLabel={({ name }) => <p>{name}</p>}
+                customLabel={({ product: { name } }) => <p>{name}</p>}
                 valueKey="id"
                 onSelect={(val) => {
                   field.onChange(val);
-                  const findProduct = products.find(
-                    ({ id }) => id === (val as string),
-                  );
-                  form.setValue(
-                    `detail.${index}.price`,
-                    findProduct?.buyingPrice ?? 0,
-                  );
                 }}
                 isFetching={isFetching}
                 onInputChange={(data) => setSearch(data)}

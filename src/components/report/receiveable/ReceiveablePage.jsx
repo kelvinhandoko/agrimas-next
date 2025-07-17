@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import ReceiveableTable from "@/components/report/receiveable/ReceiveableTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -153,6 +154,10 @@ const ReceiveablePage = () => {
           </Box>
         </CardContent>
       </Card>
+      <ReceiveableTable
+        dataReportReceiveable={dataCustomerReceiveable}
+        isLoading={isLoadingGet}
+      />
     </Box>
   );
 };

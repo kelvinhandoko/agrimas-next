@@ -3,7 +3,12 @@ import { type TRANSACTION_CATEGORY } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 interface GroupAccountPayloadWithAccount extends GroupAccountPayload {
-  accounts: Array<AccountPayload & { category?: TRANSACTION_CATEGORY }>;
+  accounts: Array<
+    AccountPayload & {
+      category?: TRANSACTION_CATEGORY;
+      isPaymentMethod?: boolean;
+    }
+  >;
 }
 
 export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
@@ -18,6 +23,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         groupAccountId: "",
         name: "kas besar",
         posisi: "DEBIT",
+        isPaymentMethod: true,
         reports: ["NERACA"],
       },
       {
@@ -26,6 +32,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         groupAccountId: "",
         name: "kas kecil",
         posisi: "DEBIT",
+        isPaymentMethod: true,
         reports: ["NERACA"],
       },
       {

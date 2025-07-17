@@ -10,6 +10,8 @@ import { DefaultAccountRepository } from "@/server/defaultAccount/default-accoun
 import { createBulkDefaultAccountUseCase } from "@/server/defaultAccount/use-cases/create-bulk-default-account.use-case";
 import { GroupAccountRepository } from "@/server/groupAccount/group-account.repository";
 import { createGroupAccountUseCase } from "@/server/groupAccount/use-cases/create-group-account.use-case";
+import { PaymentMethodRepository } from "@/server/paymentMethod/payment-method.repository";
+import { createPaymentMethodUseCase } from "@/server/paymentMethod/use-cases/create-payment-method.use-case";
 import { TransactionService } from "@/server/services";
 
 export const createCompanyController = ownerProcedure
@@ -22,7 +24,7 @@ export const createCompanyController = ownerProcedure
       const groupAccountRepo = new GroupAccountRepository(tx);
       const companyRepo = new CompanyRepository(tx);
       const defaultAccountRepo = new DefaultAccountRepository(tx);
-
+      const paymentMethodRepo = new PaymentMethodRepository(tx);
       const createCompany = new CreateCompanyUseCase(companyRepo);
 
       const companyData = await createCompany.execute({
@@ -35,11 +37,9 @@ export const createCompanyController = ownerProcedure
 
       const createDefaultAccount =
         createBulkDefaultAccountUseCase(defaultAccountRepo);
-      console.log({
-        defaultAccountData: defaultAccountData.map(({ accounts }) =>
-          accounts.map((account) => account.id),
-        ),
-      });
+
+      const createPaymentMethod = createPaymentMethodUseCase(paymentMethodRepo);
+
       // Use Promise.all to handle group account creation
       await Promise.all(
         defaultAccountData.map(async (groupAccount) => {
@@ -61,6 +61,18 @@ export const createCompanyController = ownerProcedure
             (data) => Boolean(data.category) && data.id,
           );
 
+          const paymentMethodData = accountsWithGroupAccount.filter(
+            (data) => data.isPaymentMethod,
+          );
+          await Promise.all(
+            paymentMethodData.map(async (data) => {
+              await createPaymentMethod({
+                name: data.name,
+                companyId: companyData.id,
+                initialAmount: 0,
+              });
+            }),
+          );
           await createDefaultAccount(
             defaultData.map((data) => {
               return {
