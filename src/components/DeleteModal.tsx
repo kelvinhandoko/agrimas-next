@@ -1,5 +1,5 @@
-import { Trash2, Trash2Icon } from "lucide-react";
-import { type MouseEvent, useState } from "react";
+import { Trash2 } from "lucide-react";
+import { type MouseEvent } from "react";
 
 import {
   AlertDialog,
@@ -8,7 +8,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 

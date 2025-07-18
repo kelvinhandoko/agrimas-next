@@ -111,7 +111,8 @@ const ProductAction: FC<ProductActionProps> = ({
           <DeleteModal
             id={data.id}
             name={data.name}
-            handleDelete={() => {}}
+            //TODO: handle delete
+            handleDelete={() => console.log("error")}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />

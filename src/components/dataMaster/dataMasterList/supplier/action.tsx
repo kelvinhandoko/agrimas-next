@@ -80,7 +80,8 @@ const SupplierAction: FC<SupplierActionProps> = ({ data, className }) => {
           <DeleteModal
             id={data.id}
             name={data.nama}
-            handleDelete={() => {}}
+            //TODO: handle delete
+            handleDelete={() => console.log("error")}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />

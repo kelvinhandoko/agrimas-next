@@ -9,7 +9,12 @@ const config = {
   serverExternalPackages: ["@node-rs/argon2"],
   output: "standalone",
   images: {
-    domains: ["images.unsplash.com"], // Tambahkan domain di sini
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
 };
 

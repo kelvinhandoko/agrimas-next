@@ -1,6 +1,6 @@
 "use client";
 
-import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit, Eye, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 
@@ -80,7 +80,8 @@ const UserAction: FC<UserActionProps> = ({ data, className }) => {
           <DeleteModal
             id={data.id}
             name={data.username}
-            handleDelete={() => {}}
+            // TODO: handleDelete
+            handleDelete={() => console.log("error")}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />

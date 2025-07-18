@@ -3,7 +3,6 @@
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box } from "@radix-ui/themes";
-import { useSearchParams } from "next/navigation";
 
 import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";

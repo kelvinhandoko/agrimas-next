@@ -80,7 +80,8 @@ const SalesAction: FC<SalesActionProps> = ({ data, className }) => {
           <DeleteModal
             id={data.id}
             name={data.name}
-            handleDelete={() => {}}
+            // TODO: handleDelete
+            handleDelete={() => console.log("error")}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />

@@ -1,17 +1,14 @@
 "use client";
 
 import { paths } from "@/paths/paths";
-import { Eye, MoreVertical, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 
-import { cn } from "@/lib/utils";
-
-import { PurchaseRouterOutputs } from "@/server/purchase/purchase.router";
+import { type PurchaseRouterOutputs } from "@/server/purchase/purchase.router";
 
 import DeleteModal from "@/components/DeleteModal";
 import DropdownTriggerIcon from "@/components/DropdownTriggerIcon";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,7 +74,7 @@ const PurchaseOrderAction: FC<PurchaseOrderActionProps> = ({
           <DeleteModal
             id={data.id}
             name={data.ref}
-            handleDelete={() => {}}
+            handleDelete={() => console.log("test")}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />

@@ -1,6 +1,4 @@
 import { Text } from "@radix-ui/themes";
-import { Eye } from "lucide-react";
-import { useState } from "react";
 
 import {
   AlertDialog,
@@ -9,7 +7,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
