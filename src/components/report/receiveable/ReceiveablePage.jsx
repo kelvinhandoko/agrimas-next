@@ -1,5 +1,4 @@
 "use client";
-"use client";
 
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
@@ -9,32 +8,6 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-
-import LoadingIndicator from "@/components/LoadingIndicator";
-import ReceiveableTable from "@/components/report/receiveable/ReceiveableTable";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import BackButton from "@/components/BackButton";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import ReceiveableTable from "@/components/report/receiveable/ReceiveableTable";
@@ -69,6 +42,7 @@ const ReceiveablePage = () => {
       customer_id: "",
     },
   });
+
   const onSubmit = async (data) => {
     try {
       toast.promise(
@@ -92,11 +66,14 @@ const ReceiveablePage = () => {
       console.error("Login error:", error);
     }
   };
+
   const { data: dataCustomerReceiveable, isLoading: isLoadingGet } =
     api.customer.getAll.useQuery({});
+
   if (isLoadingGet) {
     return <LoadingIndicator />;
   }
+
   return (
     <Box>
       <Box className="mb-8">
@@ -116,7 +93,7 @@ const ReceiveablePage = () => {
                 >
                   <FormField
                     control={form.control}
-                    name="barang"
+                    name="customer_id"
                     render={({ field }) => (
                       <FormItem className="mr-4 w-full">
                         <FormLabel>Pilih Customer</FormLabel>
@@ -189,5 +166,4 @@ const ReceiveablePage = () => {
   );
 };
 
-export default ReceiveablePage;
 export default ReceiveablePage;
