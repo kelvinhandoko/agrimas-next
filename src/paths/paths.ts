@@ -54,6 +54,7 @@ export const paths = {
     },
     saleReturn: {
       root: "/sale/sale-return",
+      new: "/sale/sale-return/new",
       detail: (id: string) => `/sale/sale-return/${id}/detail`,
     },
     saleFaktur: {

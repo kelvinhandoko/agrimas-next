@@ -1,11 +1,11 @@
 import { TIMEZONE } from "@/constant";
 import {
-  CursoredPurchaseReturnQuery,
-  GetPurchaseReturnQuery,
-  PaginatedPurchaseReturnQuery,
+  type CursoredPurchaseReturnQuery,
+  type GetPurchaseReturnQuery,
+  type PaginatedPurchaseReturnQuery,
   type PurchaseReturnPayload,
 } from "@/model/purchase-return.model";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 
 import { BaseRepository } from "@/server/common";

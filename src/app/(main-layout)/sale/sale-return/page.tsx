@@ -1,9 +1,9 @@
 import React from "react";
 
-import SalesReturnForm from "@/components/sale/saleReturn/form";
+import SalesReturnTable from "@/components/sale/saleReturn/table";
 
 const page = () => {
-  return <SalesReturnForm />;
+  return <SalesReturnTable />;
 };
 
 export default page;

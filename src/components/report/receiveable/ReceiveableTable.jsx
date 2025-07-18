@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 
 const ReceiveableTable = ({ isLoading, dataReportReceiveable }) => {
+  console.log(dataReportReceiveable);
   return (
     <Box>
       <Flex
@@ -39,10 +40,12 @@ const ReceiveableTable = ({ isLoading, dataReportReceiveable }) => {
                     {customer}
                   </Text>
                   <NumericFormat
-                    value={receiveables.reduce(
-                      (sum, inv) => sum + inv.totalAfter,
-                      0,
-                    )}
+                    value={
+                      receiveables?.reduce(
+                        (sum, inv) => sum + inv.totalAfter,
+                        0,
+                      ) ?? 0
+                    }
                     displayType="text"
                     thousandSeparator="."
                     decimalSeparator=","

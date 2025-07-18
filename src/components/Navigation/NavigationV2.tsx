@@ -47,6 +47,10 @@ const menuItems = [
         title: "Faktur Penjualan",
         path: paths.sale.saleFaktur.root,
       },
+      {
+        title: "Retur Penjualan",
+        path: paths.sale.saleReturn.root,
+      },
     ],
   },
   {
@@ -65,6 +69,10 @@ const menuItems = [
       {
         title: "Faktur Pembelian",
         path: paths.purchase.purchaseFaktur.root,
+      },
+      {
+        title: "Retur Pembelian",
+        path: paths.purchase.purchaseReturn.root,
       },
     ],
   },

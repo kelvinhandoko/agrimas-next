@@ -68,12 +68,15 @@ const ReceiveablePage = () => {
   };
 
   const { data: dataCustomerReceiveable, isLoading: isLoadingGet } =
-    api.customer.getAll.useQuery({});
+    api.report.receivable.useQuery({});
 
   if (isLoadingGet) {
     return <LoadingIndicator />;
   }
 
+  if (Object.keys(dataCustomerReceiveable).length === 0) {
+    return <h1>kosong</h1>;
+  }
   return (
     <Box>
       <Box className="mb-8">

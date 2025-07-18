@@ -65,6 +65,7 @@ export class InvoiceReturnRepository extends BaseRepository {
     return this._db.invoiceReturn.paginate({
       where: whereClause,
       orderBy: { date: "desc" },
+      include: { customer: true, InvoiceReturnDetail: true },
     });
   }
 

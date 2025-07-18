@@ -54,7 +54,7 @@ const SalesReturnForm = () => {
         success: async () => {
           form.reset();
           router.replace(paths.purchase.purchaseReturn.root);
-          await utils.purchase.getAll.invalidate();
+          await utils.purchaseReturn.get.invalidate();
           return "berhasil membuat retur penjualan";
         },
         error: errorFormatter,

@@ -2,9 +2,11 @@ import { createTRPCRouter } from "@/trpc/trpc";
 import { type inferRouterOutputs } from "@trpc/server";
 
 import { createInvoiceReturnController } from "@/server/invoiceReturn/controller/create-invoice-return.controller";
+import { getInvoiceReturnController } from "@/server/invoiceReturn/controller/get-invoice-return.controller";
 
 export const invoiceReturnRouter = createTRPCRouter({
   create: createInvoiceReturnController,
+  get: getInvoiceReturnController,
 });
 
 export type InvoiceReturnRouterOutputs = inferRouterOutputs<
