@@ -1,6 +1,4 @@
 import { Text } from "@radix-ui/themes";
-import { Eye } from "lucide-react";
-import { useState } from "react";
 
 import {
   AlertDialog,
@@ -9,7 +7,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -17,13 +14,15 @@ import { Button } from "@/components/ui/button";
 export default function DetailSupplierModal({
   name,
   alamat,
+  open,
+  onOpenChange,
 }: {
   id: string;
   name: string;
   alamat: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
-
   const fallbackName = (name: string) => {
     const result = name
       .split(" ")
@@ -35,10 +34,7 @@ export default function DetailSupplierModal({
     return result;
   };
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Eye className="cursor-pointer text-[#624DE3]" />
-      </AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-x-3">
@@ -59,7 +55,10 @@ export default function DetailSupplierModal({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button variant={"destructiveOnline"} onClick={() => setOpen(false)}>
+          <Button
+            variant={"destructiveOnline"}
+            onClick={() => onOpenChange(false)}
+          >
             Tutup
           </Button>
         </AlertDialogFooter>

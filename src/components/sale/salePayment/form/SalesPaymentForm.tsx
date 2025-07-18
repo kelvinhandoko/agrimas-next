@@ -124,7 +124,7 @@ const SalesPaymentForm: FC<SalesPaymentFormProps> = ({ sisaTagihan }) => {
       </div>
     );
   return (
-    <Card className="flex w-1/3 flex-col">
+    <Card className="flex w-full flex-col lg:w-1/3">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />

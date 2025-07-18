@@ -163,24 +163,24 @@ const PayablePage = () => {
       <Box className="mb-8">
         <BackButton path={paths.report.root} />
       </Box>
-      <Card className="w-full px-4 py-7">
+      <Card className="w-full py-7 lg:px-4">
         <CardContent>
           <Text size={"5"} weight={"bold"}>
             Laporan Hutang Usaha
           </Text>
           <Box asChild>
             <div className="grid w-full grid-cols-12 items-end">
-              <Box className="col-span-5">
+              <Box className="col-span-12 lg:col-span-5">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="mt-6 flex items-end justify-between"
+                    className="mt-6 flex flex-col items-end justify-between lg:flex-row"
                   >
                     <FormField
                       control={form.control}
                       name="supplier_id"
                       render={({ field }) => (
-                        <FormItem className="mr-4 w-full">
+                        <FormItem className="w-full lg:mr-4">
                           <FormLabel>Pilih Supplier</FormLabel>
                           <Select
                             onValueChange={field.onChange}
@@ -208,11 +208,16 @@ const PayablePage = () => {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit">Tampilkan</Button>
+                    <Button
+                      type="submit"
+                      className="mt-6 w-full lg:mt-0 lg:w-auto"
+                    >
+                      Tampilkan
+                    </Button>
                   </form>
                 </Form>
               </Box>
-              <Box className="col-span-7 justify-end place-self-end">
+              <Box className="col-span-12 mt-4 justify-end place-self-end lg:col-span-7 lg:mt-0">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center gap-2 rounded-md bg-accent px-4 py-2 font-bold text-[#624DE3] transition">
                     <FileText className="h-5 w-5" /> Export
@@ -248,7 +253,7 @@ const PayablePage = () => {
               </Box>
             </div>
           </Box>
-          <Box className="mt-20">
+          <Box className="mt-10 lg:mt-20">
             <PayableTable
               isLoading={false}
               dataReportPayable={filterDataPayable}
