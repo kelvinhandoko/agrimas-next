@@ -5,6 +5,11 @@ import { type SalesInvoiceRepository } from "@/server/salesInvoice/sales-invoice
 
 export const getReceiveableReportUseCase =
   (repo: SalesInvoiceRepository) => async (q: ReceiveableReportQuery) => {
-    const { data } = await repo.get({ ...q, limit: 100000, page: 1 });
+    const { data } = await repo.get({
+      ...q,
+      status: ["PARTIAL", "UNPAID"],
+      limit: 100000,
+      page: 1,
+    });
     return groupBy(data, (data) => data.customer.nama);
   };

@@ -56,7 +56,7 @@ type TableRowProps = Omit<
   React.HTMLAttributes<HTMLTableRowElement>,
   "children"
 > &
-  MotionProps & {
+  Omit<MotionProps, "hidden"> & {
     children: React.ReactNode;
   };
 

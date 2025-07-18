@@ -1,11 +1,14 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+"use client";
+
+import React from "react";
+
+// Import each component individually instead of using destructuring
+import { Table } from "@/components/ui/table";
+import { TableBody } from "@/components/ui/table";
+import { TableCell } from "@/components/ui/table";
+import { TableHead } from "@/components/ui/table";
+import { TableHeader } from "@/components/ui/table";
+import { TableRow } from "@/components/ui/table";
 
 const purchaseReturnDetails = [
   {
@@ -35,7 +38,7 @@ const purchaseReturnDetails = [
   },
 ];
 
-export function TableDetailPurchaseReturn() {
+function TableDetailPurchaseReturn() {
   return (
     <Table>
       <TableHeader>
@@ -57,3 +60,5 @@ export function TableDetailPurchaseReturn() {
     </Table>
   );
 }
+
+export default TableDetailPurchaseReturn;

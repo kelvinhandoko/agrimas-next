@@ -1,15 +1,8 @@
-import { type Metadata } from "next";
+import React from "react";
 
-import ReceiveablePage from "@/components/report/receiveable/ReceiveablePage";
+import ReceiveableReport from "@/components/report/receiveable";
 
-export const metadata: Metadata = {
-  title: "Agrimas - Report Receiveable Customer Page",
-  description:
-    "Select a company to proceed based on your role. Streamline navigation and access specific company data with ease.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
-};
 const page = () => {
-  return <ReceiveablePage />;
+  return <ReceiveableReport />;
 };
-
 export default page;
