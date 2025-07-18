@@ -1,5 +1,6 @@
 import { TIMEZONE } from "@/constant";
 import {
+  CursoredPurchaseReturnQuery,
   GetPurchaseReturnQuery,
   PaginatedPurchaseReturnQuery,
   type PurchaseReturnPayload,
@@ -53,6 +54,15 @@ export class PurchaseReturnRepository extends BaseRepository {
   async get(q: PaginatedPurchaseReturnQuery) {
     const { page, limit } = q;
     const [data, meta] = await this._getQuery(q).withPages({ limit, page });
+    return { data, meta };
+  }
+
+  async getInfinite(q: CursoredPurchaseReturnQuery) {
+    const { cursor, limit } = q;
+    const [data, meta] = await this._getQuery(q).withCursor({
+      limit,
+      after: cursor,
+    });
     return { data, meta };
   }
 }
