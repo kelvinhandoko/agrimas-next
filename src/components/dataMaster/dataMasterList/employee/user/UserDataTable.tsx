@@ -10,11 +10,15 @@ import DataTable from "@/components/common/table/DataTable";
 import { userColumn } from "@/components/dataMaster/dataMasterList/employee/user/Column";
 
 const UserDataTable = () => {
-  const searchparams = useSearchParams();
-  const search = searchparams.get("search") ?? "";
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+  const limit = Number(searchParams.get("limit") ?? 10);
+  const page = Number(searchParams.get("page") ?? 1);
   const utils = api.useUtils();
   const { data, isLoading } = api.user.getAll.useQuery({
     search,
+    page,
+    limit,
   });
 
   const { mutateAsync: deleteUser } = api.user.delete.useMutation({

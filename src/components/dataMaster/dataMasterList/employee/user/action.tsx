@@ -24,9 +24,14 @@ import DetailUserModal from "./DetailUserModal";
 interface UserActionProps {
   data: UserRouterOutputs["getAll"]["data"][0];
   className?: string;
+  handleDeleteUser?: (id: string) => Promise<void>;
 }
 
-const UserAction: FC<UserActionProps> = ({ data, className }) => {
+const UserAction: FC<UserActionProps> = ({
+  data,
+  className,
+  handleDeleteUser,
+}) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -80,8 +85,12 @@ const UserAction: FC<UserActionProps> = ({ data, className }) => {
           <DeleteModal
             id={data.id}
             name={data.username}
-            // TODO: handleDelete
-            handleDelete={() => console.log("error")}
+            handleDelete={async () => {
+              if (handleDeleteUser) {
+                await handleDeleteUser(data.id);
+              }
+              setOpenDeleteModal(false);
+            }}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />

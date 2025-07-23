@@ -28,6 +28,8 @@ export const userColumn = ({ handleDeleteUser }: UserColumnProps) =>
       id: "actions",
       enableHiding: false,
       header: () => <div className="text-center">Aksi</div>,
-      cell: ({ row }) => <UserAction data={row.original} />,
+      cell: ({ row }) => (
+        <UserAction data={row.original} handleDeleteUser={handleDeleteUser} />
+      ),
     },
   ] as ColumnDef<UserRouterOutputs["getAll"]["data"][0]>[];
