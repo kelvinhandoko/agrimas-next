@@ -2,6 +2,7 @@
 
 import { paths } from "@/paths/paths";
 import { Eye, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 
@@ -30,13 +31,6 @@ const PurchaseOrderAction: FC<PurchaseOrderActionProps> = ({
   const router = useRouter();
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const handleDetail = () => {
-    router.push(`${paths.purchase.purchaseOrder.detail(data.id)}`);
-  };
-  const handleEdit = () => {
-    router.push(`${paths.purchase.purchaseOrder.edit(data.id)}`);
-  };
-
   return (
     <div>
       <DropdownMenu>
@@ -50,10 +44,12 @@ const PurchaseOrderAction: FC<PurchaseOrderActionProps> = ({
           <DropdownMenuSeparator />
 
           {/* View Detail Action */}
-          <DropdownMenuItem className="cursor-pointer" onClick={handleDetail}>
-            <Eye className="mr-2 h-4 w-4 text-blue-500" />
-            <span>Detail</span>
-          </DropdownMenuItem>
+          <Link href={paths.purchase.purchaseOrder.detail(data.id)}>
+            <DropdownMenuItem className="cursor-pointer">
+              <Eye className="mr-2 h-4 w-4 text-blue-500" />
+              <span>Detail</span>
+            </DropdownMenuItem>
+          </Link>
 
           {/* Edit Action */}
           {/* <DropdownMenuItem onClick={handleEdit} className="cursor-pointer">

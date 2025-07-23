@@ -33,7 +33,7 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
   const { data, isLoading } = api.purchase.getDetail.useQuery(id);
 
   const handleDownloadPDF = async () => {
-    const blob = await pdf(<SuratPo data={data} />).toBlob();
+    const blob = await pdf(<SuratPo data={data!} />).toBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
 

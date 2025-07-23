@@ -31,7 +31,7 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
   const { data, isLoading } = api.receiveItem.getDetail.useQuery(id);
 
   const handleDownloadPDF = async () => {
-    const blob = await pdf(<SuratJalanPDF data={data} />).toBlob();
+    const blob = await pdf(<SuratJalanPDF data={data!} />).toBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
 
