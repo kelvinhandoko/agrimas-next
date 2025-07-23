@@ -9,6 +9,8 @@ import {
 } from "@react-pdf/renderer";
 import { DateTime } from "luxon";
 
+import { ReceiveItemRouter } from "@/server/recieveItem/receive-item.router";
+
 const styles = StyleSheet.create({
   page: {
     padding: 30,
@@ -34,7 +36,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   table: {
-    display: "table",
+    display: "flex",
+    flexDirection: "column",
     width: "auto",
     borderStyle: "solid",
     borderWidth: 1,
@@ -94,10 +97,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const SuratJalanPDF = ({ data }) => {
+type PurchaseReceivedDetail = ReceiveItemRouter["getDetail"];
+
+const SuratJalanPDF = ({ data }: { data: PurchaseReceivedDetail }) => {
   // width = 21cm
   // height = 14cm
-  const customSize = [21 * 28.35, 14 * 28.35];
+  const customSize: [number, number] = [21 * 28.35, 14 * 28.35];
   return (
     <Document>
       <Page size={customSize} style={styles.page}>
