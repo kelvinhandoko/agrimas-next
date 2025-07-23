@@ -8,6 +8,7 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Spinner } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
@@ -26,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 const EditSalesPage = ({ id }: { id: string }) => {
+  const { data: session } = useSession();
   const utils = api.useUtils();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<SalesPersonPayload>({
@@ -37,11 +39,16 @@ const EditSalesPage = ({ id }: { id: string }) => {
   });
 
   // get detail sales query
-  const { data: salesDetail } = api.salesPerson.findDetail.useQuery({
-    by: "id",
-    identifier: id,
-    companyId: "",
-  });
+  const { data: salesDetail } = api.salesPerson.findDetail.useQuery(
+    {
+      by: "id",
+      identifier: id.toString(),
+      companyId: session?.user.companyId ?? "",
+    },
+    {
+      enabled: !!session,
+    },
+  );
 
   // update sales mutation
   const { mutateAsync: updateSales } = api.salesPerson.update.useMutation();
@@ -109,7 +116,7 @@ const EditSalesPage = ({ id }: { id: string }) => {
               </Link>
               <Button type="submit" disabled={isLoading}>
                 <Spinner loading={isLoading} />
-                Tambah
+                Simpan
               </Button>
             </Flex>
           </form>

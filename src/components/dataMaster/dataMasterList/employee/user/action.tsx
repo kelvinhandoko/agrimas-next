@@ -1,6 +1,8 @@
 "use client";
 
+import { paths } from "@/paths/paths";
 import { Edit, Eye, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 
@@ -29,10 +31,6 @@ const UserAction: FC<UserActionProps> = ({ data, className }) => {
   const [open, setOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const handleEdit = () => {
-    router.push(`/chart-of-accounts/${data.id}/edit`);
-  };
-
   return (
     <div>
       <DropdownMenu>
@@ -53,10 +51,12 @@ const UserAction: FC<UserActionProps> = ({ data, className }) => {
           </DropdownMenuItem>
 
           {/* Edit Action */}
-          <DropdownMenuItem onClick={handleEdit} className="cursor-pointer">
-            <Edit className="mr-2 h-4 w-4 text-green-500" />
-            <span>Edit</span>
-          </DropdownMenuItem>
+          <Link href={paths.dataMaster.employee.editUser(data.id)}>
+            <DropdownMenuItem className="cursor-pointer">
+              <Edit className="mr-2 h-4 w-4 text-green-500" />
+              <span>Edit</span>
+            </DropdownMenuItem>
+          </Link>
 
           {/* General Ledger Action */}
           <DropdownMenuItem

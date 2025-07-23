@@ -46,6 +46,7 @@ const UserDataTable = () => {
         // hideColumn={["role"]}
         path={paths.dataMaster.employee.newUser}
         buttonAddName="Tambah User"
+        titleTable="Data User"
       />
     </>
   );
