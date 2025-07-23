@@ -163,7 +163,7 @@ const EditUserPage = ({ id }: { id: string }) => {
               </Link>
               <Button type="submit" disabled={isLoading}>
                 <Spinner loading={isLoading} />
-                Tambah
+                Simpan
               </Button>
             </Flex>
           </form>
