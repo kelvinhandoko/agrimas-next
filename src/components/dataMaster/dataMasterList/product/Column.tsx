@@ -1,3 +1,4 @@
+import { paths } from "@/paths/paths";
 import { formatPrice } from "@/utils/format-price";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
@@ -10,9 +11,12 @@ const columnHelper =
 
 interface ProductColumnProps {
   handleDeleteProduct: (id: string) => Promise<void>;
+  handleEditProduct: (id: string) => Promise<void>;
 }
-
-export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
+export const productColumn = ({
+  handleDeleteProduct,
+  handleEditProduct,
+}: ProductColumnProps) =>
   [
     columnHelper.accessor("name", {
       header: () => <div>Nama Produk</div>,
@@ -36,6 +40,11 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
       id: "actions",
       enableHiding: false,
       header: () => <div className="text-center">Aksi</div>,
-      cell: ({ row }) => <ProductAction data={row.original} />,
+      cell: ({ row }) => (
+        <ProductAction
+          data={row.original}
+          onEdit={(id: string) => handleEditProduct(id)}
+        />
+      ),
     },
   ] as ColumnDef<ProductRouterOutput["getAll"]["data"][0]>[];
