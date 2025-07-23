@@ -10,6 +10,8 @@ import {
 } from "@react-pdf/renderer";
 import { DateTime } from "luxon";
 
+import { PurchaseRouterOutputs } from "@/server/purchase/purchase.router";
+
 const styles = StyleSheet.create({
   page: {
     padding: 30,
@@ -35,7 +37,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   table: {
-    display: "table",
+    display: "flex",
+    flexDirection: "column",
     width: "auto",
     borderStyle: "solid",
     borderWidth: 1,
@@ -101,7 +104,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const SuratPo = ({ data }) => {
+type PurchaseOrderDetail = PurchaseRouterOutputs["getDetail"];
+
+const SuratPo = ({ data }: { data: PurchaseOrderDetail }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -172,7 +177,7 @@ const SuratPo = ({ data }) => {
             <View style={styles.tableRow}>
               <Text style={styles.totalPembelianCol}>Sub Total Pembelian</Text>
               <Text style={styles.tableCol}>
-                {formatPrice(data?.totalBeforeDiscount)}
+                {formatPrice(data?.totalBeforeDiscount ?? 0)}
               </Text>
             </View>
             <View style={styles.tableRow}>
@@ -185,7 +190,9 @@ const SuratPo = ({ data }) => {
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.totalPembelianCol}>Total Pembelian</Text>
-              <Text style={styles.tableCol}>{formatPrice(data?.netTotal)}</Text>
+              <Text style={styles.tableCol}>
+                {formatPrice(data?.netTotal ?? 0)}
+              </Text>
             </View>
           </View>
         </View>
