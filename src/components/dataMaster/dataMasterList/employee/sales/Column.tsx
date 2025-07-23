@@ -22,7 +22,12 @@ export const salesColumn = ({ handleDeleteSales }: SalesColumnProps) =>
       enableHiding: false,
       header: () => <div className="text-center">Aksi</div>,
       cell: ({ row }) => {
-        return <SalesAction data={row.original} />;
+        return (
+          <SalesAction
+            data={row.original}
+            handleDeleteSales={handleDeleteSales}
+          />
+        );
       },
     },
   ] as ColumnDef<SalesPersonRouterOutputs["findAll"]["data"][0]>[];

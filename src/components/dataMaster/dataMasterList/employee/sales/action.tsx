@@ -24,9 +24,14 @@ import DetailSalesModal from "./DetailSalesModal";
 interface SalesActionProps {
   data: SalesPersonRouterOutputs["findAll"]["data"][0];
   className?: string;
+  handleDeleteSales?: (id: string) => Promise<void>;
 }
 
-const SalesAction: FC<SalesActionProps> = ({ data, className }) => {
+const SalesAction: FC<SalesActionProps> = ({
+  data,
+  className,
+  handleDeleteSales,
+}) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -81,7 +86,12 @@ const SalesAction: FC<SalesActionProps> = ({ data, className }) => {
             id={data.id}
             name={data.name}
             // TODO: handleDelete
-            handleDelete={() => console.log("error")}
+            handleDelete={async () => {
+              if (handleDeleteSales) {
+                await handleDeleteSales(data.id);
+              }
+              setOpenDeleteModal(false);
+            }}
             open={openDeleteModal}
             onOpenChange={setOpenDeleteModal}
           />
