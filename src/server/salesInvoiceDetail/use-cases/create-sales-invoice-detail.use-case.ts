@@ -38,3 +38,7 @@ export const createSalesInvoiceDetailUseCase =
       productId: findProduct.id,
     });
   };
+
+export type ICreateSalesInvoiceDetailUseCase = ReturnType<
+  typeof createSalesInvoiceDetailUseCase
+>;

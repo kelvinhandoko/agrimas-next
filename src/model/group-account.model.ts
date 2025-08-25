@@ -20,7 +20,9 @@ export const groupAccountPayloadSchema = z.object({
 export type GroupAccountPayload = z.infer<typeof groupAccountPayloadSchema> &
   WithCompany;
 
-export const getGroupAccountQuerySchema = getQuery;
+export const getGroupAccountQuerySchema = getQuery.extend({
+  accountClass: z.nativeEnum(AccountClass).optional(),
+});
 
 export type GetGroupAccountQuery = z.infer<typeof getGroupAccountQuerySchema> &
   WithCompany;

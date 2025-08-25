@@ -40,7 +40,6 @@ export const createCompanyController = ownerProcedure
 
       const createPaymentMethod = createPaymentMethodUseCase(paymentMethodRepo);
 
-      // Use Promise.all to handle group account creation
       await Promise.all(
         defaultAccountData.map(async (groupAccount) => {
           const { accounts, ...groupAccountRelated } = groupAccount;
@@ -68,6 +67,7 @@ export const createCompanyController = ownerProcedure
             paymentMethodData.map(async (data) => {
               await createPaymentMethod({
                 name: data.name,
+                accountId: data.id,
                 companyId: companyData.id,
                 initialAmount: 0,
               });

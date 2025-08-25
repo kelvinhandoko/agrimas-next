@@ -38,8 +38,8 @@ export class GroupAccountRepository extends BaseRepository {
     });
   }
 
-  private async _getQuery(q: GetGroupAccountQuery) {
-    const { companyId, search } = q;
+  private _getQuery(q: GetGroupAccountQuery) {
+    const { companyId, search, accountClass } = q;
     const whereClause: Prisma.GroupAccountWhereInput = {};
     if (search) {
       whereClause.OR = [
@@ -61,6 +61,11 @@ export class GroupAccountRepository extends BaseRepository {
         },
       ];
     }
+
+    if (accountClass) {
+      whereClause.accountClass = accountClass;
+    }
+
     whereClause.companyId = companyId;
     return this._db.groupAccount.paginate({
       where: whereClause,
@@ -72,9 +77,7 @@ export class GroupAccountRepository extends BaseRepository {
   }
   async get(q: GetPaginatedGroupAccountQuery) {
     const { page, limit } = q;
-    const [data, meta] = await (
-      await this._getQuery(q)
-    ).withPages({
+    const [data, meta] = await this._getQuery(q).withPages({
       limit,
       page,
     });
@@ -86,9 +89,7 @@ export class GroupAccountRepository extends BaseRepository {
 
   async getInfinite(q: GetCursorGroupAccountQuery) {
     const { cursor, limit } = q;
-    const [data, meta] = await (
-      await this._getQuery(q)
-    ).withCursor({
+    const [data, meta] = await this._getQuery(q).withCursor({
       limit,
       after: cursor,
     });

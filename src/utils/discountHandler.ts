@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
 export const discountHandler = (totalBefore: number, discount: number) => {
-  console.log(discount);
   if (discount === 0) {
     return 0;
   }

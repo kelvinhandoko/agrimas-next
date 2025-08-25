@@ -21,3 +21,7 @@ export const createPaymentMethodUseCase =
     }
     return await repo.create(payload);
   };
+
+export type ICreatePaymentMethodUseCase = ReturnType<
+  typeof createPaymentMethodUseCase
+>;

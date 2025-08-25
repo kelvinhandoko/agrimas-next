@@ -6,3 +6,7 @@ export const getDefaultAccountUseCase =
     const defaultAccount = await defaultAccountRepo.getByCompany(companyId);
     return defaultAccount;
   };
+
+export type IGetDefaultAccountUseCase = ReturnType<
+  typeof getDefaultAccountUseCase
+>;

@@ -33,3 +33,7 @@ export const createJournalOrchestrator =
     );
     return createdJournal;
   };
+
+export type ICreateJournalOrchestrator = ReturnType<
+  typeof createJournalOrchestrator
+>;

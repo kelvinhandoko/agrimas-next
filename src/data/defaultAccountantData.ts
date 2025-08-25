@@ -6,7 +6,6 @@ interface GroupAccountPayloadWithAccount extends GroupAccountPayload {
   accounts: Array<
     AccountPayload & {
       category?: TRANSACTION_CATEGORY;
-      isPaymentMethod?: boolean;
     }
   >;
 }
@@ -17,24 +16,6 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
     name: "aset lancar",
     code: "1.1",
     accounts: [
-      {
-        id: nanoid(),
-        companyId: "",
-        groupAccountId: "",
-        name: "kas besar",
-        posisi: "DEBIT",
-        isPaymentMethod: true,
-        reports: ["NERACA"],
-      },
-      {
-        id: nanoid(),
-        companyId: "",
-        groupAccountId: "",
-        name: "kas kecil",
-        posisi: "DEBIT",
-        isPaymentMethod: true,
-        reports: ["NERACA"],
-      },
       {
         id: nanoid(),
         companyId: "",
@@ -394,7 +375,7 @@ export const defaultAccountData: GroupAccountPayloadWithAccount[] = [
         id: nanoid(),
         companyId: "",
         groupAccountId: "",
-        category: "DISKON_PEMBELIAN",
+        category: "POTONGAN_HARGA",
         name: "potongan pembelian",
         posisi: "CREDIT",
         reports: ["LABA_RUGI"],

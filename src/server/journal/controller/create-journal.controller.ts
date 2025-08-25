@@ -27,10 +27,10 @@ export const createJournalController = companyProcedure
         journalDetailRepo,
         accountRepo,
       });
-      const createGeneralLedger = createGeneralLedgerUseCase(generalLedgerRepo);
 
       return await createJournalOrchestrator({
-        createGeneralLedgerUseCase: createGeneralLedger,
+        createGeneralLedgerUseCase:
+          createGeneralLedgerUseCase(generalLedgerRepo),
         createJournalDetailUseCase: createJournalDetail,
         createJournalUseCase: createJournal,
       })({ ...input, companyId: ctx.session.user.companyId });
