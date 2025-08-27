@@ -63,7 +63,20 @@ export const createSalesInvoiceOrchestrator =
       0,
     );
 
+    const totalTax =
+      salesInvoice.tax +
+      payload.details.reduce((acc, curr) => acc + curr.tax, 0);
+
+    const totalDiscount =
+      (payload.discount || 0) +
+      payload.details.reduce(
+        (acc, curr) => acc + curr.discount * curr.quantity,
+        0,
+      );
+
     const journalDetailPayload = [] as JournalPayload["details"];
+
+    // Jurnal untuk penjualan (selalu ada)
     journalDetailPayload.push(
       {
         accountId: defaultData.get("PENJUALAN")!,
@@ -82,35 +95,28 @@ export const createSalesInvoiceOrchestrator =
       },
     );
 
-    if (
-      payload.discount ||
-      payload.details.some((detail) => detail.discount > 0)
-    ) {
-      const totalDiscount =
-        payload.discount +
-        payload.details.reduce(
-          (acc, curr) => acc + curr.discount * curr.quantity,
-          0,
-        );
-      journalDetailPayload.push(
-        {
-          accountId: defaultData.get("DISKON_PENJUALAN")!,
-          credit: totalDiscount,
-          debit: 0,
-        },
-        {
-          accountId: defaultData.get("PIUTANG_USAHA")!,
-          credit: 0,
-          debit: total - totalDiscount,
-        },
-      );
-    } else {
+    if (totalTax > 0) {
       journalDetailPayload.push({
-        accountId: defaultData.get("PIUTANG_USAHA")!,
-        credit: 0,
-        debit: total,
+        accountId: defaultData.get("PPN_KELUARAN")!,
+        credit: totalTax,
+        debit: 0,
       });
     }
+
+    if (totalDiscount > 0) {
+      journalDetailPayload.push({
+        accountId: defaultData.get("DISKON_PENJUALAN")!,
+        credit: 0,
+        debit: totalDiscount,
+      });
+    }
+
+    const receivableAmount = total + totalTax - totalDiscount;
+    journalDetailPayload.push({
+      accountId: defaultData.get("PIUTANG_USAHA")!,
+      credit: 0,
+      debit: receivableAmount,
+    });
 
     await createJournal({
       companyId: payload.companyId,

@@ -8,3 +8,7 @@ export const createPurchaseInvoiceUseCase =
     const purchaseInvoice = await purchaseInvoiceRepo.create(payload);
     return purchaseInvoice;
   };
+
+export type ICreatePurchaseInvoiceUseCase = ReturnType<
+  typeof createPurchaseInvoiceUseCase
+>;
