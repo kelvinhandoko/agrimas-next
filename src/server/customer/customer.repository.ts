@@ -125,4 +125,17 @@ export class CustomerRepository extends BaseRepository {
 
     return getData;
   }
+
+  async getTotalPayable(customerId: string) {
+    const {
+      _sum: { totalAfter, totalPayment },
+    } = await this._db.salesInvoice.aggregate({
+      where: { customerId },
+      _sum: {
+        totalAfter: true,
+        totalPayment: true,
+      },
+    });
+    return (totalAfter ?? 0) - (totalPayment ?? 0);
+  }
 }

@@ -9,6 +9,7 @@ export const getDetailByIdSupplierUseCase =
     const data = await supplierRepo.getDetailById({
       ...query,
     });
+    const totalDebt = await supplierRepo.getTotalDebt(query.id);
 
     if (!data) {
       throw new TRPCError({
@@ -17,7 +18,10 @@ export const getDetailByIdSupplierUseCase =
       });
     }
 
-    return data;
+    return {
+      ...data,
+      totalDebt,
+    };
   };
 
 export type GetDetailSupplierUseCase = ReturnType<

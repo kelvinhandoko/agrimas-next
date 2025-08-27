@@ -70,6 +70,15 @@ export class SupplierRepository extends BaseRepository {
       },
       include: {
         products: true,
+        purchases: {
+          include: {
+            ReceiveItem: {
+              include: {
+                purchaseInvoice: { include: { purchasePayments: true } },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -87,5 +96,20 @@ export class SupplierRepository extends BaseRepository {
     });
 
     return getData;
+  }
+
+  async getTotalDebt(supplierId: string) {
+    const {
+      _sum: { totalAfter, totalPayment },
+    } = await this._db.purchaseInvoice.aggregate({
+      _sum: {
+        totalAfter: true,
+        totalPayment: true,
+      },
+      where: {
+        receiveItem: { purchase: { supplierId } },
+      },
+    });
+    return (totalAfter ?? 0) - (totalPayment ?? 0);
   }
 }
