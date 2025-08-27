@@ -22,7 +22,7 @@ export const createPurchasePaymentUseCase =
       });
     }
 
-    await purchasePaymentRepo.create(payload);
+    const purchasePayment = await purchasePaymentRepo.create(payload);
 
     const paymentStatus = paymentStatusHelper(
       getPurchaseInvoice.receiveItem.totalAmount,
@@ -33,4 +33,10 @@ export const createPurchasePaymentUseCase =
       id: payload.purchaseInvoiceId,
       paymentStatus,
     });
+
+    return { ...purchasePayment, purchaseRef: getPurchaseInvoice.ref };
   };
+
+export type ICreatePurchasePaymentUseCase = ReturnType<
+  typeof createPurchasePaymentUseCase
+>;
