@@ -33,3 +33,7 @@ export const createPurchaseReturnDetailOrchestrator =
     });
     await createPurchaseReturnDetail(payload);
   };
+
+export type ICreatePurchaseReturnOrchestrator = ReturnType<
+  typeof createPurchaseReturnDetailOrchestrator
+>;
