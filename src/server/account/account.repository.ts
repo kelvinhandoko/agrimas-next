@@ -199,6 +199,7 @@ export class AccountRepository extends BaseRepository {
 
     const account = await this._db.account.findFirst({
       where: { id },
+      include: { PaymentMethod: true },
     });
 
     if (!account) {

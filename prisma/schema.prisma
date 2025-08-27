@@ -97,7 +97,7 @@ model Account {
   GeneralLedger  GeneralLedger[]
   journalDetail  JournalDetail[]
   subAccount     SubAccount[]
-  PaymentMethod  PaymentMethod[]
+  PaymentMethod  PaymentMethod?
 
   @@unique([code, companyId])
 }
@@ -359,7 +359,7 @@ model PaymentMethod {
   updatedAt        DateTime          @updatedAt
   companyId        String
   company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  accountId        String?
+  accountId        String?           @unique
   account          Account?          @relation(fields: [accountId], references: [id])
   purchasePayments PurchasePayment[]
   SalesPayment     SalesPayment[]

@@ -19,9 +19,9 @@ export class PaymentMethodRepository extends BaseRepository {
     });
   }
 
-  async update(payload: UpdatePaymentMethodPayload) {
+  async update(payload: Partial<UpdatePaymentMethodPayload>) {
     return await this._db.paymentMethod.update({
-      data: payload,
+      data: { ...payload, amount: { increment: payload.amount } },
       where: { id: payload.id },
     });
   }

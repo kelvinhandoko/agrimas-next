@@ -2,6 +2,7 @@ import { type SalesPaymentPayload } from "@/model/sales-payment.model";
 import { paymentStatusHelper } from "@/utils/paymentStatusHelper";
 import { TRPCError } from "@trpc/server";
 
+import { IUpdatePaymentMethodUseCase } from "@/server/paymentMethod/use-cases/update-payment-method.use-case";
 import { type SalesInvoiceRepository } from "@/server/salesInvoice/sales-invoice.repository";
 import { type SalesPaymentRepository } from "@/server/salesPayment/sales-payment.repository";
 
@@ -32,7 +33,6 @@ export const createSalesPaymentUseCase =
       status: paymentStatusHelper(findSales.totalAfter, totalPayment),
       totalPayment,
     });
-
     const createdSalesPayment = await salesPaymentRepo.create(payload);
     return { ...createdSalesPayment, ref: findSales.ref };
   };
