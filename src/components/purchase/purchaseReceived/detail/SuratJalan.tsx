@@ -1,15 +1,8 @@
 import { DATE_FORMAT } from "@/constant";
-import {
-  Document,
-  Font,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { DateTime } from "luxon";
 
-import { ReceiveItemRouter } from "@/server/recieveItem/receive-item.router";
+import { type ReceiveItemRouter } from "@/server/recieveItem/receive-item.router";
 
 const styles = StyleSheet.create({
   page: {

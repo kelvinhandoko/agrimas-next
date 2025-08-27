@@ -34,5 +34,9 @@ export const createSalesPaymentUseCase =
     });
 
     const createdSalesPayment = await salesPaymentRepo.create(payload);
-    return createdSalesPayment;
+    return { ...createdSalesPayment, ref: findSales.ref };
   };
+
+export type ICreateSalesPaymentUseCase = ReturnType<
+  typeof createSalesPaymentUseCase
+>;

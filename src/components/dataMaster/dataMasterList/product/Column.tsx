@@ -1,4 +1,3 @@
-import { paths } from "@/paths/paths";
 import { formatPrice } from "@/utils/format-price";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 

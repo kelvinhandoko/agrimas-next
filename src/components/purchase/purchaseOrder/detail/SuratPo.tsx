@@ -1,16 +1,9 @@
 import { DATE_FORMAT } from "@/constant";
 import { formatPrice } from "@/utils/format-price";
-import {
-  Document,
-  Font,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { DateTime } from "luxon";
 
-import { PurchaseRouterOutputs } from "@/server/purchase/purchase.router";
+import { type PurchaseRouterOutputs } from "@/server/purchase/purchase.router";
 
 const styles = StyleSheet.create({
   page: {
