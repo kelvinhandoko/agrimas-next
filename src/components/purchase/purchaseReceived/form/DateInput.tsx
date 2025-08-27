@@ -35,7 +35,7 @@ const DateInput: FC<DateInputProps> = ({ form }) => {
       name="receiveDate"
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>tanggal penerimaan</FormLabel>
+          <FormLabel className="mt-2">tanggal penerimaan</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>

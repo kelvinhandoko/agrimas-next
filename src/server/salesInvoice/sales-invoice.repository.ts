@@ -66,13 +66,19 @@ export class SalesInvoiceRepository extends BaseRepository {
   }
 
   async get(q: GetSalesInvoiceQuery) {
-    const { companyId, search, limit, page, dateRange, customerId } = q;
+    const { companyId, search, limit, page, dateRange, status, customerId } = q;
     const whereClause: Prisma.SalesInvoiceWhereInput = {};
 
     whereClause.companyId = companyId;
 
     if (customerId) {
       whereClause.customerId = customerId;
+    }
+
+    if (status) {
+      whereClause.status = {
+        in: status,
+      };
     }
 
     if (dateRange) {

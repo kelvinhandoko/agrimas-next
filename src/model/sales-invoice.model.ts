@@ -46,6 +46,7 @@ export const getDetailSalesInvoicePayloadSchema = z.object({
 
 export const getSalesInvoiceQuerySchema = paginatedQuery.extend({
   customerId: z.string().optional(),
+  status: z.array(z.nativeEnum(TRANSACTION_PAYMENT_STATUS)).optional(),
 });
 
 export type GetSalesInvoiceQuery = z.infer<typeof getSalesInvoiceQuerySchema> &

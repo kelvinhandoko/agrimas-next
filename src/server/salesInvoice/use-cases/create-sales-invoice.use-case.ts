@@ -43,3 +43,7 @@ export const createSalesInvoiceUseCase =
       customerId: findCustomer.id,
     });
   };
+
+export type ICreateSalesInvoiceUseCase = ReturnType<
+  typeof createSalesInvoiceUseCase
+>;

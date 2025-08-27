@@ -149,12 +149,16 @@ const SalesPaymentFormPage = () => {
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
         <TabsContent value="form">
-          <SalesPaymentForm
-            sisaTagihan={(data?.totalAfter ?? 0) - (data?.totalPayment ?? 0)}
-          />
+          <div className="mt-6 lg:mt-0">
+            <SalesPaymentForm
+              sisaTagihan={(data?.totalAfter ?? 0) - (data?.totalPayment ?? 0)}
+            />
+          </div>
         </TabsContent>
         <TabsContent value="history">
-          <SalesPaymentTable />
+          <div className="mt-6 lg:mt-0">
+            <SalesPaymentTable />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

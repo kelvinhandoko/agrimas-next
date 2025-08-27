@@ -5,11 +5,13 @@ import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { fallbackName } from "@/utils/fallback-name";
 import { Box, Grid, Text } from "@radix-ui/themes";
+import { pdf } from "@react-pdf/renderer";
 import { DateTime } from "luxon";
 import { NumericFormat } from "react-number-format";
 
 import BackButton from "@/components/BackButton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -21,12 +23,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import SuratPo from "./SuratPo";
+
 interface DetailPurchaseOrderProps {
   id: string;
 }
 
 const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
   const { data, isLoading } = api.purchase.getDetail.useQuery(id);
+
+  const handleDownloadPDF = async () => {
+    const blob = await pdf(<SuratPo data={data!} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const nameFile = `Surat-PO-${data?.supplier?.nama}-${data?.ref}`;
+    link.href = url;
+    link.download = `${nameFile}.pdf`;
+    link.click();
+  };
   return (
     <Box>
       <Box className="mb-8">
@@ -37,7 +52,7 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
         <Grid className="md:col-span-8">
           <Card className="px-6 py-4">
             <CardContent>
-              <Box className="mt-4 flex items-center justify-between">
+              <Box className="mt-4 flex flex-col justify-between md:flex-row md:items-center">
                 <Box className="flex items-center gap-x-3">
                   <Avatar className="h-[70px] w-[70px]">
                     <AvatarFallback>{fallbackName("name")}</AvatarFallback>
@@ -48,12 +63,15 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                     </Text>
                   </Box>
                 </Box>
-                <Text size={"2"} align={"right"} className="w-[30%]">
+                <Text
+                  size="2"
+                  className="mt-3 text-start md:mt-0 md:w-[30%] md:text-right"
+                >
                   {data?.company.address}
                 </Text>
               </Box>
               <Box className="mt-3 rounded-lg bg-[#624DE3] px-4 py-7 text-primary-foreground">
-                <Box className="flex justify-between">
+                <Box className="flex flex-col justify-between md:flex-row">
                   <Box>
                     <Text weight={"bold"}>No Pembelian</Text>
                     <Box>
@@ -80,12 +98,12 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
                       </Text>
                     </Box>
                   </Box>
-                  <Box className="max-w-[40%] text-end">
+                  <Box className="mt-4 md:mt-0 md:max-w-[40%] md:text-end">
                     <Text weight={"bold"}>Supplier</Text>
                     <Box>
                       <Text size={"2"}>{data?.supplier.nama}</Text>
                     </Box>
-                    <Text size={"2"} className="text-end">
+                    <Text size={"2"} className="md:text-end">
                       {data?.supplier.alamat}
                     </Text>
                   </Box>
@@ -202,7 +220,7 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
           </Card>
         </Grid>
         <Grid className="h-max md:col-span-4">
-          <Card className="h-fit px-6 py-4">
+          <Card className="mt-3 h-fit px-6 py-4 md:mt-0">
             <CardHeader>
               <CardTitle>Detail Supplier</CardTitle>
             </CardHeader>
@@ -223,6 +241,16 @@ const DetailPurchaseOrderPage = ({ id }: DetailPurchaseOrderProps) => {
               </Box>
               <hr className="my-3" />
               <Text size={"2"}>{data?.supplier.alamat}</Text>
+              <Box>
+                <Button
+                  className="mt-3 w-full"
+                  size={"lg"}
+                  onClick={handleDownloadPDF}
+                  disabled={isLoading}
+                >
+                  Download PO
+                </Button>
+              </Box>
             </CardContent>
           </Card>
         </Grid>

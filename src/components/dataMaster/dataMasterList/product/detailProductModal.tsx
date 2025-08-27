@@ -1,8 +1,6 @@
 import { api } from "@/trpc/react";
 import { formatPrice } from "@/utils/format-price";
 import { Text } from "@radix-ui/themes";
-import { Eye } from "lucide-react";
-import { useState } from "react";
 
 import {
   AlertDialog,
@@ -11,7 +9,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,32 +18,30 @@ export default function DetailProductModal({
   name,
   price,
   supplierId,
+  open,
+  onOpenChange, // ← tambahkan ini
 }: {
   id: string;
   name: string;
   price?: number;
   supplierId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void; // ← tambahkan ini
 }) {
-  const [open, setOpen] = useState(false);
   const { data: supplierProduct } = api.supplier.getDetail.useQuery({
     id: supplierId,
   });
 
-  const fallbackName = (name: string) => {
-    const result = name
+  const fallbackName = (name: string) =>
+    name
       .split(" ")
       .slice(0, 2)
       .map((word) => word[0])
       .join("")
       .toUpperCase();
 
-    return result;
-  };
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Eye className="cursor-pointer text-[#624DE3]" />
-      </AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-x-3">
@@ -56,6 +51,7 @@ export default function DetailProductModal({
             <Text>{name}</Text>
           </AlertDialogTitle>
           <AlertDialogDescription>
+            {/* Detail Content */}
             <span>
               <Text>Name</Text>
               <Text className="block text-base text-black">{name}</Text>
@@ -83,7 +79,7 @@ export default function DetailProductModal({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button variant={"outline"} onClick={() => setOpen(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Tutup
           </Button>
         </AlertDialogFooter>

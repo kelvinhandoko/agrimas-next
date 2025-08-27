@@ -1,5 +1,5 @@
-import { Trash2, Trash2Icon } from "lucide-react";
-import { type MouseEvent, useState } from "react";
+import { Trash2 } from "lucide-react";
+import { type MouseEvent } from "react";
 
 import {
   AlertDialog,
@@ -8,24 +8,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
 export default function DeleteModal({
   name,
   handleDelete,
+  open,
+  onOpenChange,
 }: {
   id: string;
   name: string;
   handleDelete?: (event: MouseEvent<HTMLButtonElement>) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Trash2Icon className="cursor-pointer text-red-600" />
-      </AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-x-3">
@@ -37,7 +36,10 @@ export default function DeleteModal({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button variant={"destructiveOnline"} onClick={() => setOpen(false)}>
+          <Button
+            variant={"destructiveOnline"}
+            onClick={() => onOpenChange(false)}
+          >
             Batal
           </Button>
           <Button variant={"destructive"} onClick={handleDelete}>

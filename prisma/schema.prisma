@@ -97,6 +97,7 @@ model Account {
   GeneralLedger  GeneralLedger[]
   journalDetail  JournalDetail[]
   subAccount     SubAccount[]
+  PaymentMethod  PaymentMethod?
 
   @@unique([code, companyId])
 }
@@ -358,6 +359,8 @@ model PaymentMethod {
   updatedAt        DateTime          @updatedAt
   companyId        String
   company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  accountId        String?           @unique
+  account          Account?          @relation(fields: [accountId], references: [id])
   purchasePayments PurchasePayment[]
   SalesPayment     SalesPayment[]
 }
@@ -593,10 +596,7 @@ enum TRANSACTION_CATEGORY {
   PENJUALAN
   RETUR_PENJUALAN
   DISKON_PENJUALAN
-  PEMBAYARAN_PENJUALAN
-  PEMBELIAN
-  RETUR_PEMBELIAN
-  DISKON_PEMBELIAN
+  POTONGAN_HARGA
   LABA_DITAHAN
   EKUITAS
   PIUTANG_USAHA
@@ -604,6 +604,8 @@ enum TRANSACTION_CATEGORY {
   HPP
   PPN_MASUKAN
   PPN_KELUARAN
+  DEPOSIT_CUSTOMER
+  DEPOSIT_SUPPLIER
 }
 
 enum TRANSACTION_PAYMENT_STATUS {

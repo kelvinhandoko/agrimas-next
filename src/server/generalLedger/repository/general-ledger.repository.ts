@@ -74,6 +74,7 @@ export class GeneralLedgerRepository extends BaseRepository {
       throw this._fail(error);
     }
   }
+
   async get(q: PaginatedGeneralLedgerQuery) {
     const { limit, page } = q;
     const [data, meta] = await (
@@ -81,6 +82,7 @@ export class GeneralLedgerRepository extends BaseRepository {
     ).withPages({ limit, page });
     return { data, meta };
   }
+
   async getInfinite(q: CursoredGeneralLedgerQuery) {
     const { limit, cursor } = q;
     const [data, meta] = await (

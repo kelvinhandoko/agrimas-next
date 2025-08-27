@@ -9,6 +9,7 @@ export const paymentMethodPayloadSchema = z.object({
     .min(1, "nama metode wajib diisi"),
   accountNumber: z.string().nullish(),
   initialAmount: z.number().nonnegative("saldo tidak boleh lebih kecil dari 0"),
+  accountId: z.string().nullish(),
 });
 
 export type PaymentMethodPayload = z.infer<typeof paymentMethodPayloadSchema> &
@@ -17,7 +18,7 @@ export type PaymentMethodPayload = z.infer<typeof paymentMethodPayloadSchema> &
 export const updatePaymentMethodPayloadSchema = paymentMethodPayloadSchema
   .required({ id: true })
   .extend({
-    amount: z.number().nonnegative("saldo tidak boleh lebih kecil dari 0"),
+    amount: z.number(),
   });
 
 export type UpdatePaymentMethodPayload = z.infer<

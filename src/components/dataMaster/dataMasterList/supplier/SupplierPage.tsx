@@ -15,6 +15,7 @@ const SupplierPage = () => {
   if (isLoading) {
     return <LoadingIndicator />;
   }
+
   return (
     <Box>
       <Box className="mb-8">

@@ -74,32 +74,36 @@ const PurchaseOrderForm = () => {
         autoComplete="off"
       >
         <div className="flex items-center gap-2">
-          <BackButton path="/sale/sale-faktur" />
+          <BackButton path={paths.purchase.purchaseOrder.root} />
           <CardTitle>form pesanan pembelian</CardTitle>
         </div>
-        <div className="grid w-full grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:w-3/4">
-          <DateInput form={form} />
-
-          <DueDateInput form={form} />
-
-          <FormField
-            control={form.control}
-            name="ref"
-            render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel>ref</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    placeholder="ref (optional)"
-                    {...field}
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="grid w-full grid-cols-1 items-start justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <DateInput form={form} />
+          </div>
+          <div>
+            <DueDateInput form={form} />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="ref"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel className="mb-1">Ref</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="w-full"
+                      placeholder="ref (optional)"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <SupplierInput form={form} />
 

@@ -3,11 +3,10 @@ import { fallbackName } from "@/utils/fallback-name";
 import { Box, Grid, Text } from "@radix-ui/themes";
 
 import BackButton from "@/components/BackButton";
+import TableDetailPurchaseReturn from "@/components/purchase/purchaseReturn/detail/TableDetailPurchaseReturn";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-import { TableDetailPurchaseReturn } from "./TableDetailPurchaseReturn";
 
 interface DetailPurcaseReturnPageProps {
   id: string;

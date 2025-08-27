@@ -12,7 +12,6 @@ interface PageProps {
   }>;
 }
 const page = async ({ params }: PageProps) => {
-  const id = (await params).id;
   return <h1>hai</h1>;
 };
 

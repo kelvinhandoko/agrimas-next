@@ -1,13 +1,8 @@
 import { DATE_FORMAT } from "@/constant";
-import {
-  Document,
-  Font,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { DateTime } from "luxon";
+
+import { type ReceiveItemRouter } from "@/server/recieveItem/receive-item.router";
 
 const styles = StyleSheet.create({
   page: {
@@ -34,7 +29,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   table: {
-    display: "table",
+    display: "flex",
+    flexDirection: "column",
     width: "auto",
     borderStyle: "solid",
     borderWidth: 1,
@@ -85,6 +81,7 @@ const styles = StyleSheet.create({
     height: "70px",
   },
   ttdContainer: {
+    textTransform: "capitalize",
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
@@ -93,10 +90,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const SuratJalanPDF = ({ data }) => {
+type PurchaseReceivedDetail = ReceiveItemRouter["getDetail"];
+
+const SuratJalanPDF = ({ data }: { data: PurchaseReceivedDetail }) => {
+  // width = 21cm
+  // height = 14cm
+  const customSize: [number, number] = [21 * 28.35, 14 * 28.35];
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size={customSize} style={styles.page}>
         <View style={styles.section}>
           <View style={styles.header}>
             <Text style={styles.title}>CV. Agrimas Perkasa</Text>

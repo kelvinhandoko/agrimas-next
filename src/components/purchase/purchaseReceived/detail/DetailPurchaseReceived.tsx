@@ -31,7 +31,7 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
   const { data, isLoading } = api.receiveItem.getDetail.useQuery(id);
 
   const handleDownloadPDF = async () => {
-    const blob = await pdf(<SuratJalanPDF data={data} />).toBlob();
+    const blob = await pdf(<SuratJalanPDF data={data!} />).toBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
 
@@ -45,25 +45,26 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
       <Box className="mb-8">
         <BackButton path={paths.purchase.purchaseReceived.root} />
       </Box>
+      {/* <pre>{JSON.stringify(data, undefined, 2)}</pre> */}
       <Grid columns={{ initial: "1", md: "12" }} gapX={"5"}>
         <Grid className="md:col-span-8">
           <Card className="px-6 py-4">
             <CardContent>
-              <Box className="mt-4 flex items-center justify-between">
+              <Box className="mt-4 flex flex-col justify-between md:flex-row md:items-center">
                 <Box className="flex items-center gap-x-3">
                   <Avatar className="h-[70px] w-[70px]">
                     <AvatarFallback>{fallbackName("name")}</AvatarFallback>
                   </Avatar>
                   <Box>
                     <Text size={"5"} weight={"bold"}>
-                      {"name company"}
+                      {data?.company.name}
                     </Text>
-                    <Box>
-                      <Text>{"email@gmail.com"}</Text>
-                    </Box>
                   </Box>
                 </Box>
-                <Text size={"2"} align={"right"} className="w-[30%]">
+                <Text
+                  size="2"
+                  className="mt-3 text-start md:mt-0 md:w-[30%] md:text-right"
+                >
                   Tj. Sari, Kec. Medan Selayang, Kota Medan, Sumatera Utara
                   20154
                 </Text>
@@ -134,7 +135,7 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
                             {detail.purchaseDetail.product.name}
                           </TableCell>
                           <TableCell>{detail.quantity}</TableCell>
-                          <TableCell>{detail.note || "-"}</TableCell>
+                          <TableCell>{detail?.note || "-"}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -145,7 +146,7 @@ const DetailPurcaseReceived = ({ id }: DetailPurcaseReceivedProps) => {
           </Card>
         </Grid>
         <Grid className="h-max md:col-span-4">
-          <Card className="h-fit px-6 py-4">
+          <Card className="mt-4 h-fit px-6 py-4 md:mt-0">
             <CardHeader>
               <CardTitle>Detail Supplier</CardTitle>
             </CardHeader>

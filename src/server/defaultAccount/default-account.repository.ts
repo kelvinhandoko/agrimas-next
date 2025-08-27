@@ -15,14 +15,14 @@ export class DefaultAccountRepository extends BaseRepository {
   async getByCompany(companyId: string) {
     const data = await this._db.defaultAccount.findMany({
       where: { companyId },
-      select: { category: true, id: true },
+      select: { category: true, accountId: true },
     });
 
     const map = new Map<keyof typeof TRANSACTION_CATEGORY, string>();
 
     for (const record of data) {
       if (record.category) {
-        map.set(record.category, record.id);
+        map.set(record.category, record.accountId);
       }
     }
 

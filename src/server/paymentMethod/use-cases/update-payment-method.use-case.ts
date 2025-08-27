@@ -5,10 +5,10 @@ import { type PaymentMethodRepository } from "@/server/paymentMethod/payment-met
 
 export const updatePaymentMethodUseCase =
   (repo: PaymentMethodRepository) =>
-  async (payload: UpdatePaymentMethodPayload) => {
+  async (payload: Partial<UpdatePaymentMethodPayload>) => {
     const findData = await repo.getDetail({
       type: "id",
-      identifier: payload.id,
+      identifier: payload.id!,
     });
     if (!findData) {
       throw new TRPCError({
@@ -18,3 +18,7 @@ export const updatePaymentMethodUseCase =
     }
     return await repo.update(payload);
   };
+
+export type IUpdatePaymentMethodUseCase = ReturnType<
+  typeof updatePaymentMethodUseCase
+>;

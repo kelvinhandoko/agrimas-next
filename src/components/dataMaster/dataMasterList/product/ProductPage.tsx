@@ -3,7 +3,7 @@
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
 import { Box } from "@radix-ui/themes";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import BackButton from "@/components/BackButton";
@@ -12,6 +12,7 @@ import DataTable from "@/components/common/table/DataTable";
 import { productColumn } from "./Column";
 
 const ProductPage = () => {
+  const router = useRouter();
   const utils = api.useUtils();
   const searchparams = useSearchParams();
   const search = searchparams.get("search") ?? "";
@@ -35,13 +36,21 @@ const ProductPage = () => {
     }
   };
 
+  const handleEditProduct = async (id: string) => {
+    try {
+      router.push(paths.dataMaster.product.edit(id));
+    } catch (error) {
+      console.log("Error while edit product", error);
+    }
+  };
+
   return (
     <Box>
       <Box className="mb-8">
         <BackButton path={paths.dataMaster.root} />
       </Box>
       <DataTable
-        columns={productColumn({ handleDeleteProduct })}
+        columns={productColumn({ handleDeleteProduct, handleEditProduct })}
         data={data?.data ?? []}
         searchAble
         totalData={data?.meta.totalCount}

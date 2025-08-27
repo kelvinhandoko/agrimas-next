@@ -43,7 +43,6 @@ export class AccountRepository extends BaseRepository {
     };
   }
 
-  // Generate multiple codes
   private async _generateMultipleCodes(groupAccountId: string, amount: number) {
     const groupAccount = await this._db.groupAccount.findFirst({
       where: { id: groupAccountId },
@@ -145,7 +144,7 @@ export class AccountRepository extends BaseRepository {
   private async _getQuery(query: GetAccountQuery) {
     const { companyId, search } = query;
     const whereClause: Prisma.AccountWhereInput = {};
-    console.log({ search });
+
     if (search) {
       whereClause.OR = [
         {
@@ -200,6 +199,7 @@ export class AccountRepository extends BaseRepository {
 
     const account = await this._db.account.findFirst({
       where: { id },
+      include: { PaymentMethod: true },
     });
 
     if (!account) {

@@ -8,3 +8,5 @@ export const createAccountUseCase =
 
     return data;
   };
+
+export type ICreateAccountUseCase = ReturnType<typeof createAccountUseCase>;

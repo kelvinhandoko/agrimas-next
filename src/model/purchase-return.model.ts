@@ -1,7 +1,12 @@
 import { purchaseReturnDetailPayloadSchema } from "@/model/purchase-return-detail.model";
 import { z } from "zod";
 
-import { type WithCompany } from "@/server/common";
+import {
+  type WithCompany,
+  cursorQuery,
+  getQuery,
+  paginatedQuery,
+} from "@/server/common";
 
 export const purchaseReturnPayloadSchema = z.object({
   id: z.string().optional().describe("id pengembalian"),
@@ -16,5 +21,30 @@ export const purchaseReturnPayloadSchema = z.object({
 
 export type PurchaseReturnPayload = z.infer<
   typeof purchaseReturnPayloadSchema
+> &
+  WithCompany;
+
+export const getPurchaseReturnQuerySchema = getQuery.extend({
+  supplierId: z.string().optional(),
+});
+
+export type GetPurchaseReturnQuery = z.infer<
+  typeof getPurchaseReturnQuerySchema
+> &
+  WithCompany;
+
+export const paginatedPurchaseReturnSchema =
+  getPurchaseReturnQuerySchema.merge(paginatedQuery);
+
+export type PaginatedPurchaseReturnQuery = z.infer<
+  typeof paginatedPurchaseReturnSchema
+> &
+  WithCompany;
+
+export const cursoredPurchaseReturnQuerySchema =
+  getPurchaseReturnQuerySchema.merge(cursorQuery);
+
+export type CursoredPurchaseReturnQuery = z.infer<
+  typeof cursoredPurchaseReturnQuerySchema
 > &
   WithCompany;

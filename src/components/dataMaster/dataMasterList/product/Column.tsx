@@ -1,24 +1,21 @@
-import { paths } from "@/paths/paths";
 import { formatPrice } from "@/utils/format-price";
-import { Flex } from "@radix-ui/themes";
 import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { PencilIcon } from "lucide-react";
-import Link from "next/link";
 
 import { type ProductRouterOutput } from "@/server/product/product.router";
 
-import DeleteModal from "@/components/DeleteModal";
-
-import DetailProductModal from "./detailProductModal";
+import ProductAction from "./action";
 
 const columnHelper =
   createColumnHelper<ProductRouterOutput["getAll"]["data"][0]>();
 
 interface ProductColumnProps {
   handleDeleteProduct: (id: string) => Promise<void>;
+  handleEditProduct: (id: string) => Promise<void>;
 }
-
-export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
+export const productColumn = ({
+  handleDeleteProduct,
+  handleEditProduct,
+}: ProductColumnProps) =>
   [
     columnHelper.accessor("name", {
       header: () => <div>Nama Produk</div>,
@@ -43,25 +40,10 @@ export const productColumn = ({ handleDeleteProduct }: ProductColumnProps) =>
       enableHiding: false,
       header: () => <div className="text-center">Aksi</div>,
       cell: ({ row }) => (
-        <Flex justify="center" gapX="3">
-          <DetailProductModal
-            id={row.original.id}
-            name={row.original.name}
-            price={row.original.averagePrice}
-            supplierId={row.original.supplierId}
-          />
-          <Link
-            href={paths.dataMaster.product.edit(row.original.id)}
-            className="text-yellow-400"
-          >
-            <PencilIcon className="text-yellow-400" />
-          </Link>
-          <DeleteModal
-            id={row.original.id}
-            name={row.original.name}
-            handleDelete={() => handleDeleteProduct(row.original.id)}
-          />
-        </Flex>
+        <ProductAction
+          data={row.original}
+          onEdit={(id: string) => handleEditProduct(id)}
+        />
       ),
     },
   ] as ColumnDef<ProductRouterOutput["getAll"]["data"][0]>[];

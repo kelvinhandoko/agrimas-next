@@ -1,6 +1,6 @@
 import { type Metadata } from "next";
 
-import PurchaseReturnPage from "@/components/purchase/purchaseReturn/PurchaseReturnPage";
+import PurchaseReturnTable from "@/components/purchase/purchaseReturn/table";
 
 export const metadata: Metadata = {
   title: "Agrimas - Purchase Return Page",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <PurchaseReturnPage />;
+  return <PurchaseReturnTable />;
 };
 
 export default page;

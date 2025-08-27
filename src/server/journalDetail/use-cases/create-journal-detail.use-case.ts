@@ -36,7 +36,7 @@ export const createJournalDetailUseCase =
     }
 
     await accountRepo.updateBalance({
-      id: findAccount.id,
+      id: payload.accountId,
       balance: updatedBalance,
     });
 

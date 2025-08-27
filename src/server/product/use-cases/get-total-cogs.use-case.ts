@@ -6,3 +6,5 @@ export const getTotalCOGSUseCase =
     const { totalCOGS } = await repo.calculateCOGS(payload);
     return totalCOGS;
   };
+
+export type IGetTotalCOGSUseCase = ReturnType<typeof getTotalCOGSUseCase>;
