@@ -13,6 +13,7 @@ import { JournalDetailRepository } from "@/server/journalDetail/journal-detail.r
 import { createJournalDetailUseCase } from "@/server/journalDetail/use-cases/create-journal-detail.use-case";
 import { PaymentMethodRepository } from "@/server/paymentMethod/payment-method.repository";
 import { getDetailPaymentMethodUseCase } from "@/server/paymentMethod/use-cases/get-detail-payment-method.use-case";
+import { updatePaymentMethodUseCase } from "@/server/paymentMethod/use-cases/update-payment-method.use-case";
 import { SalesInvoiceRepository } from "@/server/salesInvoice/sales-invoice.repository";
 import { createSalesPaymentOrchestrator } from "@/server/salesPayment/orchestrator/create-sales-payment.orchestrator";
 import { SalesPaymentRepository } from "@/server/salesPayment/sales-payment.repository";
@@ -50,11 +51,14 @@ export const createSalesPaymentController = companyProcedure
           createGeneralLedgerUseCase(generalLedgerRepo),
       });
 
+      const updatePaymentMethod = updatePaymentMethodUseCase(paymentMethodRepo);
+
       const orchestrator = createSalesPaymentOrchestrator({
         findPaymentMethod,
         createSalesPayment,
         getDefaultAccount,
         createJournal,
+        updatePaymentMethod,
       });
 
       return await orchestrator({
