@@ -5,12 +5,14 @@ import GeneralLedgerList from "@/components/generalLedger/GeneralLedgerList";
 
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
+  params: Promise<{ id: string }>;
 }
 
-const page = async ({ searchParams }: PageProps) => {
-  const params = await searchParams;
-  const from = params.from;
-  const to = params.to;
+const page = async ({ searchParams, params }: PageProps) => {
+  const resolveParams = await searchParams;
+  const id = (await params).id;
+  const from = resolveParams.from;
+  const to = resolveParams.to;
 
   const dateRange =
     from && to
@@ -20,20 +22,19 @@ const page = async ({ searchParams }: PageProps) => {
         }
       : undefined;
 
-  const search = params.search;
-  const limit = Number(params.limit) || 10;
-  const page = Number(params.page) || 1;
-  const accountId = params.accountId;
+  const search = resolveParams.search;
+  const limit = Number(resolveParams.limit) || 10;
+  const page = Number(resolveParams.page) || 1;
   await api.generalLedger.get.prefetch({
     dateRange,
     search,
     limit,
-    accountId,
+    accountId: id,
     page,
   });
   return (
     <HydrateClient>
-      <GeneralLedgerList params={params} />
+      <GeneralLedgerList params={resolveParams} />
     </HydrateClient>
   );
 };

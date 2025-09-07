@@ -10,6 +10,7 @@ export const createPaymentMethodUseCase =
       identifier: {
         name: payload.name,
         accountNumber: payload.accountNumber,
+        companyId: payload.companyId,
       },
     });
 

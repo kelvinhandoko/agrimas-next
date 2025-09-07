@@ -72,6 +72,9 @@ export class PaymentMethodRepository extends BaseRepository {
             accountNumber: identifier.accountNumber,
           },
           {
+            companyId: identifier.companyId,
+          },
+          {
             name: identifier.name,
           },
         ],

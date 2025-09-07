@@ -33,6 +33,7 @@ export const getDetailPaymentMethodQuerySchema = z.object({
     z.object({
       name: z.string(),
       accountNumber: z.string().nullish(),
+      companyId: z.string(),
     }),
   ]),
 });

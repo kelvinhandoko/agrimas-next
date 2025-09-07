@@ -107,10 +107,6 @@ const menuItems = [
     ],
     dropdownMenuItems: [
       {
-        title: "Laporan Stok",
-        path: paths.report.stock,
-      },
-      {
         title: "Laporan Piutang",
         path: paths.report.receiveable,
       },
@@ -118,13 +114,10 @@ const menuItems = [
         title: "Laporan Hutang",
         path: paths.report.payable,
       },
+
       {
-        title: "Laporan Penjualan",
-        path: paths.report.sale,
-      },
-      {
-        title: "Laporan Pembelian",
-        path: paths.report.purchase,
+        title: "Laporan Mutasi Kas",
+        path: paths.accountant.generalLedger,
       },
     ],
   },

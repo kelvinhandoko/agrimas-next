@@ -2,11 +2,12 @@
 
 import { paths } from "@/paths/paths";
 import { api } from "@/trpc/react";
+import { useParams } from "next/navigation";
 import { type FC } from "react";
 
 import BackButton from "@/components/BackButton";
 import DataTable from "@/components/common/table/DataTable";
-import AccountFilter from "@/components/filter/AccountFilter";
+import GeneralLedgerAccountInput from "@/components/generalLedger/GeneralLedgerAccountInput";
 import { GeneralLedgerColumn } from "@/components/generalLedger/table/Column";
 
 interface GeneralLedgerListProps {
@@ -14,16 +15,20 @@ interface GeneralLedgerListProps {
 }
 
 const GeneralLedgerList: FC<GeneralLedgerListProps> = ({ params }) => {
-  const accountId = params.accountId;
+  const p = useParams();
+  const id = p.id;
+
   const page = Number(params.page) || 1;
   const { data, isLoading, isError } = api.generalLedger.get.useQuery({
-    accountId,
+    accountId: id as string,
     page,
   });
   return (
     <div>
-      <BackButton path={paths.accountant.root} />
-      <AccountFilter />
+      <div className="flex w-fit items-center justify-between gap-4">
+        <BackButton path={paths.accountant.root} />
+        <GeneralLedgerAccountInput />
+      </div>
       <DataTable
         columns={GeneralLedgerColumn()}
         isError={isError}

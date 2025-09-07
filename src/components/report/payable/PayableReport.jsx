@@ -1,6 +1,7 @@
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { formatInTimeZone } from "date-fns-tz";
 import { id } from "date-fns/locale";
+import { DateTime } from "luxon";
 
 const styles = StyleSheet.create({
   page: { padding: 30, fontSize: 10 },
@@ -79,20 +80,15 @@ const PayableReport = ({ data }) => {
                   <View key={i} style={styles.tableRow}>
                     <Text style={styles.tableCol}>{inv.ref}</Text>
                     <Text style={styles.tableCol}>
-                      {formatInTimeZone(
-                        inv.date,
-                        "Asia/Jakarta",
-                        "dd MMMM yyyy",
-                        { locale: id },
-                      )}
+                      {DateTime.fromJSDate(inv.date)
+                        .setLocale("id")
+                        .toLocaleString(DateTime.DATE_FULL)}
                     </Text>
                     <Text style={styles.tableCol}>
-                      {formatInTimeZone(
-                        inv.dueDate,
-                        "Asia/Jakarta",
-                        "dd MMMM yyyy",
-                        { locale: id },
-                      )}
+                      {DateTime.fromJSDate(inv.date)
+                        .plus({ days: 30 })
+                        .setLocale("id")
+                        .toLocaleString(DateTime.DATE_FULL)}
                     </Text>
                     <Text style={styles.tableCol}>
                       Rp {inv.totalAfter.toLocaleString("id-ID")}

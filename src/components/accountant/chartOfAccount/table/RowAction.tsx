@@ -40,7 +40,7 @@ const ChartOfAccountRowAction: FC<ChartOfAccountRowActionProps> = ({
     if (onGeneralLedger) {
       onGeneralLedger(data.id);
     } else {
-      router.push(`${paths.accountant.generalLedger}?accountId=${data.id}`);
+      router.push(`${paths.accountant.generalLedger}/${data.id}`);
     }
   };
 

@@ -1,6 +1,7 @@
 import { type Metadata } from "next";
+import React from "react";
 
-import PayablePage from "@/components/report/payable/PayablePage";
+import PayablePageTemp from "@/components/report/payable/PayablePage";
 
 export const metadata: Metadata = {
   title: "Agrimas - Report Payable Supplier Page",
@@ -9,7 +10,11 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 const page = () => {
-  return <PayablePage />;
+  return (
+    <div>
+      <PayablePageTemp />
+    </div>
+  );
 };
 
 export default page;
