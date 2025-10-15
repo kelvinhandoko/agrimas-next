@@ -43,12 +43,18 @@ export const PurchaseReceivedColumns = () => {
           cell: ({ getValue }) =>
             getValue().reduce((acc, curr) => acc + curr.quantity, 0),
         }),
-        columnHelper.accessor("totalAmount", {
+        columnHelper.accessor("receiveItemDetail", {
           id: "totalPrice",
           header: "Total Harga",
           cell: ({ getValue }) => (
             <NumericFormat
-              value={getValue()}
+              value={getValue().reduce(
+                (acc, curr) =>
+                  acc +
+                  (curr.purchaseDetail.price - curr.purchaseDetail.discount) *
+                    curr.quantity,
+                0,
+              )}
               {...NUMERIC_PROPS}
               displayType="text"
             />

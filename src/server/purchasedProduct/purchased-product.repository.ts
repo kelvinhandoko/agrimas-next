@@ -25,19 +25,20 @@ export class PurchasedProductRepository extends BaseRepository {
     });
   }
   async create(payload: PurchasedProductPayload) {
+    const { productId, supplierId, totalPurchase } = payload;
     return await this._db.purchasedProduct.create({
-      data: { ...payload, totalReturn: 0 },
+      data: { productId, supplierId, totalPurchase, totalReturn: 0 },
     });
   }
 
   async update(payload: UpdatePurchasedProductPayload) {
+    const { id } = payload;
     return await this._db.purchasedProduct.update({
       data: {
-        ...payload,
-        totalReturn: { increment: payload.return },
-        totalPurchase: { increment: payload.quantity },
+        totalReturn: { increment: payload.return ?? 0 },
+        totalPurchase: { increment: payload.quantity ?? 0 },
       },
-      where: { id: payload.id },
+      where: { id },
     });
   }
 

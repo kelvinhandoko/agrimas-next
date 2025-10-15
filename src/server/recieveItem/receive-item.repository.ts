@@ -6,6 +6,7 @@ import {
   type PaginatedReceiveItemQuery,
   type ReceiveItemPayload,
 } from "@/model/recieve-item.model";
+import { discountHandler } from "@/utils/discountHandler";
 import { type Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 
@@ -15,7 +16,8 @@ export class ReceiveItemRepository extends BaseRepository {
   async create(payload: ReceiveItemPayload) {
     const { companyId, purchaseId, receiveDate, note, ref } = payload;
     const totalAmount = payload.details.reduce(
-      (acc, curr) => acc + curr.quantity * curr.price,
+      (acc, curr) =>
+        acc + curr.quantity * discountHandler(curr.price, curr.discount),
       0,
     );
     return await this._db.receiveItem.create({
