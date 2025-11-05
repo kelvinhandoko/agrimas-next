@@ -25,17 +25,19 @@ export class SoldProductRepository extends BaseRepository {
     });
   }
   async create(payload: SoldProductPayload) {
+    const { customerId, productId, totalSold } = payload;
     return await this._db.soldProduct.create({
-      data: { ...payload, totalReturn: 0 },
+      data: { customerId, productId, totalSold, totalReturn: 0 },
     });
   }
 
   async update(payload: UpdateSoldProductPayload) {
+    const { customerId } = payload;
     return await this._db.soldProduct.update({
       data: {
-        ...payload,
-        totalReturn: { increment: payload.return },
-        totalSold: { increment: payload.quantity },
+        customerId,
+        totalReturn: { increment: payload.return ?? 0 },
+        totalSold: { increment: payload.quantity ?? 0 },
       },
       where: { id: payload.id },
     });
